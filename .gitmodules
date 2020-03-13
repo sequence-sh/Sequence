@@ -1,0 +1,3 @@
+[submodule "nuix"]
+	path = nuix
+	url = ../flow/connectors/nuix.git

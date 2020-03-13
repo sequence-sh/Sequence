@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF EXIST &quot;$(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe&quot; $(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe documentation &gt; $(SolutionDir)documentation.md" />
+    <Exec Command="IF EXIST &quot;$(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe&quot; $(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true" />
   </Target>
 
 </Project>

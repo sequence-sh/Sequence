@@ -28,6 +28,7 @@ release:
       when: on_success
     script:
         - "dotnet publish --runtime win-x64 --configuration release"
+        - "cp EDR/bin/Release/netcoreapp3.1/win-x64 EDR-$CI_COMMIT_TAG -r"
     artifacts:
       paths:
-        - EDR/bin/Release/netcoreapp3.1/win-x64
+        - EDR-$CI_COMMIT_TAG

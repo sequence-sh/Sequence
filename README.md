@@ -5,7 +5,7 @@ This is a project that lets you automate various E-Discovery and Forensics tasks
 There is a console app which runs all the processes individually and you can also provide yaml containing a sequence of processes to perform.
 
 
-#Quickstart
+# Quickstart
 
 * Download and build the project. 
 * Create your.yaml file - see below for an example 
@@ -15,7 +15,7 @@ There is a console app which runs all the processes individually and you can als
 * `>edr.exe  RunProcessFromYaml -yamlpath MyFile.yaml`
 
 
-#Yaml example
+# Yaml example
 
 The following yaml will create a case, add evidence from both a file and a concordance, tag some of the evidence and move it to a production set and then export the production set
 

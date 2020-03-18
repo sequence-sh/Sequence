@@ -1,3 +1,7 @@
+
+[![pipeline status](https://gitlab.com/reductech/e-discovery/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
+[![coverage report](https://gitlab.com/reductech/e-discovery/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
+
 # Introduction
 
 This is a project that lets you automate various E-Discovery and Forensics tasks. It is currently only connected with NUIX but we hope to add more connectors soon.
@@ -7,11 +11,10 @@ There is a console app which runs all the processes individually and you can als
 
 # Quickstart
 
-* Download and build the project. 
-* Create your.yaml file - see below for an example 
-* Go to your build folder EDR\bin\Debug\netcoreapp3.1 
+* [Download Latest Build](https://gitlab.com/reductech/e-discovery/edr/-/jobs/artifacts/master/download?job=release)
 * Modify EDR.dll.config - set NuixUseDongle and NuixExeConsolePath 
-* Run cmd.exe and cd into the build folder 
+* Create your.yaml file - see below for an example
+* Run cmd.exe and cd into the publish folder 
 * `>edr.exe  RunProcessFromYaml -yamlpath MyFile.yaml`
 
 

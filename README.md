@@ -1,4 +1,3 @@
-
 [![pipeline status](https://gitlab.com/reductech/e-discovery/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
 [![coverage report](https://gitlab.com/reductech/e-discovery/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
 
@@ -25,25 +24,38 @@ The following yaml will create a case, add evidence from both a file and a conco
 
 ```yaml
 !Sequence
+#Sets the CasePath property of every process that needs it
+Defaults: 
+    CasePath: C:/Cases/MyCase
+
+#This list will be ignored but you can use it to set yaml anchors
+Ignore:
+    - &CaseName Case 1
+    - &Investigator Joe Bloggs
+    - &EvidencePath C:/Evidence/My Evidence
+    - &Custodian John Smith
+    - &FolderName Evidence Folder 1
+    - &ReportsFolder C:/Reports/Case1
+    - &SearchTagCSVPath C:/Documents/Searches.csv
+    - &ExportPath C:/Exports/Case1
+
 Steps:
-- !NuixCreateCase
-  CaseName: Case Name
-  CasePath: &CasePath Case Path
-  Investigator: Investigator
+- !NuixCreateCase 
+#Create a new Case
+  CaseName: *CaseName
+  Investigator: *Investigator
 - !NuixAddItem
-  Path: File Path
-  Custodian: Custodian
-  FolderName: Folder Name
-  CasePath: *CasePath
+  Path: *EvidencePath
+  Custodian: *Custodian
+  FolderName: *FolderName
 - !NuixCreateReport
-  OutputFolder: Report Output Folder
-  CasePath: *CasePath
+  OutputFolder: *ReportsFolder
 - !NuixPerformOCR
-  CasePath: *CasePath
   OCRProfileName: OCR Profile
 - !Loop
+#For each row in this CSV, do a search and tag the results
   For: !CSV
-    CSVFilePath: CSV Path
+    CSVFilePath: *SearchTagCSVPath
     InjectColumns:
       SearchTerm:
         Property: SearchTerm
@@ -51,21 +63,19 @@ Steps:
         Property: Tag
     Delimiter: ','
     HasFieldsEnclosedInQuotes: false
-  RunProcess: !NuixSearchAndTag
-    CasePath: *CasePath
+  Do: !NuixSearchAndTag
+  #These properties will be injected from the CSV
+    SearchTerm: _
+    Tag: _
 - !NuixAddToItemSet
   ItemSetName: TaggedItems
   SearchTerm: Tag:*
-  CasePath: *CasePath
 - !NuixAddToProductionSet
-  ProductionSetName: &ProductionSetName Production Set Name
+  ProductionSetName: &ProductionSetName TaggedItemsProductionSet
   SearchTerm: ItemSet:TaggedItems
-  CasePath: *CasePath
 - !NuixExportConcordance
   MetadataProfileName: Default
   ProductionSetName: *ProductionSetName
-  ExportPath: Export Path
-  CasePath: *CasePath
-
+  ExportPath: *ExportPath
 
 ```

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EDR</name>
+    </assembly>
+    <members>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.UseDongle">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.NuixExeConsolePath">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.NuixVersion">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.NuixFeatures">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.IdolHost">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.IdolPort">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.IdolIndexPort">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.Program.CombinedSettings.IdolSSL">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.DocumentationCategory">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.Summary">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.TypeDetails">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.Requirements">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.Parameters">
+            <inheritdoc />
+        </member>
+        <member name="P:Reductech.EDR.YamlObjectWrapper.PropertyWrapper.ExtraFields">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

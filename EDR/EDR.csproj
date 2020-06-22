@@ -15,11 +15,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\wainw\source\repos\edr\EDR\EDR.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="InstantConsole" Version="1.0.6" />
-    <PackageReference Include="Nuix" Version="1.0.1" />
-    <PackageReference Include="Processes" Version="1.0.4" />
-    <PackageReference Include="Reductech.EDR.Idol" Version="1.1.26" />
+    <PackageReference Include="InstantConsole" Version="1.0.7" />
+    <PackageReference Include="Nuix" Version="1.0.8" />
+    <PackageReference Include="Processes" Version="1.0.15" />
+    <PackageReference Include="Reductech.EDR.Idol" Version="1.1.31" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 

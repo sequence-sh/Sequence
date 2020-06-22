@@ -1,5 +1,7 @@
 variables:
-  GIT_SUBMODULE_STRATEGY: recursive
+    CONFIG_DEV: Debug
+  CONFIG_RELEASE: Release
+  NUGET_REGISTRY: https://gitlab.com/api/v4/projects/18697166/packages/nuget/index.json
 
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
@@ -8,15 +10,50 @@ stages:
     - test
     - release
 
-build:
-    stage: build
-    script:
-        - "dotnet build"
+build dev:
+  stage: build
+  variables:
+    CONFIG: $CONFIG_DEV
+  script:
+    - dotnet nuget add source -n gitlab --username $GITLAB_NUGET_USERNAME --password $GITLAB_NUGET_PAT --store-password-in-clear-text $NUGET_REGISTRY
+    - dotnet restore --packages ./packages
+    - dotnet build -c $CONFIG --no-restore
+  artifacts:
+    paths:
+      - '*/bin'
+      - '*/obj'
+      - packages/
+    expire_in: 30 mins
+  rules: *rules_dev
+
+build release:
+  extends: build dev
+  variables:
+    CONFIG: $CONFIG_RELEASE
+  rules: *rules_release
 
 test:
-    stage: test
-    script: 
-        - "dotnet test --filter TestCategory!=\"Integration\""
+  stage: test
+  variables:
+    CONFIG: $CONFIG_DEV
+  script:
+    - dotnet test  --filter Category!=\"Integration\" --no-build -c $CONFIG --collect:"XPlat Code Coverage" --results-directory ./
+    - >
+      pwsh -Command '[xml]$xml = Get-Content */coverage.cobertura.xml -Raw ;
+      Write-Host "Coverage (Branch) : $([double]($xml.coverage."branch-rate") * 100)%";
+      Write-Host "Coverage (Line)   : $([double]($xml.coverage."line-rate") * 100)%"'
+  coverage: /Coverage \(Branch\)[\s:]+(\d+)%/
+  artifacts:
+    reports:
+      cobertura: '*/coverage.cobertura.xml'
+  rules: *rules_dev
+
+test release:
+  extends: test
+  variables:
+    CONFIG: $CONFIG_RELEASE
+  rules: *rules_release
+
         
 release:
     stage: release
@@ -24,8 +61,8 @@ release:
     - if: '$CI_COMMIT_TAG =~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/i'
       when: on_success
     script:
-        - "dotnet publish --runtime win-x64 --configuration release"
-        - "cp EDR/bin/Release/netcoreapp3.1/win-x64/publish EDR-$CI_COMMIT_TAG -r"
+        - dotnet publish --runtime win-x64 --configuration release
+        - cp EDR/bin/Release/netcoreapp3.1/win-x64/publish EDR-$CI_COMMIT_TAG -r
     artifacts:
       paths:
         - EDR-$CI_COMMIT_TAG

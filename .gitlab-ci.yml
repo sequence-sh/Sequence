@@ -1,9 +1,9 @@
+image: mcr.microsoft.com/dotnet/core/sdk:3.1
+
 variables:
-    CONFIG_DEV: Debug
+  CONFIG_DEV: Debug
   CONFIG_RELEASE: Release
   NUGET_REGISTRY: https://gitlab.com/api/v4/projects/18697166/packages/nuget/index.json
-
-image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
     - build

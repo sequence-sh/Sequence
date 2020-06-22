@@ -1,16 +1,15 @@
-﻿using System.Configuration;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix;
-using Reductech.EDR.Connectors.Nuix.Console;
 using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Idol.Query.Processes;
 using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.enumerations;
-using Reductech.EDR.Utilities.Processes.injection;
 using Reductech.Utilities.InstantConsole;
-using Process = Reductech.EDR.Utilities.Processes.Process;
 
 namespace Reductech.EDR
 {
@@ -18,63 +17,72 @@ namespace Reductech.EDR
     {
         private static void Main(string[] args)
         {
-            System.Console.OutputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
 
-            var useDongleString =  ConfigurationManager.AppSettings["NuixUseDongle"];
-            var nuixExeConsolePath = ConfigurationManager.AppSettings["NuixExeConsolePath"];
+            var (nuixSuccess, _, nuixSettings, nuixError)  = NuixProcessSettings.TryCreate(sn => ConfigurationManager.AppSettings[sn]);
+            var (idolSuccess, _, idolSettings, idolError)  = IdolProcessSettings.TryCreate(sn => ConfigurationManager.AppSettings[sn]);
 
-            if (!bool.TryParse(useDongleString, out var useDongle))
+            if (nuixSuccess && idolSuccess)
             {
-                System.Console.WriteLine("Please set the property 'NuixUseDongle' in the settings file");
-                return;
-            }
+                var combinedSettings = new CombinedSettings(nuixSettings, idolSettings);
 
-            if (string.IsNullOrWhiteSpace(nuixExeConsolePath))
+                var processes =
+                    AllProcesses.GetProcesses(nuixSettings)
+                        .Concat(AllProcesses.EnumerationWrappers)
+                        .Concat(AllProcesses.InjectionWrappers)
+                        //.Concat(NuixProcesses.GetProcesses(combinedSettings))
+                        .Concat(IdolProcesses.GetProcesses(combinedSettings))
+                        .ToList();
+
+                ConsoleView.Run(args, processes);
+            }
+            else
             {
-                System.Console.WriteLine("Please set the property 'NuixExeConsolePath' in the settings file");
-                return;
+                if(!nuixSuccess)
+                    foreach (var l in nuixError.Split("\r\n"))
+                        Console.WriteLine(l);
+
+                if(!idolSuccess)
+                    foreach (var l in idolError.Split("\r\n"))
+                        Console.WriteLine(l);
             }
-
-
-            var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
-            Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
-
-            var processAssembly = Assembly.GetAssembly(typeof(Process));
-            Debug.Assert(processAssembly != null, nameof(processAssembly) + " != null");
-
-            var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath);
-
-            var methods = typeof(YamlRunner).GetMethods()
-                .Where(m=>m.DeclaringType != typeof(object))
-                    .Select(x=>x.AsRunnable(new YamlRunner(nuixProcessSettings), new DocumentationCategory("Yaml")))
-                .OfType<IDocumented>()
-                .OrderBy(x=>x.Name)
-                .Concat(processAssembly.GetTypes()
-                    .Where(t=> 
-                        typeof(Process).IsAssignableFrom(t)
-                        
-                        )
-                    .Where(t=>!t.IsAbstract)
-                    .Select(x=> new YamlObjectWrapper(x, new DocumentationCategory("General Processes", typeof(Process)))
-
-                ).OrderBy(x=>x.Name))
-                .Concat(processAssembly.GetTypes()
-                    .Where(t=> 
-                        typeof(Enumeration).IsAssignableFrom(t) || typeof(Injection).IsAssignableFrom(t))
-                    .Where(t=>!t.IsAbstract)
-                    .Select(x=> new YamlObjectWrapper(x, new DocumentationCategory("Enumerations", typeof(Enumeration)))
-                    ).OrderBy(x=>x.Name))
-                
-
-                    .Concat(rubyScriptProcessAssembly.GetTypes()
-                        .Where(t=> typeof(RubyScriptProcess).IsAssignableFrom(t))
-                        .Where(t=>!t.IsAbstract)
-                        .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings, new DocumentationCategory("Nuix Processes"))
-                        ).OrderBy(x=>x.Name))
-
-                .ToList();
-
-            ConsoleView.Run(args, methods);
         }
+
+        internal class CombinedSettings : INuixProcessSettings, IIdolProcessSettings
+        {
+            private readonly INuixProcessSettings _nuixProcessSettingsImplementation;
+            private readonly IIdolProcessSettings _idolProcessSettingsImplementation;
+
+            public CombinedSettings(INuixProcessSettings nuixProcessSettingsImplementation, IIdolProcessSettings idolProcessSettingsImplementation)
+            {
+                _nuixProcessSettingsImplementation = nuixProcessSettingsImplementation;
+                _idolProcessSettingsImplementation = idolProcessSettingsImplementation;
+            }
+
+            /// <inheritdoc />
+            public bool UseDongle => _nuixProcessSettingsImplementation.UseDongle;
+
+            /// <inheritdoc />
+            public string NuixExeConsolePath => _nuixProcessSettingsImplementation.NuixExeConsolePath;
+
+            /// <inheritdoc />
+            public Version NuixVersion => _nuixProcessSettingsImplementation.NuixVersion;
+
+            /// <inheritdoc />
+            public IReadOnlyCollection<NuixFeature> NuixFeatures => _nuixProcessSettingsImplementation.NuixFeatures;
+
+            /// <inheritdoc />
+            public string IdolHost => _idolProcessSettingsImplementation.IdolHost;
+
+            /// <inheritdoc />
+            public int IdolPort => _idolProcessSettingsImplementation.IdolPort;
+
+            /// <inheritdoc />
+            public int IdolIndexPort => _idolProcessSettingsImplementation.IdolIndexPort;
+
+            /// <inheritdoc />
+            public bool IdolSSL => _idolProcessSettingsImplementation.IdolSSL;
+        }
+
     }
 }

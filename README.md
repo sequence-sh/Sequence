@@ -3,7 +3,7 @@
 
 # Introduction
 
-This is a project that lets you automate various E-Discovery and Forensics tasks. It is currently only connected with NUIX but we hope to add more connectors soon.
+This is a project that lets you automate various E-Discovery and Forensics tasks. It is currently only connected with NUIX and Introspect but we hope to add more connectors soon.
 
 There is a console app which runs all the processes individually and you can also provide yaml containing a sequence of processes to perform.
 
@@ -19,7 +19,8 @@ There is a console app which runs all the processes individually and you can als
 
 # Yaml example
 
-The following yaml will create a case, add evidence from both a file and a concordance, tag some of the evidence and move it to a production set and then export the production set
+The following yaml will create a NUIX case, add evidence from both a file and a concordance, 
+tag some of the evidence and move it to a production set and then export the production set as concordance
 
 
 ```yaml
@@ -38,6 +39,7 @@ Ignore:
     - &ReportsFolder C:/Reports/Case1
     - &SearchTagCSVPath C:/Documents/Searches.csv
     - &ExportPath C:/Exports/Case1
+    - &ExportDatPath C:/Exports/Case1/loadfile.dat
 
 Steps:
 - !NuixCreateCase 
@@ -73,9 +75,18 @@ Steps:
 - !NuixAddToProductionSet
   ProductionSetName: &ProductionSetName TaggedItemsProductionSet
   SearchTerm: ItemSet:TaggedItems
+  #Export Concordance from Nuix
 - !NuixExportConcordance
   MetadataProfileName: Default
   ProductionSetName: *ProductionSetName
   ExportPath: *ExportPath
-
+  #Loop through the rows in the concordance and export the contents to NUIX
+- !Loop
+  For: !Concordance
+    ConcordanceFilePath = *ExportDatPath #The path to the concordance dat file
+    ConvertTo: IDXDocument #Convert this row to an IDX Document
+  Injection:
+    Property: IndexFile #Inject the IDX document into the IndexFile property of the Add Process
+  Do: !AddProcess
+    IndexFile: _
 ```

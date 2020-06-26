@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix;
-using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Idol.Query.Processes;
+using Reductech.EDR.Idol.Query.processes;
 using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR
@@ -24,15 +24,18 @@ namespace Reductech.EDR
 
             if (nuixSuccess && idolSuccess)
             {
-                var combinedSettings = new CombinedSettings(nuixSettings, idolSettings);
+                var settings = new CombinedSettings(nuixSettings, idolSettings);
 
-                var processes =
-                    AllProcesses.GetProcesses(nuixSettings)
-                        .Concat(AllProcesses.EnumerationWrappers)
-                        .Concat(AllProcesses.InjectionWrappers)
-                        //.Concat(NuixProcesses.GetProcesses(combinedSettings))
-                        .Concat(IdolProcesses.GetProcesses(combinedSettings))
-                        .ToList();
+                var nuixProcesses = DynamicProcessFinder.GetAllDocumented(settings,
+                    new DocumentationCategory("Nuix Processes", typeof(RubyScriptProcess)), typeof(RubyScriptProcess));
+
+                var introspectProcesses = DynamicProcessFinder.GetAllDocumented(settings,
+                    new DocumentationCategory("Introspect Processes", typeof(IdolProcess)), typeof(IdolProcess));
+
+                var generalProcesses = DynamicProcessFinder.GetAllDocumented(settings,
+                    new DocumentationCategory("General Processes", typeof(Process)), typeof(Process));
+
+                var processes = nuixProcesses.Concat(introspectProcesses).Concat(generalProcesses);
 
                 ConsoleView.Run(args, processes);
             }

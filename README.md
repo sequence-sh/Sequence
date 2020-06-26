@@ -83,7 +83,7 @@ Steps:
   #Loop through the rows in the concordance and export the contents to NUIX
 - !Loop
   For: !Concordance
-    ConcordanceFilePath = *ExportDatPath #The path to the concordance dat file
+    ConcordanceFilePath: *ExportDatPath #The path to the concordance dat file
     ConvertTo: IDXDocument #Convert this row to an IDX Document
   Injection:
     Property: IndexFile #Inject the IDX document into the IndexFile property of the Add Process

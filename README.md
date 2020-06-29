@@ -10,7 +10,7 @@ There is a console app which runs all the processes individually and you can als
 
 # Quickstart
 
-* [Download Latest Build](https://gitlab.com/reductech/e-discovery/edr/-/jobs/artifacts/master/download?job=release)
+* [Download Latest Build](https://gitlab.com/reductech/edr/edr/-/edit/master/download?job=release)
 * Modify EDR.dll.config - set NuixUseDongle and NuixExeConsolePath 
 * Create your.yaml file - see below for an example
 * Run cmd.exe and cd into the publish folder 

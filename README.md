@@ -1,3 +1,4 @@
+[![Gitter](https://badges.gitter.im/reductech/edr.svg)](https://gitter.im/reductech/edr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![pipeline status](https://gitlab.com/reductech/e-discovery/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
 [![coverage report](https://gitlab.com/reductech/e-discovery/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
 
@@ -87,6 +88,6 @@ Steps:
     ConvertTo: IDXDocument #Convert this row to an IDX Document
   Injection:
     Property: IndexFile #Inject the IDX document into the IndexFile property of the Add Process
-  Do: !AddProcess
+  Do: !IntrospectAdd
     IndexFile: _
 ```

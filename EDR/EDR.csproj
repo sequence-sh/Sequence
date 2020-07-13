@@ -21,10 +21,10 @@
 
   <ItemGroup>
     <PackageReference Include="InstantConsole" Version="1.0.7" />
-    <PackageReference Include="Nuix" Version="1.0.9" />
-    <PackageReference Include="Processes" Version="1.0.24" />
-    <PackageReference Include="Reductech.EDR.Idol" Version="1.1.33" />
-    <PackageReference Include="Reductech.EDR.Parsers" Version="1.0.3" />
+    <PackageReference Include="Nuix" Version="1.0.10" />
+    <PackageReference Include="Processes" Version="1.0.33" />
+    <PackageReference Include="Reductech.EDR.Connectors.Introspect" Version="1.1.35" />
+    <PackageReference Include="Reductech.EDR.Connectors.Parsers" Version="1.0.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 

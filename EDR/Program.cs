@@ -4,11 +4,11 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.Introspect.Query.processes;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Idol.Query.processes;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Mutable;
 using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR

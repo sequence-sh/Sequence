@@ -469,6 +469,19 @@
 |SecurityType                |`string`                              |        |       |                                                        |Notes_V4<br>                        This example uses the security options defined in the [Notes_V4] section of your IDOL Server configuration file.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                                                  |Security Type Configuration                                                                                                                                                                                                                                  |[SecurityType](https://www.microfocus.com/documentation/idol/IDOL/Servers/IDOLServer/11.0/Help/Content/Index%20Actions/IndexData/_IX_SecurityType.htm)                            |               |
 |TitleFields                 |IReadOnlyCollection<`string`>         |        |       |                                                        |\*/DRETITLE<br>                        In this example, IDOL Server reads the document title from its DRETITLE field.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |                                                  |TitleType configuration parameter                                                                                                                                                                                                                            |[TitleFields](https://www.microfocus.com/documentation/idol/IDOL/Servers/IDOLServer/11.0/Help/Content/Index%20Actions/IndexData/_IX_TitleFields.htm)                              |,              |
 
+<a name="IntrospectAddFieldValue"></a>
+## IntrospectAddFieldValue
+
+**Int32**
+
+*Requires an IDOL Instance*
+
+|Parameter |Type                         |Required|Summary|
+|:--------:|:---------------------------:|:------:|:-----:|
+|DREDOCREFs|IReadOnlyCollection<`string`>|☑️      |       |
+|FieldName |`string`                     |☑️      |       |
+|FieldValue|`string`                     |☑️      |       |
+
 <a name="IntrospectAddFieldValues"></a>
 ## IntrospectAddFieldValues
 
@@ -478,7 +491,7 @@
 
 |Parameter  |Type                                                |Required|Summary|
 |:---------:|:--------------------------------------------------:|:------:|:-----:|
-|DREDOCREF  |`string`                                            |☑️      |       |
+|DREDOCREFs |IReadOnlyCollection<`string`>                       |☑️      |       |
 |FieldValues|IReadOnlyCollection<KeyValuePair<`string`,`string`>>|☑️      |       |
 
 <a name="IntrospectConvertQueryResponseData"></a>
@@ -574,6 +587,18 @@
 |MinID                |`string`|        |       |             |500001                                                                                                                                                                                                                       |                                                  |                                          |[MinID](https://www.microfocus.com/documentation/idol/IDOL/Servers/IDOLServer/11.0/Help/Content/Index%20Actions/ExportContent/_IX_MinID.htm)                                                                |
 |Priority             |`long`? |        |       |0            |5                                                                                                                                                                                                                            |Minimum: 0<br>                        Maximum: 100|                                          |[Priority](https://www.microfocus.com/documentation/idol/IDOL/Servers/IDOLServer/11.0/Help/Content/Index%20Actions/ExportContent/../../Actions/SharedParameters/_ACI_Priority.htm)                          |
 |StateMatchID         |`string`|        |       |             |B8UGIK95FKJG-23<br>                        Restrict the exported documents to the first twelve documents, plus the14th and 16th documents, listed in the state token B8UGIK95FKJG-23:StateMatchID=B8UGIK95FKJG-23[0-11+13+15]|                                                  |Query action StoreState parameter         |[StateMatchID](https://www.microfocus.com/documentation/idol/IDOL/Servers/IDOLServer/11.0/Help/Content/Index%20Actions/ExportContent/_IX_StateMatchID.htm)                                                  |
+
+<a name="IntrospectExtractFromQueryResponseData"></a>
+## IntrospectExtractFromQueryResponseData
+
+**Collection of Strings**
+
+|Parameter                |Type                                   |Required|Summary|Default Value|
+|:-----------------------:|:-------------------------------------:|:------:|:-----:|:-----------:|
+|QueryResponseData        |[QueryResponseData](#QueryResponseData)|☑️      |       |             |
+|PropertyIsContentProperty|`bool`                                 |        |       |False        |
+|PropertyName             |`string`                               |☑️      |       |             |
+|Distinct                 |`bool`                                 |        |       |False        |
 
 <a name="IntrospectGetContent"></a>
 ## IntrospectGetContent
@@ -879,6 +904,15 @@
 |Parameter|Type    |Required|Summary|
 |:-------:|:------:|:------:|:-----:|
 |FilePath |`string`|☑️      |       |
+
+<a name="ReturnString"></a>
+## ReturnString
+
+**String**
+
+|Parameter   |Type    |Required|Summary|
+|:----------:|:------:|:------:|:-----:|
+|ResultString|`string`|☑️      |       |
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess

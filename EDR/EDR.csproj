@@ -24,7 +24,7 @@
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/edr</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
-    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/edr/-/releases</PackageReleaseNotes>    
+    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/edr/-/releases</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <Authors>reductech</Authors>
@@ -33,11 +33,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InstantConsole" Version="1.0.7" />
-    <PackageReference Include="Nuix" Version="1.0.10" />
-    <PackageReference Include="Processes" Version="1.0.33" />
-    <PackageReference Include="Reductech.EDR.Connectors.Introspect" Version="1.1.35" />
-    <PackageReference Include="Reductech.EDR.Connectors.Parsers" Version="1.0.4" />
+    <PackageReference Include="CommandDotNet" Version="4.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.8" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.2.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 

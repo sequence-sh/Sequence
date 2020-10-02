@@ -3,89 +3,63 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using CommandDotNet;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Introspect.Query.processes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Mutable;
-using Reductech.Utilities.InstantConsole;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR
 {
+    [Command(Description = "Executes Nuix Sequences")]
+    internal class EDRMethods : ConsoleMethods
+    {
+        [Command(Name = "execute", Description = "Execute a step defined in yaml")]
+        public void Execute(
+            [Option(LongName = "yaml", ShortName = "y", Description = "The yaml to execute")]
+            string? yaml = null,
+            [Option(LongName = "path", ShortName = "p", Description = "The path to the yaml to execute")]
+            string? path = null) => ExecuteAbstract(yaml, path);
+
+        [Command(Name = "documentation", Description = "Generate Documentation in Markdown format")]
+        public void Documentation(
+            [Option(LongName = "path", ShortName = "p", Description = "The path to the documentation file to write")]
+            string path)
+            => GenerateDocumentationAbstract(path);
+
+        /// <inheritdoc />
+        protected override Result<ISettings> TryGetSettings()
+        {
+            var settingsResult = NuixSettings
+                .TryCreate(sn => ConfigurationManager.AppSettings[sn])
+                .Map(x => x as ISettings);
+
+            return settingsResult;
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<Type> ConnectorTypes { get; } = new List<Type>() { typeof(IRubyScriptStep) };
+
+        /// <inheritdoc />
+        protected override ILogger Logger { get; } =
+            new ServiceCollection().AddLogging(cfg => cfg.AddConsole()).BuildServiceProvider().GetService<ILogger<EDRMethods>>();
+    }
+
+
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
+            var appRunner = new AppRunner<EDRMethods>().UseDefaultMiddleware();
 
-            var (nuixSuccess, _, nuixSettings, nuixError)  = NuixProcessSettings.TryCreate(sn => ConfigurationManager.AppSettings[sn]);
-            var (idolSuccess, _, idolSettings, idolError)  = IdolProcessSettings.TryCreate(sn => ConfigurationManager.AppSettings[sn]);
-
-            if (nuixSuccess && idolSuccess)
-            {
-                var settings = new CombinedSettings(nuixSettings, idolSettings);
-
-                var nuixProcesses = DynamicProcessFinder.GetAllDocumented(settings,
-                    new DocumentationCategory("Nuix Processes", typeof(RubyScriptProcess)), typeof(RubyScriptProcess));
-
-                var introspectProcesses = DynamicProcessFinder.GetAllDocumented(settings,
-                    new DocumentationCategory("Introspect Processes", typeof(IdolProcess)), typeof(IdolProcess));
-
-                var generalProcesses = DynamicProcessFinder.GetAllDocumented(settings,
-                    new DocumentationCategory("General Processes", typeof(Process)), typeof(Process));
-
-                var processes = nuixProcesses.Concat(introspectProcesses).Concat(generalProcesses);
-
-                ConsoleView.Run(args, processes);
-            }
-            else
-            {
-                if(!nuixSuccess)
-                    foreach (var l in nuixError.Split("\r\n"))
-                        Console.WriteLine(l);
-
-                if(!idolSuccess)
-                    foreach (var l in idolError.Split("\r\n"))
-                        Console.WriteLine(l);
-            }
+            appRunner.Run(args);
         }
 
-        internal class CombinedSettings : INuixProcessSettings, IIdolProcessSettings
-        {
-            private readonly INuixProcessSettings _nuixProcessSettingsImplementation;
-            private readonly IIdolProcessSettings _idolProcessSettingsImplementation;
 
-            public CombinedSettings(INuixProcessSettings nuixProcessSettingsImplementation, IIdolProcessSettings idolProcessSettingsImplementation)
-            {
-                _nuixProcessSettingsImplementation = nuixProcessSettingsImplementation;
-                _idolProcessSettingsImplementation = idolProcessSettingsImplementation;
-            }
 
-            /// <inheritdoc />
-            public bool UseDongle => _nuixProcessSettingsImplementation.UseDongle;
-
-            /// <inheritdoc />
-            public string NuixExeConsolePath => _nuixProcessSettingsImplementation.NuixExeConsolePath;
-
-            /// <inheritdoc />
-            public Version NuixVersion => _nuixProcessSettingsImplementation.NuixVersion;
-
-            /// <inheritdoc />
-            public IReadOnlyCollection<NuixFeature> NuixFeatures => _nuixProcessSettingsImplementation.NuixFeatures;
-
-            /// <inheritdoc />
-            public string IdolHost => _idolProcessSettingsImplementation.IdolHost;
-
-            /// <inheritdoc />
-            public int IdolPort => _idolProcessSettingsImplementation.IdolPort;
-
-            /// <inheritdoc />
-            public int IdolIndexPort => _idolProcessSettingsImplementation.IdolIndexPort;
-
-            /// <inheritdoc />
-            public bool IdolSSL => _idolProcessSettingsImplementation.IdolSSL;
-        }
 
     }
 }

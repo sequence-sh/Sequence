@@ -1,42 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RootNamespace>Reductech.EDR</RootNamespace>
-    <Authors>Mark Wainwright</Authors>
-    <Company>Reductech</Company>
-    <Description>Console app for automating e-discovery and forensic pipelines.</Description>
-    <Copyright>©2020 Reductech Ltd.</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
-    <PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
-    <PackageReleaseNotes>First Release</PackageReleaseNotes>
+    <AssemblyName>EDR</AssemblyName>
     <Nullable>enable</Nullable>
+    <Version>0.2.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\wainw\source\repos\edr\EDR\EDR.xml</DocumentationFile>
+  <PropertyGroup>
+    <PackageId>Reductech.EDR</PackageId>
+    <Title>E-discovery Reduct</Title>
+    <Description>
+      Console application for automating e-discovery and forensic applications
+      using Steps and Sequences created with Reductech's EDR.Core library.
+    </Description>
+    <Product>EDR</Product>
+    <PackageTags>ediscovery;forensics;automation;orchestration;edrm</PackageTags>
+
+    <PackageProjectUrl>https://gitlab.com/reductech/edr/edr</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
+    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/edr/-/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <Authors>reductech</Authors>
+    <Company>Reductech</Company>
+    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InstantConsole" Version="1.0.7" />
-    <PackageReference Include="Nuix" Version="1.0.10" />
-    <PackageReference Include="Processes" Version="1.0.33" />
-    <PackageReference Include="Reductech.EDR.Connectors.Introspect" Version="1.1.35" />
-    <PackageReference Include="Reductech.EDR.Connectors.Parsers" Version="1.0.4" />
+    <PackageReference Include="CommandDotNet" Version="4.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.8" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.2.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF EXIST &quot;$(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe&quot; $(SolutionDir)EDR\bin\Debug\netcoreapp3.1\EDR.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true" />
-  </Target>
 
 </Project>

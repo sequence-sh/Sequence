@@ -4,90 +4,70 @@
 
 # Introduction
 
-This is a project that lets you automate various E-Discovery and Forensics tasks. It is currently only connected with NUIX and Introspect but we hope to add more connectors soon.
+This is a project that lets you execute various processes in NUIX from outside of NUIX and construct pipelines to automate entire workflows.<br>
+We intend to add other connectors apart from Nuix in the future<br>
 
-There is a console app which runs all the processes individually and you can also provide yaml containing a sequence of processes to perform.
+To do this you will need to create a settings file with details about your NUIX application and a YAML file explaining your pipeline.
 
+### Running a sequence
 
-# Quickstart
+To run a sequence, use the EDR.exe application
 
-* [Download Latest Build](https://gitlab.com/reductech/edr/edr/-/edit/master/download?job=release)
-* Modify EDR.dll.config - set NuixUseDongle and NuixExeConsolePath 
-* Create your.yaml file - see below for an example
-* Run cmd.exe and cd into the publish folder 
-* `>edr.exe  RunProcessFromYaml -yamlpath MyFile.yaml`
+`EDR.exe execute -p C:/MySequence.yaml`
 
 
-# Yaml example
+### Yaml
 
-The following yaml will create a NUIX case, add evidence from both a file and a concordance, 
-tag some of the evidence and move it to a production set and then export the production set as concordance
+Yaml is a human-readable data-serialization language you can use to define your pipelines.<br>
+You define a list of steps and their parameters and they will be performed in order. <br>
+For a list of possible steps see the [Documentation](documentation.md)<br>
+
+The following yaml does the following
+- Create a new case
+- Add an item to the case
+- Write a report on the case
+- Perform OCR on relevant files
+- Assign a tag to all items matching a particular search term
+- Add all tagged items to a new item set
+- Add everything in that item set to a new production set
+- Export that production set as concordance
 
 
 ```yaml
-!Sequence
-#Sets the CasePath property of every process that needs it
-Defaults: 
-    CasePath: C:/Cases/MyCase
+- NuixCreateCase(CaseName = 'My Case', CasePath = 'C:/MyCase', Investigator = 'Sherlock Holmes')
+- NuixAddItem(CasePath = 'C:/MyCase', Custodian = 'Moriarty', FolderName = 'My Folder', Path = 'C:/Data/MyFile.txt')
+- WriteFile(FileName = 'Report', Folder = 'C:/Output', Text = NuixCreateReport(CasePath = 'C:/MyCase'))
+- NuixPerformOCR(CasePath = 'C:/MyCase', OCRProfileName = 'My OCR Profile', SearchTerm = 'NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))')
+- NuixSearchAndTag(CasePath = 'C:/MyCase', SearchTerm = 'Diamond', Tag = 'Gems')
+- NuixAddToItemSet(CasePath = 'C:/MyCase', ItemSetName = 'TaggedItems', SearchTerm = 'Tag:*')
+- NuixAddToProductionSet(CasePath = 'C:/MyCase', ProductionSetName = 'TaggedItemsProductionSet', SearchTerm = 'ItemSet:TaggedItems')
+- NuixExportConcordance(CasePath = 'C:/MyCase', ExportPath = 'C:/Export', ProductionSetName = 'TaggedItemsProductionSet')
 
-#This list will be ignored but you can use it to set yaml anchors
-Ignore:
-    - &CaseName Case 1
-    - &Investigator Joe Bloggs
-    - &EvidencePath C:/Evidence/My Evidence
-    - &Custodian John Smith
-    - &FolderName Evidence Folder 1
-    - &ReportsFolder C:/Reports/Case1
-    - &SearchTagCSVPath C:/Documents/Searches.csv
-    - &ExportPath C:/Exports/Case1
-    - &ExportDatPath C:/Exports/Case1/loadfile.dat
-
-Steps:
-- !NuixCreateCase 
-#Create a new Case
-  CaseName: *CaseName
-  Investigator: *Investigator
-- !NuixAddItem
-  Path: *EvidencePath
-  Custodian: *Custodian
-  FolderName: *FolderName
-- !NuixCreateReport
-  OutputFolder: *ReportsFolder
-- !NuixPerformOCR
-  OCRProfileName: OCR Profile
-- !Loop
-#For each row in this CSV, do a search and tag the results
-  For: !CSV
-    CSVFilePath: *SearchTagCSVPath
-    InjectColumns:
-      SearchTerm:
-        Property: SearchTerm
-      Tag:
-        Property: Tag
-    Delimiter: ','
-    HasFieldsEnclosedInQuotes: false
-  Do: !NuixSearchAndTag
-  #These properties will be injected from the CSV
-    SearchTerm: _
-    Tag: _
-- !NuixAddToItemSet
-  ItemSetName: TaggedItems
-  SearchTerm: Tag:*
-- !NuixAddToProductionSet
-  ProductionSetName: &ProductionSetName TaggedItemsProductionSet
-  SearchTerm: ItemSet:TaggedItems
-  #Export Concordance from Nuix
-- !NuixExportConcordance
-  MetadataProfileName: Default
-  ProductionSetName: *ProductionSetName
-  ExportPath: *ExportPath
-  #Loop through the rows in the concordance and export the contents to NUIX
-- !Loop
-  For: !Concordance
-    ConcordanceFilePath: *ExportDatPath #The path to the concordance dat file
-    ConvertTo: IDXDocument #Convert this row to an IDX Document
-  Injection:
-    Property: IndexFile #Inject the IDX document into the IndexFile property of the Add Process
-  Do: !IntrospectAdd
-    IndexFile: _
 ```
+
+### Settings
+
+You need to edit the App.config file to match your Nuix configuration<br>
+
+Adjust the following settings<br>
+
+- NuixUseDongle : Whether the Nuix authentication is supplied by a dongle
+- NuixExeConsolePath : The path to the nuix console application
+- NuixVersion: The version of that is installed
+- NuixFeatures: The Nuix features you have available
+
+The file should look like this
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <appSettings>
+    <add key="NuixUseDongle" value="true"/>
+    <add key="NuixExeConsolePath" value="C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe"/>
+    <add key="NuixVersion" value="8.2"/>
+    <add key="NuixFeatures" value="ANALYSIS,CASE_CREATION,EXPORT_ITEMS,METADATA_IMPORT,OCR_PROCESSING,PRODUCTION_SET"/>
+  </appSettings>
+</configuration>
+```
+
+

@@ -16,6 +16,7 @@ namespace Reductech.EDR
     [Command(Description = "Executes Nuix Sequences")]
     internal class EDRMethods : ConsoleMethods
     {
+        [DefaultMethod]
         [Command(Name = "execute", Description = "Execute a step defined in yaml")]
         public void Execute(
             [Option(LongName = "yaml", ShortName = "y", Description = "The yaml to execute")]

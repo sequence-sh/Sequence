@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,11 +50,17 @@ namespace Reductech.EDR
 
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var appRunner = new AppRunner<EDRMethods>().UseDefaultMiddleware();
 
-            appRunner.Run(args);
+            var appRunner = new AppRunner<EDRMethods>()
+                .UseDefaultMiddleware();
+
+            await appRunner.RunAsync(args);
+
+            await Task.Delay(1);
+
+
         }
     }
 }

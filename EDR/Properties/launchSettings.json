@@ -2,7 +2,7 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "execute -y \"print(value = 123)\""
+      "commandLineArgs": "-c \"print(value = 123)\""
     }
   }
 }

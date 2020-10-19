@@ -5,18 +5,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using NLog.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Reductech.EDR
 {
     [Command(Description = "Executes Nuix Sequences")]
     internal class EDRMethods : ConsoleMethods
     {
+
         [DefaultMethod]
         [Command(Name = "execute", Description = "Execute a step defined in yaml")]
         public Task Execute(
@@ -24,7 +26,7 @@ namespace Reductech.EDR
             [Option(LongName = "command", ShortName = "c", Description = "The command to execute")]
             string? yaml = null,
             [Option(LongName = "path", ShortName = "p", Description = "The path to the yaml to execute")]
-            string? path = null) => base.ExecuteAbstractAsync(yaml, path, cancellationToken);
+            string? path = null) => ExecuteAbstractAsync(yaml, path, cancellationToken);
 
         [Command(Name = "documentation", Description = "Generate Documentation in Markdown format")]
         public void Documentation(
@@ -46,24 +48,31 @@ namespace Reductech.EDR
         protected override IEnumerable<Type> ConnectorTypes { get; } = new List<Type>() { typeof(IRubyScriptStep) };
 
         /// <inheritdoc />
-        protected override ILogger Logger { get; } =
-            new ServiceCollection().AddLogging(cfg => cfg.AddConsole()).BuildServiceProvider().GetService<ILogger<EDRMethods>>();
+        protected override ILogger Logger => Program.Logger!;
     }
 
 
     internal class Program
     {
-        private static async Task Main(string[] args)
+        public static ILogger? Logger;
+
+        public static async Task Main(string[] args)
         {
+            var provider = new NLogLoggerProvider();
+            Logger = provider.CreateLogger("Console Logger");
 
-            var appRunner = new AppRunner<EDRMethods>()
-                .UseDefaultMiddleware();
+            try
+            {
+                var appRunner = new AppRunner<EDRMethods>().UseDefaultMiddleware();
 
-            await appRunner.RunAsync(args);
+                await appRunner.RunAsync(args);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, e.Message);
+            }
 
             await Task.Delay(1);
-
-
         }
     }
 }

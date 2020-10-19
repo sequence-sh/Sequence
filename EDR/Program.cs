@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
@@ -18,11 +19,12 @@ namespace Reductech.EDR
     {
         [DefaultMethod]
         [Command(Name = "execute", Description = "Execute a step defined in yaml")]
-        public void Execute(
-            [Option(LongName = "yaml", ShortName = "y", Description = "The yaml to execute")]
+        public Task Execute(
+            CancellationToken cancellationToken,
+            [Option(LongName = "command", ShortName = "c", Description = "The command to execute")]
             string? yaml = null,
             [Option(LongName = "path", ShortName = "p", Description = "The path to the yaml to execute")]
-            string? path = null) => ExecuteAbstract(yaml, path);
+            string? path = null) => base.ExecuteAbstractAsync(yaml, path, cancellationToken);
 
         [Command(Name = "documentation", Description = "Generate Documentation in Markdown format")]
         public void Documentation(

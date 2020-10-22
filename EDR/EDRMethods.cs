@@ -12,8 +12,8 @@ using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Serialization;
-using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
 {
@@ -74,10 +74,11 @@ namespace Reductech.EDR
 
             var freezeResult = YamlMethods.DeserializeFromYaml(yaml, stepFactoryStore)
                 .Bind(x => x.TryFreeze())
-                .BindCast<IStep, IStep<Unit>>();
+                .Bind(YamlRunner.ConvertToUnitStep)
+                ;
 
             if (freezeResult.IsFailure)
-                Logger.LogError(freezeResult.Error);
+                LogError(Logger, freezeResult.Error);
             else
             {
                 var settingsResult = TryGetSettings();
@@ -92,12 +93,21 @@ namespace Reductech.EDR
                     var runResult = await freezeResult.Value.Run(stateMonad, cancellationToken);
 
                     if (runResult.IsFailure)
-                        foreach (var runError in runResult.Error.AllErrors)
-                            Logger.LogError(runError.Message);
+                        LogError(Logger, runResult.Error);
                 }
             }
         }
 
+        public static void LogError(ILogger logger, IError error)
+        {
+            foreach (var singleError in error.GetAllErrors())
+            {
+                if(singleError.Exception != null)
+                    logger.LogError(singleError.Exception, "{Error} - {Location}",  singleError.Message, singleError.Location.AsString);
+                else
+                    logger.LogError("{Error} - {Location}",  singleError.Message, singleError.Location.AsString);
+            }
+        }
 
         private Result<ISettings> TryGetSettings()
         {

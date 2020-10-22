@@ -37,8 +37,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.2.1-a.master.1603104617" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.2.1-a.master.1603117071" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.2.1-a.master.1603386692" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.2.1-a.master.1603383945" />
   </ItemGroup>
 
   <ItemGroup>

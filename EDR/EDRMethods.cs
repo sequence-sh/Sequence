@@ -17,8 +17,11 @@ using Reductech.EDR.Core.Serialization;
 
 namespace Reductech.EDR
 {
+    /// <summary>
+    /// EDR methods to be run in the console.
+    /// </summary>
     [Command(Description = "Executes Nuix Sequences")]
-    internal class EDRMethods
+    public class EDRMethods
     {
 
         [DefaultMethod]
@@ -111,6 +114,9 @@ namespace Reductech.EDR
 
         private Result<ISettings> TryGetSettings()
         {
+            if (StaticSettings.HasValue)
+                return Result.Success(StaticSettings.Value);
+
             var settingsResult = NuixSettings
                 .TryCreate(sn => ConfigurationManager.AppSettings[sn])
                 .Map(x => x as ISettings);
@@ -123,7 +129,17 @@ namespace Reductech.EDR
         /// </summary>
         private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> {typeof(IRubyScriptStep)};
 
+        /// <summary>
+        /// The logger - needs to be set externally.
+        /// </summary>
+        public static ILogger? StaticLogger { get; set; }
 
-        private ILogger Logger => Program.Logger!;
+        /// <summary>
+        /// The settings - needs to be set externally
+        /// </summary>
+        public static Maybe<ISettings> StaticSettings { get; set; }
+
+
+        private ILogger Logger => StaticLogger;
     }
 }

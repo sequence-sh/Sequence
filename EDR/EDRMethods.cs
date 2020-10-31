@@ -23,7 +23,9 @@ namespace Reductech.EDR
     [Command(Description = "Executes Nuix Sequences")]
     public class EDRMethods
     {
-
+        /// <summary>
+        /// Execute yaml from a path or directly from a command.
+        /// </summary>
         [DefaultMethod]
         [Command(Name = "execute", Description = "Execute a step defined in yaml")]
         public Task Execute(
@@ -101,7 +103,7 @@ namespace Reductech.EDR
             }
         }
 
-        public static void LogError(ILogger logger, IError error)
+        private static void LogError(ILogger logger, IError error)
         {
             foreach (var singleError in error.GetAllErrors())
             {
@@ -140,6 +142,6 @@ namespace Reductech.EDR
         public static Maybe<ISettings> StaticSettings { get; set; }
 
 
-        private ILogger Logger => StaticLogger;
+        private ILogger Logger => StaticLogger!;
     }
 }

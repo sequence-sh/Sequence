@@ -1,4 +1,3 @@
-
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 include:
@@ -99,7 +98,7 @@ test dev:
   rules: *rules_dev
 
 test release:
-  extends: .test dev
+  extends: test dev
   variables:
     CONFIG: $CONFIG_RELEASE
   rules: *rules_release

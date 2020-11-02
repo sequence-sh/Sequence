@@ -1,4 +1,3 @@
-
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 include:
@@ -76,7 +75,7 @@ build release:
     NUGET_TOKEN: $NUGET_TOKEN_PROD
   rules: *rules_release
 
-.test dev:
+test dev:
   stage: test
   variables:
     CONFIG: $CONFIG_DEV
@@ -98,8 +97,8 @@ build release:
       cobertura: coverage.cobertura.xml
   rules: *rules_dev
 
-.test release:
-  extends: .test dev
+test release:
+  extends: test dev
   variables:
     CONFIG: $CONFIG_RELEASE
   rules: *rules_release

@@ -17,10 +17,15 @@ using Reductech.EDR.Core.Serialization;
 
 namespace Reductech.EDR
 {
+    /// <summary>
+    /// EDR methods to be run in the console.
+    /// </summary>
     [Command(Description = "Executes Nuix Sequences")]
-    internal class EDRMethods
+    public class EDRMethods
     {
-
+        /// <summary>
+        /// Execute yaml from a path or directly from a command.
+        /// </summary>
         [DefaultMethod]
         [Command(Name = "execute", Description = "Execute a step defined in yaml")]
         public Task Execute(
@@ -98,7 +103,7 @@ namespace Reductech.EDR
             }
         }
 
-        public static void LogError(ILogger logger, IError error)
+        private static void LogError(ILogger logger, IError error)
         {
             foreach (var singleError in error.GetAllErrors())
             {
@@ -111,6 +116,9 @@ namespace Reductech.EDR
 
         private Result<ISettings> TryGetSettings()
         {
+            if (StaticSettings.HasValue)
+                return Result.Success(StaticSettings.Value);
+
             var settingsResult = NuixSettings
                 .TryCreate(sn => ConfigurationManager.AppSettings[sn])
                 .Map(x => x as ISettings);
@@ -123,7 +131,17 @@ namespace Reductech.EDR
         /// </summary>
         private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> {typeof(IRubyScriptStep)};
 
+        /// <summary>
+        /// The logger - needs to be set externally.
+        /// </summary>
+        public static ILogger? StaticLogger { get; set; }
 
-        private ILogger Logger => Program.Logger!;
+        /// <summary>
+        /// The settings - needs to be set externally
+        /// </summary>
+        public static Maybe<ISettings> StaticSettings { get; set; }
+
+
+        private ILogger Logger => StaticLogger!;
     }
 }

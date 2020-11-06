@@ -1,215 +1,75 @@
-image: mcr.microsoft.com/dotnet/core/sdk:3.1
-
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.default.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.rules.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.scripts.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.variables.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.workflow.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/build.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/test.windows.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/quality.yml
+
+default:
+  image: registry.gitlab.com/reductech/containers/dotnet/sdk:3.1
+  tags:
+    - rt-windows
 
 stages:
   - build
   - test
   - quality
   - package
-  - push
-
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'
-    - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH !~ /^\d+-/
-    - if: $CI_COMMIT_TAG
 
 variables:
-  BUILD_RUNTIME: win-x64
   PACKAGE_NAME_EXE: Reductech.EDR
-  DEFAULT_PRERELEASE_VERSION: a
-  CONFIG_DEV: Debug
-  CONFIG_RELEASE: Release
-  NUGET_PROJECT_ID_DEV: 18697166
-  NUGET_PROJECT_ID_RELEASE: 21286970
 
-.rule defaults:
-  conditions:
-    - &is_master $CI_COMMIT_BRANCH == 'master'
-    - &is_release $CI_COMMIT_TAG =~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
-    - &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
-  rules_dev: &rules_dev
-    - if: *is_master
-    - if: *not_release
-  rules_release: &rules_release
-    - if: *is_release
-  rules_manual: &rules_manual
-    - if: *is_master
-    - when: manual
-      allow_failure: true
-
-.script defaults:
-  nuget_add_source: &nuget_add_source
-    - dotnet nuget add source --name reductech --username $NUGET_USERNAME
-      --password $NUGET_TOKEN --store-password-in-clear-text
-      "https://gitlab.com/api/v4/projects/$NUGET_PROJECT_ID/packages/nuget/index.json"
-
-build dev:
-  stage: build
-  variables:
-    CONFIG: $CONFIG_DEV
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
-  script:
-    - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
-    - dotnet build --runtime $BUILD_RUNTIME --configuration $CONFIG --no-restore
+.exe_artifacts_default:
   artifacts:
+    name: "$PACKAGE_NAME_EXE-$PROJECT_VERSION"
     paths:
-      - '*/bin'
-      - '*/obj'
-      - packages/
-    expire_in: 30 mins
-  rules: *rules_dev
-
-build release:
-  extends: build dev
-  variables:
-    CONFIG: $CONFIG_RELEASE
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
-    NUGET_USERNAME: $NUGET_USER_PROD
-    NUGET_TOKEN: $NUGET_TOKEN_PROD
-  rules: *rules_release
-
-test dev:
-  stage: test
-  variables:
-    CONFIG: $CONFIG_DEV
-  script:
-    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
-      --collect:"XPlat Code Coverage" --results-directory ./
-    - >-
-      pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
-      $xml = [xml]$report ;
-      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-      Write-Host "Coverage (Line)   : ${lineCoverage}%"'
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
-  artifacts:
-    reports:
-      cobertura: coverage.cobertura.xml
-  rules: *rules_dev
-
-test release:
-  extends: test dev
-  variables:
-    CONFIG: $CONFIG_RELEASE
-  rules: *rules_release
-
-version check dev:
-  stage: test
-  needs: []
-  variables:
-    PROJECT_PATH: ./*/*.csproj
-    PROJECT_FILTER: '*Tests*'
-  script:
-    - >-
-      pwsh -Command 'if ($env:CI_JOB_NAME -eq "version check release") {
-          Write-Host "Tag version : ${env:CI_COMMIT_TAG}"
-      }
-      $projects = Get-ChildItem -Path $env:PROJECT_PATH -Exclude $env:PROJECT_FILTER ;
-      if (@($projects).Count -gt 1) {
-          Write-Warning "More than one project found. The last project version will be used for the PROJECT_VERSION variable."
-      }
-      $projects | ForEach-Object {
-          Write-Host "Checking $($_.BaseName)" ;
-          $csproj = Get-Content $_.FullName -Raw ;
-          $csproj -match "<Version>(.+?)(\$\(VersionSuffix\))?</Version>" | Out-Null ;
-          $version = "v" + $Matches[1] ;
-          Write-Host "Project version    : $version" ;
-          if ($version -match "-(.+)$") {
-              $suffix = ""
-          } else {
-              $suffix = "-" + $env:DEFAULT_PRERELEASE_VERSION
-          }
-          if ($env:CI_COMMIT_BRANCH -eq "master") {
-              $suffix += ".master"
-          } else {
-              $suffix += ".dev"
-          }
-          $timestamp = [DateTimeOffset]::Now.ToUnixTimeSeconds() ;
-          $suffix += ".$timestamp" ;
-          Write-Host "Version timestamp  : $timestamp" ;
-          Write-Host "Version suffix     : $suffix" ;
-          Write-Host "Dev/master version : ${version}${suffix}" ;
-          "PROJECT_VERSION=$version`nVERSION_SUFFIX=$suffix`nVERSION_TIMESTAMP=$timestamp" | Out-File -FilePath ./version.env -Encoding ascii ;
-          if ($env:CI_JOB_NAME -eq "version check release" -and $version -ne $env:CI_COMMIT_TAG) {
-              Write-Error "The project version $version does not match the release tag version ${env:CI_COMMIT_TAG}" ;
-              exit 1
-          }
-      }'
-  artifacts:
-    reports:
-      dotenv: version.env
-  rules: *rules_dev
-
-version check release:
-  extends: version check dev
-  rules: *rules_release
-
-code_quality:
-  stage: quality
-  rules: *rules_manual
-
-.mutation testing:
-  stage: quality
-  needs: []
-  variables:
-    PROJECT_TO_TEST: $CI_PROJECT_TITLE
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
-  script:
-    - dotnet tool restore
-    - cd "$PROJECT_TO_TEST.Tests/"
-    - dotnet dotnet-stryker --project-file "$PROJECT_TO_TEST.csproj" --test-runner vstest
-      --reporters "['cleartext','html']" --ignore-methods "['Log*','*Exception.ctor']"
-    - cp ./StrykerOutput/*/reports/mutation-report.html ../
-  artifacts:
-    name: MutationReport
-    expose_as: 'Mutation Report'
-    paths:
-      - mutation-report.html
-    expire_in: never
-  rules: *rules_manual
+      - CHANGELOG.md
+      - EDR.exe
+      - EDR.pdb
+      - LICENSE
+      - README.md
 
 package exe dev:
   stage: package
+  extends:
+    - .rules_manual
+    - .exe_artifacts_default
   needs:
     - build dev
+    - test dev
     - version check dev
-  variables:
-    CONFIG: $CONFIG_DEV
   script:
-    - dotnet publish --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
-      --output "./$PACKAGE_NAME_EXE-$PROJECT_VERSION" -p:PublishSingleFile=true
-    - cp LICENSE "./$PACKAGE_NAME_EXE-$PROJECT_VERSION/"
-    - cp README.md "./$PACKAGE_NAME_EXE-$PROJECT_VERSION/"
+    - dotnet publish --no-build --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
+      -p:PublishSingleFile=true --output ./
   artifacts:
-    name: "$PACKAGE_NAME_EXE-$PROJECT_VERSION"
-    paths:
-      - $PACKAGE_NAME_EXE-$PROJECT_VERSION/
     expire_in: 3 months
-  rules: *rules_dev
 
 package exe release:
-  extends: package exe dev
+  stage: package
+  extends:
+    - .rules_release
+    - .exe_artifacts_default
   needs:
     - build release
+    - test release
     - version check release
-  variables:
-    CONFIG: $CONFIG_RELEASE
+  script:
+    - dotnet publish --no-build --configuration $CONFIG_RELEASE
+      -p:PublishSingleFile=true --output ./
   artifacts:
-    name: "$PACKAGE_NAME_EXE-$PROJECT_VERSION"
-    paths:
-      - $PACKAGE_NAME_EXE-$PROJECT_VERSION/
     expire_in: never
-  rules: *rules_release
+
+code_quality:
+  tags:
+    - rt-dind

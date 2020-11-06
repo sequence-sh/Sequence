@@ -1,15 +1,44 @@
+default:
+  image: registry.gitlab.com/reductech/containers/dotnet/sdk:3.1
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - packages/
+      - '*/obj/project.assets.json'
+      - '*/obj/*.csproj.nuget.*'
+  tags:
+    - rt-windows
+
 include:
   - project: reductech/templates/cicd/dotnet
-    file: .gitlab-ci.windows.yml
+    file: .gitlab/ci/defaults.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/build.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/test.windows.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/quality.yml
 
 stages:
   - build
   - test
   - quality
-  - package_exe
+  - package
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH !~ /^\d+-/
+    - if: $CI_COMMIT_TAG
 
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
+  DEFAULT_PRERELEASE_VERSION: a
+  CONFIG_DEV: Debug
+  CONFIG_RELEASE: Release
+  NUGET_PROJECT_ID_DEV: 18697166
+  NUGET_PROJECT_ID_RELEASE: 21286970
 
 .exe_artifacts_default:
   artifacts:
@@ -22,7 +51,7 @@ variables:
       - README.md
 
 package exe dev:
-  stage: package_exe
+  stage: package
   extends:
     - .rules_dev
     - .exe_artifacts_default
@@ -31,19 +60,26 @@ package exe dev:
     - test dev
     - version check dev
   script:
-    - dotnet publish --no-build --configuration $CONFIG_DEV
+    - dotnet publish --no-build --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
       -p:PublishSingleFile=true --output ./
   artifacts:
     expire_in: 3 months
 
 package exe release:
+  stage: package
   extends:
-    - package exe dev
     - .rules_release
     - .exe_artifacts_default
   needs:
     - build release
     - test release
     - version check release
+  script:
+    - dotnet publish --no-build --configuration $CONFIG_RELEASE
+      -p:PublishSingleFile=true --output ./
   artifacts:
     expire_in: never
+
+code_quality:
+  tags:
+    - rt-dind

@@ -1,17 +1,14 @@
-default:
-  image: registry.gitlab.com/reductech/containers/dotnet/sdk:3.1
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - packages/
-      - '*/obj/project.assets.json'
-      - '*/obj/*.csproj.nuget.*'
-  tags:
-    - rt-windows
-
 include:
   - project: reductech/templates/cicd/dotnet
-    file: .gitlab/ci/defaults.yml
+    file: .gitlab/ci/default.default.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.rules.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.scripts.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.variables.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.workflow.yml
   - project: reductech/templates/cicd/dotnet
     file: .gitlab/ci/build.yml
   - project: reductech/templates/cicd/dotnet
@@ -19,26 +16,19 @@ include:
   - project: reductech/templates/cicd/dotnet
     file: .gitlab/ci/quality.yml
 
+default:
+  image: registry.gitlab.com/reductech/containers/dotnet/sdk:3.1
+  tags:
+    - rt-windows
+
 stages:
   - build
   - test
   - quality
   - package
 
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'
-    - if: $CI_MERGE_REQUEST_ID
-    - if: $CI_COMMIT_BRANCH !~ /^\d+-/
-    - if: $CI_COMMIT_TAG
-
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
-  DEFAULT_PRERELEASE_VERSION: a
-  CONFIG_DEV: Debug
-  CONFIG_RELEASE: Release
-  NUGET_PROJECT_ID_DEV: 18697166
-  NUGET_PROJECT_ID_RELEASE: 21286970
 
 .exe_artifacts_default:
   artifacts:

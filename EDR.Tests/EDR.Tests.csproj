@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>

@@ -43,7 +43,7 @@ variables:
 package exe dev:
   stage: package
   extends:
-    - .rules_dev
+    - .rules_manual
     - .exe_artifacts_default
   needs:
     - build dev

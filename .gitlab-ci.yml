@@ -26,6 +26,7 @@ stages:
   - test
   - quality
   - package
+  - sign
 
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
@@ -67,6 +68,24 @@ package exe release:
   script:
     - dotnet publish --no-build --configuration $CONFIG_RELEASE
       -p:PublishSingleFile=true --output ./
+  artifacts:
+    expire_in: 2 hours
+
+sign exe release:
+  stage: sign
+  image: mcr.microsoft.com/dotnet/framework/sdk:4.8
+  extends:
+    - .rules_release
+    - .exe_artifacts_default
+  needs:
+    - package exe release
+  variables:
+    TIMESTAMP_SERVER: http://timestamp.sectigo.com
+    ALGO_FILE_DIGEST: SHA256
+    ALGO_TIME_DIGEST: SHA256
+  script:
+    - signtool.exe sign /f $RT_CERT /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
   artifacts:
     expire_in: never
 

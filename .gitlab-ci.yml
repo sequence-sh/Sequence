@@ -73,7 +73,7 @@ package exe release:
 
 sign exe release:
   stage: sign
-  image: mcr.microsoft.com/dotnet/framework/sdk:4.8
+  image: registry.gitlab.com/reductech/containers/codesigning
   extends:
     - .rules_release
     - .exe_artifacts_default
@@ -84,7 +84,7 @@ sign exe release:
     ALGO_FILE_DIGEST: SHA256
     ALGO_TIME_DIGEST: SHA256
   script:
-    - signtool.exe sign /f $RT_CERT /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
   artifacts:
     expire_in: never

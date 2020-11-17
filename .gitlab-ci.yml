@@ -26,6 +26,7 @@ stages:
   - test
   - quality
   - package
+  - sign
 
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
@@ -43,7 +44,7 @@ variables:
 package exe dev:
   stage: package
   extends:
-    - .rules_manual
+    - .rules_dev_manual
     - .exe_artifacts_default
   needs:
     - build dev
@@ -67,6 +68,26 @@ package exe release:
   script:
     - dotnet publish --no-build --configuration $CONFIG_RELEASE
       -p:PublishSingleFile=true --output ./
+  artifacts:
+    expire_in: 2 hours
+
+sign exe release:
+  stage: sign
+  image: registry.gitlab.com/reductech/containers/codesigning
+  cache: {}
+  extends:
+    - .rules_release
+    - .exe_artifacts_default
+  needs:
+    - version check release
+    - package exe release
+  variables:
+    TIMESTAMP_SERVER: http://timestamp.sectigo.com
+    ALGO_FILE_DIGEST: SHA256
+    ALGO_TIME_DIGEST: SHA256
+  script:
+    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
   artifacts:
     expire_in: never
 

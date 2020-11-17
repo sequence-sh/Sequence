@@ -74,6 +74,7 @@ package exe release:
 sign exe release:
   stage: sign
   image: registry.gitlab.com/reductech/containers/codesigning
+  cache: {}
   extends:
     - .rules_release
     - .exe_artifacts_default

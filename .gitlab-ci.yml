@@ -79,6 +79,7 @@ sign exe release:
     - .rules_release
     - .exe_artifacts_default
   needs:
+    - version check release
     - package exe release
   variables:
     TIMESTAMP_SERVER: http://timestamp.sectigo.com

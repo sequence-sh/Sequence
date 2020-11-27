@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Serialization;
@@ -92,7 +93,7 @@ namespace Reductech.EDR
                     Logger.LogError(settingsResult.Error);
                 else
                 {
-                    var stateMonad = new StateMonad(Logger, settingsResult.Value, ExternalProcessRunner.Instance,
+                    var stateMonad = new StateMonad(Logger, settingsResult.Value, ExternalProcessRunner.Instance, FileSystemHelper.Instance,
                         stepFactoryStore);
 
                     var runResult = await freezeResult.Value.Run(stateMonad, cancellationToken);

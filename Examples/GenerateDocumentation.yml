@@ -1,0 +1,8 @@
+- <TargetFile> = 'Documentation.md'
+- Do: SetVariable
+  Variable: <Delimiter>
+  Value: '
+
+'
+- <Text> = StringJoin(Strings = GenerateDocumentation(), Delimiter = <Delimiter>)
+- FileWrite(Path = PathCombine(Paths = [<TargetFile>]), Stream = StringToStream(String = <Text>))

@@ -1,0 +1,7 @@
+- <SourceFile> = 'Dinosaurs.csv'
+- <TargetFile> = 'UppercaseDinosaurs.csv'
+- <EntityStream> = FromCSV(Stream = ReadFile(Path = PathCombine(Paths = [<SourceFile>])))
+#Change the Dinosaur name to upper case
+- <EntityStream> = EntityMap(EntityStream = <EntityStream>, Function = EntitySetValue(Entity = <Entity>, Property = 'Name', Value = StringToCase(String = EntityGetValue(Entity = <Entity>,Property='Name'), Case = TextCase.Upper)))
+- <WriteStream> = ToCSV(Entities = <EntityStream>)
+- FileWrite(Path = PathCombine(Paths = [<TargetFile>]), Stream = <WriteStream>)

@@ -25,7 +25,7 @@
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/edr</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
-    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/edr/-/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://gitlab.com/reductech/edr/edr/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <Authors>reductech</Authors>

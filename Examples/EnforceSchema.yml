@@ -1,0 +1,22 @@
+- <SourceFile> = 'Dinosaurs.csv'
+- <TargetFile> = 'SchemaDinosaurs.csv'
+- Do: SetVariable
+  Variable: <Schema>
+  Value:
+    Name: Dinosaur
+    Properties:
+      Name:
+        Type: String
+        Multiplicity: ExactlyOne
+      Length:
+        Type: Double
+        Multiplicity: ExactlyOne
+      Period:
+        Type: String
+        Multiplicity: ExactlyOne
+    AllowExtraProperties: false
+- <EntityStream> = FromCSV(Stream = ReadFile(Path = PathCombine(Paths = [<SourceFile>])))
+#Ensure that all entities conform to the schema
+- <EntityStream> = EnforceSchema(EntityStream = <EntityStream>, ErrorBehaviour = ErrorBehaviour.Fail, Schema = <Schema>)
+- <WriteStream> = ToCSV(Entities = <EntityStream>)
+- FileWrite(Path = PathCombine(Paths = [<TargetFile>]), Stream = <WriteStream>)

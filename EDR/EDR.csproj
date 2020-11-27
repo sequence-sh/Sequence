@@ -25,7 +25,7 @@
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/edr</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
-    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/edr/-/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://gitlab.com/reductech/edr/edr/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <Authors>reductech</Authors>
@@ -38,8 +38,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.2.1-a.master.2011270923" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0-a.master.2011271718" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.3.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>

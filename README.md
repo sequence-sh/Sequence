@@ -1,6 +1,6 @@
 [![Gitter](https://badges.gitter.im/reductech/edr.svg)](https://gitter.im/reductech/edr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![pipeline status](https://gitlab.com/reductech/e-discovery/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
-[![coverage report](https://gitlab.com/reductech/e-discovery/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/e-discovery/edr/-/commits/master)
+[![pipeline status](https://gitlab.com/reductech/edr/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/edr/edr/-/commits/master)
+[![coverage report](https://gitlab.com/reductech/edr/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/edr/edr/-/commits/master)
 
 # Introduction
 
@@ -15,7 +15,6 @@ To run a sequence, use the EDR.exe application
 
 `EDR.exe execute -p C:/MySequence.yaml`
 
-
 ### Yaml
 
 Yaml is a human-readable data-serialization language you can use to define your pipelines.<br>
@@ -23,6 +22,7 @@ You define a list of steps and their parameters and they will be performed in or
 For a list of possible steps see the [Documentation](documentation.md)<br>
 
 The following yaml does the following
+
 - Create a new case
 - Add an item to the case
 - Write a report on the case
@@ -31,7 +31,6 @@ The following yaml does the following
 - Add all tagged items to a new item set
 - Add everything in that item set to a new production set
 - Export that production set as concordance
-
 
 ```yaml
 - NuixCreateCase(CaseName = 'My Case', CasePath = 'C:/MyCase', Investigator = 'Sherlock Holmes')
@@ -42,7 +41,6 @@ The following yaml does the following
 - NuixAddToItemSet(CasePath = 'C:/MyCase', ItemSetName = 'TaggedItems', SearchTerm = 'Tag:*')
 - NuixAddToProductionSet(CasePath = 'C:/MyCase', ProductionSetName = 'TaggedItemsProductionSet', SearchTerm = 'ItemSet:TaggedItems')
 - NuixExportConcordance(CasePath = 'C:/MyCase', ExportPath = 'C:/Export', ProductionSetName = 'TaggedItemsProductionSet')
-
 ```
 
 ### Settings
@@ -69,5 +67,3 @@ The file should look like this
   </appSettings>
 </configuration>
 ```
-
-

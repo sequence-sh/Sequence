@@ -1,3 +1,15 @@
+## v0.3.0 (2020-11-27)
+
+### Documentation
+
+- Add Examples to make it easier to demo #25
+
+### Maintenance
+
+- Add Release issue template #19
+- Use template ci config, so that it's easier to maintain #20
+- Add ci stage to sign binaries #24
+
 ## v0.2.1 (2020-11-03)
 
 ### New Features

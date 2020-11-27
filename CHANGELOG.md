@@ -1,5 +1,25 @@
 ## v0.3.0 (2020-11-27)
 
+### Core
+
+- Added Entities and EntityStreams along with LINQ-style methods to manipulate them.
+- Added Entity Schemas to allow conversion between different formats/types
+- Added Steps to convert `EntityStream` to/from concordance and CSV
+
+### Connectors
+
+The way the Nuix connector interacts with Nuix has been rewritten - functions
+and data are now streamed to Nuix so there is no longer a requirement
+for script composition and there is a performance increase when dealing with
+conditional/flow operators.
+
+### Breaking Changes
+
+- This version only supports Nuix 8 (to be resolved in `0.4.0`)
+- Step and argument names have changed to make them more
+  consistent. Step names now follow the convention of _NamespaceAction_, e.g.
+  `ArrayLength`, `ArraySort`, `EntityMap`, `EntityStreamSort`
+
 ### Documentation
 
 - Add Examples to make it easier to demo #25

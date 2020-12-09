@@ -17,7 +17,7 @@ include:
     file: .gitlab/ci/quality.yml
 
 default:
-  image: registry.gitlab.com/reductech/containers/dotnet/sdk:3.1
+  image: mcr.microsoft.com/dotnet/sdk:5.0-windowsservercore-ltsc2019
   tags:
     - rt-windows
 

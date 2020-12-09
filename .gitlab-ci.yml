@@ -17,6 +17,7 @@ include:
     file: .gitlab/ci/quality.yml
 
 default:
+  image: mcr.microsoft.com/dotnet/sdk:5.0
   tags:
     - rt-windows
 

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using CommandDotNet;
+using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
 using NLog.Extensions.Logging;
-using Reductech.EDR.Connectors.Nuix;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 namespace Reductech.EDR
 {
@@ -16,48 +15,48 @@ namespace Reductech.EDR
     {
         public static async Task Main(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            var host = new HostBuilder()
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+                    config.AddEnvironmentVariables(prefix: "EDR_");
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddSingleton<EDRMethods>();
+                    services.Configure<NuixConfig>(context.Configuration.GetSection("connectors:nuix"));
+                })
+                .ConfigureLogging((context, logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    var nlogConfig = new NLogLoggingConfiguration(context.Configuration.GetSection("nlog"));
+                    LogManager.Configuration = nlogConfig;
+                    logging.AddNLog(nlogConfig);
+                })
                 .Build();
 
-            NLog.LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog"));
-
-            var provider = new NLogLoggerProvider();
-            var logger = provider.CreateLogger("Console Logger");
-            EDRMethods.StaticLogger = logger;
-
-            var nuixConfig = config.GetSection(nameof(NuixSettings));
-            var featureList = nuixConfig.GetSection("NuixFeatures").Get<string[]>();
-
-            var nuixFeatures = new HashSet<NuixFeature>();
-            foreach (var feature in featureList)
-                if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf) && nf is NuixFeature nuixFeature)
-                    nuixFeatures.Add(nuixFeature);
-
-            var nuixSettings = new NuixSettings(
-                nuixConfig.GetValue<bool>("NuixUseDongle"),
-                nuixConfig.GetValue<string>("NuixExeConsolePath"),
-                nuixConfig.GetValue<Version>("NuixVersion"),
-                nuixFeatures
-            );
-
-            EDRMethods.StaticSettings = nuixSettings;
+            var logger = LogManager.GetCurrentClassLogger();
 
             try
             {
-                var appRunner = new AppRunner<EDRMethods>().UseDefaultMiddleware();
+                var appRunner = new AppRunner<EDRMethods>()
+                    .UseDefaultMiddleware()
+                    .UseMicrosoftDependencyInjection(host.Services);
 
                 await appRunner.RunAsync(args);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
-                logger.LogError(e, e.Message);
+                logger.Error(e);
             }
 #pragma warning restore CA1031 // Do not catch general exception types
+            finally
+            {
+                LogManager.Shutdown();
+            }
 
-            await Task.Delay(1);
         }
     }
 }

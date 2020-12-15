@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
@@ -21,9 +21,23 @@ namespace Reductech.EDR
     /// <summary>
     /// EDR methods to be run in the console.
     /// </summary>
-    [Command(Description = "Executes Nuix Sequences")]
+    [Command(Description = "Executes EDR Sequences")]
     public class EDRMethods
     {
+        private readonly ILogger<EDRMethods> _logger;
+        private readonly NuixConfig _nuixConfig;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="nuixConfig"></param>
+        public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig)
+        {
+            _logger = logger;
+            _nuixConfig = nuixConfig.Value;
+        }
+
         /// <summary>
         /// Execute yaml from a path or directly from a command.
         /// </summary>
@@ -35,8 +49,7 @@ namespace Reductech.EDR
             string? yaml = null,
             [Option(LongName = "path", ShortName = "p", Description = "The path to the yaml to execute")]
             string? path = null) => ExecuteAbstractAsync(yaml, path, cancellationToken);
-
-
+        
         /// <summary>
         /// Executes yaml
         /// </summary>
@@ -51,7 +64,6 @@ namespace Reductech.EDR
 
                 await ExecuteYamlFromPathAsync(path, cancellationToken);
             }
-
             else
             {
                 if (string.IsNullOrWhiteSpace(path))
@@ -60,13 +72,10 @@ namespace Reductech.EDR
                     throw new ArgumentException($"Please provide only one of {nameof(yaml)} or {nameof(path)}");
             }
         }
-
-
-
+        
         private async Task ExecuteYamlFromPathAsync(string path, CancellationToken cancellationToken)
         {
             var text = await File.ReadAllTextAsync(path, cancellationToken);
-
             await ExecuteYamlStringAsync(text, cancellationToken);
         }
 
@@ -80,27 +89,27 @@ namespace Reductech.EDR
 
             var freezeResult = YamlMethods.DeserializeFromYaml(yaml, stepFactoryStore)
                 .Bind(x => x.TryFreeze())
-                .Bind(YamlRunner.ConvertToUnitStep)
-                ;
+                .Bind(YamlRunner.ConvertToUnitStep);
+
+            var nuixFeatures = new HashSet<NuixFeature>();
+            foreach (var feature in _nuixConfig.Features)
+                if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf) && nf is NuixFeature nuixFeature)
+                    nuixFeatures.Add(nuixFeature);
+
+            var nuixSettings = new NuixSettings(_nuixConfig.UseDongle, _nuixConfig.ExeConsolePath,
+                _nuixConfig.Version, nuixFeatures);
 
             if (freezeResult.IsFailure)
-                LogError(Logger, freezeResult.Error);
+                LogError(_logger, freezeResult.Error);
             else
             {
-                var settingsResult = TryGetSettings();
+                var stateMonad = new StateMonad(_logger, nuixSettings, ExternalProcessRunner.Instance,
+                    FileSystemHelper.Instance, stepFactoryStore);
 
-                if (settingsResult.IsFailure)
-                    Logger.LogError(settingsResult.Error);
-                else
-                {
-                    var stateMonad = new StateMonad(Logger, settingsResult.Value, ExternalProcessRunner.Instance, FileSystemHelper.Instance,
-                        stepFactoryStore);
+                var runResult = await freezeResult.Value.Run(stateMonad, cancellationToken);
 
-                    var runResult = await freezeResult.Value.Run(stateMonad, cancellationToken);
-
-                    if (runResult.IsFailure)
-                        LogError(Logger, runResult.Error);
-                }
+                if (runResult.IsFailure)
+                    LogError(_logger, runResult.Error);
             }
         }
 
@@ -108,41 +117,16 @@ namespace Reductech.EDR
         {
             foreach (var singleError in error.GetAllErrors())
             {
-                if(singleError.Exception != null)
-                    logger.LogError(singleError.Exception, "{Error} - {Location}",  singleError.Message, singleError.Location.AsString);
+                if (singleError.Exception != null)
+                    logger.LogError(singleError.Exception, "{Error} - {Location}", singleError.Message, singleError.Location.AsString);
                 else
-                    logger.LogError("{Error} - {Location}",  singleError.Message, singleError.Location.AsString);
+                    logger.LogError("{Error} - {Location}", singleError.Message, singleError.Location.AsString);
             }
-        }
-
-        private Result<ISettings> TryGetSettings()
-        {
-            if (StaticSettings.HasValue)
-                return Result.Success(StaticSettings.Value);
-
-            var settingsResult = NuixSettings
-                .TryCreate(sn => ConfigurationManager.AppSettings[sn])
-                .Map(x => x as ISettings);
-
-            return settingsResult;
         }
 
         /// <summary>
         /// One type for each connector.
         /// </summary>
-        private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> {typeof(IRubyScriptStep)};
-
-        /// <summary>
-        /// The logger - needs to be set externally.
-        /// </summary>
-        public static ILogger? StaticLogger { get; set; }
-
-        /// <summary>
-        /// The settings - needs to be set externally
-        /// </summary>
-        public static Maybe<ISettings> StaticSettings { get; set; }
-
-
-        private ILogger Logger => StaticLogger!;
+        private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> { typeof(IRubyScriptStep) };
     }
 }

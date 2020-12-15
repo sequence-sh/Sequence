@@ -94,3 +94,7 @@ sign exe release:
 code_quality:
   tags:
     - rt-dind
+
+mutation testing:
+  rules:
+    - when: never

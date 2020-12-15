@@ -17,7 +17,7 @@ namespace Reductech.EDR
         public static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName))
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 

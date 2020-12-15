@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Reductech.EDR
     {
         private readonly ILogger<EDRMethods> _logger;
         private readonly NuixConfig _nuixConfig;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// 
@@ -33,9 +35,19 @@ namespace Reductech.EDR
         /// <param name="logger"></param>
         /// <param name="nuixConfig"></param>
         public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig)
+            : this(logger, nuixConfig, new FileSystem()) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="nuixConfig"></param>
+        /// <param name="fileSystem"></param>
+        public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig, IFileSystem fileSystem)
         {
             _logger = logger;
             _nuixConfig = nuixConfig.Value;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -55,27 +67,17 @@ namespace Reductech.EDR
         /// </summary>
         private async Task ExecuteAbstractAsync(string? yaml, string? path, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(yaml))
-            {
-                if (string.IsNullOrWhiteSpace(path))
-                {
-                    throw new ArgumentException($"Please provide either {nameof(yaml)} or {nameof(path)}");
-                }
-
+            if (!string.IsNullOrWhiteSpace(yaml))
+                await ExecuteYamlStringAsync(yaml, cancellationToken);
+            else if (!string.IsNullOrWhiteSpace(path))
                 await ExecuteYamlFromPathAsync(path, cancellationToken);
-            }
             else
-            {
-                if (string.IsNullOrWhiteSpace(path))
-                    await ExecuteYamlStringAsync(yaml, cancellationToken);
-                else
-                    throw new ArgumentException($"Please provide only one of {nameof(yaml)} or {nameof(path)}");
-            }
+                throw new ArgumentException($"Please provide either {nameof(yaml)} or {nameof(path)}");
         }
         
         private async Task ExecuteYamlFromPathAsync(string path, CancellationToken cancellationToken)
         {
-            var text = await File.ReadAllTextAsync(path, cancellationToken);
+            var text = await _fileSystem.File.ReadAllTextAsync(path, cancellationToken);
             await ExecuteYamlStringAsync(text, cancellationToken);
         }
 

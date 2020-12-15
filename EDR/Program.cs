@@ -15,26 +15,7 @@ namespace Reductech.EDR
     {
         public static async Task Main(string[] args)
         {
-            var host = new HostBuilder()
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
-                    config.AddEnvironmentVariables(prefix: "EDR_");
-                })
-                .ConfigureServices((context, services) =>
-                {
-                    services.AddSingleton<EDRMethods>();
-                    services.Configure<NuixConfig>(context.Configuration.GetSection("connectors:nuix"));
-                })
-                .ConfigureLogging((context, logging) =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                    var nlogConfig = new NLogLoggingConfiguration(context.Configuration.GetSection("nlog"));
-                    LogManager.Configuration = nlogConfig;
-                    logging.AddNLog(nlogConfig);
-                })
-                .Build();
+            var host = CreateHostBuilder().Build();
 
             var logger = LogManager.GetCurrentClassLogger();
 
@@ -58,5 +39,26 @@ namespace Reductech.EDR
             }
 
         }
+
+        private static IHostBuilder CreateHostBuilder() => new HostBuilder()
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+                config.AddEnvironmentVariables(prefix: "EDR_");
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.AddSingleton<EDRMethods>();
+                services.Configure<NuixConfig>(context.Configuration.GetSection("connectors:nuix"));
+            })
+            .ConfigureLogging((context, logging) =>
+            {
+                logging.ClearProviders();
+                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                var nlogConfig = new NLogLoggingConfiguration(context.Configuration.GetSection("nlog"));
+                LogManager.Configuration = nlogConfig;
+                logging.AddNLog(nlogConfig);
+            });
+        
     }
 }

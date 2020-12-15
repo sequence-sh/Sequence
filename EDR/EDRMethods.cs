@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
@@ -9,13 +8,16 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog.Fluent;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Serialization;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
 {
@@ -86,13 +88,29 @@ namespace Reductech.EDR
         /// </summary>
         private async Task ExecuteYamlStringAsync(string yaml, CancellationToken cancellationToken)
         {
-            var stepFactoryStore =
-                StepFactoryStore.CreateUsingReflection(ConnectorTypes.Append(typeof(IStep)).ToArray());
+            var stepFactoryStore = StepFactoryStore.CreateUsingReflection(
+                ConnectorTypes.Append(typeof(IStep)).ToArray());
+            
+            var freezeResult = SequenceParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(stepFactoryStore));
+            
+            if (freezeResult.IsFailure)
+                LogError(_logger, freezeResult.Error);
+            else
+            {
+                var nuixSettings = CreateNuixSettings();
+                
+                var stateMonad = new StateMonad(_logger, nuixSettings, ExternalProcessRunner.Instance,
+                    FileSystemHelper.Instance, stepFactoryStore);
 
-            var freezeResult = YamlMethods.DeserializeFromYaml(yaml, stepFactoryStore)
-                .Bind(x => x.TryFreeze())
-                .Bind(YamlRunner.ConvertToUnitStep);
+                var runResult = await freezeResult.Value.Run<Unit>(stateMonad, cancellationToken);
 
+                if (runResult.IsFailure)
+                    LogError(_logger, runResult.Error);
+            }
+        }
+
+        private NuixSettings CreateNuixSettings()
+        {
             var nuixFeatures = new HashSet<NuixFeature>();
             foreach (var feature in _nuixConfig.Features)
                 if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf) && nf is NuixFeature nuixFeature)
@@ -101,18 +119,7 @@ namespace Reductech.EDR
             var nuixSettings = new NuixSettings(_nuixConfig.UseDongle, _nuixConfig.ExeConsolePath,
                 _nuixConfig.Version, nuixFeatures);
 
-            if (freezeResult.IsFailure)
-                LogError(_logger, freezeResult.Error);
-            else
-            {
-                var stateMonad = new StateMonad(_logger, nuixSettings, ExternalProcessRunner.Instance,
-                    FileSystemHelper.Instance, stepFactoryStore);
-
-                var runResult = await freezeResult.Value.Run(stateMonad, cancellationToken);
-
-                if (runResult.IsFailure)
-                    LogError(_logger, runResult.Error);
-            }
+            return nuixSettings;
         }
 
         private static void LogError(ILogger logger, IError error)

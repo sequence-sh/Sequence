@@ -35,9 +35,9 @@ variables:
   artifacts:
     name: "$PACKAGE_NAME_EXE-$PROJECT_VERSION"
     paths:
+      - appsettings.json
       - CHANGELOG.md
       - EDR.exe
-      - EDR.pdb
       - LICENSE
       - README.md
 

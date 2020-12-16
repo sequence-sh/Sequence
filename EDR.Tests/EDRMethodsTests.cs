@@ -41,7 +41,7 @@ namespace EDR.Tests
         }
 
         [Fact]
-        public void Execute_WhenCommandFunctionIsSuccess_LogsMessage()
+        public void Execute_WhenSCLFunctionIsSuccess_LogsMessage()
         {
             var logger = new TestLogger<EDRMethods>();
             var sp = GetDefaultServiceProvider(logger);
@@ -49,7 +49,7 @@ namespace EDR.Tests
             var result = new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem($"-c \"{TheUltimateTestString}\"");
+                .RunInMem($"-s \"{TheUltimateTestString}\"");
 
             result.ExitCode.Should().Be(0);
             result.Console.OutText().Should().Be("");
@@ -91,7 +91,7 @@ namespace EDR.Tests
             var result = new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-c \"Pront Value: 'Hello World'\"");
+                .RunInMem("-s \"Pront Value: 'Hello World'\"");
 
             result.ExitCode.Should().Be(0);
             result.Console.OutText().Should().Be("");
@@ -100,7 +100,7 @@ namespace EDR.Tests
         }
 
         [Fact]
-        public void Execute_WhenYamlAndPathAreNull_Throws()
+        public void Execute_WhenSCLAndPathAreNull_Throws()
         {
             var logger = new TestLogger<EDRMethods>();
             var sp = GetDefaultServiceProvider(logger);
@@ -108,10 +108,10 @@ namespace EDR.Tests
             var result = Assert.Throws<ArgumentException>(() => new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-c \"\"")
+                .RunInMem("-s \"\"")
             );
 
-            Assert.Equal("Please provide either yaml or path", result.Message);
+            Assert.Equal("Please provide a Sequence string (-s) or path (-p).", result.Message);
         }
 
     }

@@ -8,7 +8,6 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NLog.Fluent;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
@@ -16,7 +15,6 @@ using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Parser;
-using Reductech.EDR.Core.Serialization;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
@@ -32,19 +30,19 @@ namespace Reductech.EDR
         private readonly IFileSystem _fileSystem;
 
         /// <summary>
-        /// 
+        /// Instantiate EDRMethods using the default IFileSystem provider.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="nuixConfig"></param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="nuixConfig">Configuration for the Nuix connector.</param>
         public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig)
             : this(logger, nuixConfig, new FileSystem()) { }
 
         /// <summary>
-        /// 
+        /// Instantiate EDRMethods using the specified IFileSystem provider.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="nuixConfig"></param>
-        /// <param name="fileSystem"></param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="nuixConfig">Configuration for the Nuix connector.</param>
+        /// <param name="fileSystem">An instance of the FileSystem helper. Used for testing.</param>
         public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig, IFileSystem fileSystem)
         {
             _logger = logger;
@@ -53,45 +51,42 @@ namespace Reductech.EDR
         }
 
         /// <summary>
-        /// Execute yaml from a path or directly from a command.
+        /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL) either from file or from a string.
         /// </summary>
         [DefaultMethod]
-        [Command(Name = "execute", Description = "Execute a step defined in yaml")]
+        [Command(Name = "run", Description = "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)")]
         public Task Execute(
             CancellationToken cancellationToken,
-            [Option(LongName = "command", ShortName = "c", Description = "The command to execute")]
-            string? yaml = null,
-            [Option(LongName = "path", ShortName = "p", Description = "The path to the yaml to execute")]
-            string? path = null) => ExecuteAbstractAsync(yaml, path, cancellationToken);
+            [Option(LongName = "sequence", ShortName = "s", Description = "Run a Sequence from a string.")]
+            string? scl = null,
+            [Option(LongName = "path", ShortName = "p", Description = "Run a Sequence defined in a file.")]
+            string? path = null) => ExecuteAbstractAsync(scl, path, cancellationToken);
         
         /// <summary>
-        /// Executes yaml
+        /// Executes SCL from either a file or a string.
         /// </summary>
-        private async Task ExecuteAbstractAsync(string? yaml, string? path, CancellationToken cancellationToken)
+        private async Task ExecuteAbstractAsync(string? scl, string? path, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(yaml))
-                await ExecuteYamlStringAsync(yaml, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(scl))
+                await ExecuteFromStringAsync(scl, cancellationToken);
             else if (!string.IsNullOrWhiteSpace(path))
-                await ExecuteYamlFromPathAsync(path, cancellationToken);
+                await ExecuteFromPathAsync(path, cancellationToken);
             else
-                throw new ArgumentException($"Please provide either {nameof(yaml)} or {nameof(path)}");
+                throw new ArgumentException("Please provide a Sequence string (-s) or path (-p).");
         }
         
-        private async Task ExecuteYamlFromPathAsync(string path, CancellationToken cancellationToken)
+        private async Task ExecuteFromPathAsync(string path, CancellationToken cancellationToken)
         {
             var text = await _fileSystem.File.ReadAllTextAsync(path, cancellationToken);
-            await ExecuteYamlStringAsync(text, cancellationToken);
+            await ExecuteFromStringAsync(text, cancellationToken);
         }
-
-        /// <summary>
-        /// Runs a step defined in a yaml string
-        /// </summary>
-        private async Task ExecuteYamlStringAsync(string yaml, CancellationToken cancellationToken)
+        
+        private async Task ExecuteFromStringAsync(string scl, CancellationToken cancellationToken)
         {
             var stepFactoryStore = StepFactoryStore.CreateUsingReflection(
                 ConnectorTypes.Append(typeof(IStep)).ToArray());
             
-            var freezeResult = SequenceParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(stepFactoryStore));
+            var freezeResult = SequenceParsing.ParseSequence(scl).Bind(x => x.TryFreeze(stepFactoryStore));
             
             if (freezeResult.IsFailure)
                 LogError(_logger, freezeResult.Error);

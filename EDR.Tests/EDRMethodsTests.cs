@@ -16,6 +16,7 @@ namespace EDR.Tests
 {
     public class EDRMethodsTests
     {
+        private const string TheUltimateTestString = "Print Value: 'Hello World'";
 
         private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger) =>
             GetDefaultServiceProvider(logger, null);
@@ -40,7 +41,7 @@ namespace EDR.Tests
         }
 
         [Fact]
-        public void Execute_WhenCommandFunctionIsSuccess_LogsMessage()
+        public void Execute_WhenSCLFunctionIsSuccess_LogsMessage()
         {
             var logger = new TestLogger<EDRMethods>();
             var sp = GetDefaultServiceProvider(logger);
@@ -48,7 +49,7 @@ namespace EDR.Tests
             var result = new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-c \"Print(Value = 'Hello World')\"");
+                .RunInMem($"-s \"{TheUltimateTestString}\"");
 
             result.ExitCode.Should().Be(0);
             result.Console.OutText().Should().Be("");
@@ -65,7 +66,7 @@ namespace EDR.Tests
             
             var fs = new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                { filePath, new MockFileData("Print(Value = 'Hello World')") }
+                { filePath, new MockFileData(TheUltimateTestString) }
             });
             
             var sp = GetDefaultServiceProvider(logger, fs);
@@ -90,16 +91,16 @@ namespace EDR.Tests
             var result = new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-c \"Pront(Value = 'Hello World')\"");
+                .RunInMem("-s \"Pront Value: 'Hello World'\"");
 
             result.ExitCode.Should().Be(0);
             result.Console.OutText().Should().Be("");
-
-            logger.LoggedValues.Should().BeEquivalentTo(new object[] { "The step 'Pront' does not exist", "Line: 1, Col: 1, Idx: 0 - Line: 1, Col: 29, Idx: 28", "{Error} - {Location}" });
+            
+            logger.LoggedValues[0].Should().Be("The step 'Pront' does not exist");
         }
 
         [Fact]
-        public void Execute_WhenYamlAndPathAreNull_Throws()
+        public void Execute_WhenSCLAndPathAreNull_Throws()
         {
             var logger = new TestLogger<EDRMethods>();
             var sp = GetDefaultServiceProvider(logger);
@@ -107,10 +108,10 @@ namespace EDR.Tests
             var result = Assert.Throws<ArgumentException>(() => new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-c \"\"")
+                .RunInMem("-s \"\"")
             );
 
-            Assert.Equal("Please provide either yaml or path", result.Message);
+            Assert.Equal("Please provide a Sequence string (-s) or path (-p).", result.Message);
         }
 
     }

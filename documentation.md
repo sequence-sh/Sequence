@@ -26,6 +26,7 @@
 |[EntityMapProperties](#EntityMapProperties)                      |       |
 |[EntitySetValue<T>](#EntitySetValue<T>)                          |       |
 |[EntityStreamConcat](#EntityStreamConcat)                        |       |
+|[EntityStreamCreate](#EntityStreamCreate)                        |       |
 |[EntityStreamDistinct](#EntityStreamDistinct)                    |       |
 |[EntityStreamFilter](#EntityStreamFilter)                        |       |
 |[EntityStreamSort](#EntityStreamSort)                            |       |
@@ -47,19 +48,18 @@
 |[Not](#Not)                                                      |       |
 |[PathCombine](#PathCombine)                                      |       |
 |[Print<T>](#Print<T>)                                            |       |
+|[Print<T>](#Print<T>)                                            |       |
 |[ReadFile](#ReadFile)                                            |       |
 |[Repeat<T>](#Repeat<T>)                                          |       |
 |[RunExternalProcess](#RunExternalProcess)                        |       |
-|[Sequence](#Sequence)                                            |       |
+|[Sequence<T>](#Sequence<T>)                                      |       |
 |[SetVariable<T>](#SetVariable<T>)                                |       |
 |[StringContains](#StringContains)                                |       |
-|[StringFromStream](#StringFromStream)                            |       |
 |[StringIsEmpty](#StringIsEmpty)                                  |       |
 |[StringJoin](#StringJoin)                                        |       |
 |[StringLength](#StringLength)                                    |       |
 |[StringSplit](#StringSplit)                                      |       |
 |[StringToCase](#StringToCase)                                    |       |
-|[StringToStream](#StringToStream)                                |       |
 |[StringTrim](#StringTrim)                                        |       |
 |[ToConcordance](#ToConcordance)                                  |       |
 |[ToCSV](#ToCSV)                                                  |       |
@@ -90,6 +90,7 @@
 |[NuixRemoveFromProductionSet](#NuixRemoveFromProductionSet)      |       |
 |[NuixReorderProductionSet](#NuixReorderProductionSet)            |       |
 |[NuixSearchAndTag](#NuixSearchAndTag)                            |       |
+|[NuixRunScript](#NuixRunScript)                                  |       |
 # Core
 <a name="AppendString"></a>
 ## AppendString
@@ -99,7 +100,7 @@
 |Parameter|Type                         |Required|Summary|
 |:-------:|:---------------------------:|:------:|:-----:|
 |Variable |[VariableName](#VariableName)|☑️      |       |
-|String   |`string`                     |☑️      |       |
+|String   |[StringStream](#StringStream)|☑️      |       |
 
 <a name="ApplyBooleanOperator"></a>
 ## ApplyBooleanOperator
@@ -181,12 +182,12 @@
 <a name="CharAtIndex"></a>
 ## CharAtIndex
 
-**String**
+**StringStream**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Index    |`int`   |☑️      |       |
-|String   |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
+|Index    |`int`                        |☑️      |       |
 
 <a name="Compare<T>"></a>
 ## Compare<T>
@@ -204,27 +205,27 @@
 
 **Unit**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |[StringStream](#StringStream)|☑️      |       |
 
 <a name="DeleteItem"></a>
 ## DeleteItem
 
 **Unit**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |[StringStream](#StringStream)|☑️      |       |
 
 <a name="DirectoryExists"></a>
 ## DirectoryExists
 
 **Boolean**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |[StringStream](#StringStream)|☑️      |       |
 
 <a name="DoNothing"></a>
 ## DoNothing
@@ -259,8 +260,8 @@
 |Parameter     |Type                             |Required|Summary|Default Value|
 |:------------:|:-------------------------------:|:------:|:-----:|:-----------:|
 |EntityStream  |[EntityStream](#EntityStream)    |☑️      |       |             |
+|Schema        |[Entity](#Entity)                |☑️      |       |             |
 |ErrorBehaviour|[ErrorBehaviour](#ErrorBehaviour)|        |       |Fail         |
-|Schema        |[Schema](#Schema)                |☑️      |       |             |
 
 <a name="EntityForEach"></a>
 ## EntityForEach
@@ -269,28 +270,28 @@
 
 |Parameter   |Type                         |Required|Summary|
 |:----------:|:---------------------------:|:------:|:-----:|
-|Action      |[Unit](#Unit)                |☑️      |       |
 |EntityStream|[EntityStream](#EntityStream)|☑️      |       |
+|Action      |[Unit](#Unit)                |☑️      |       |
 
 <a name="EntityGetValue"></a>
 ## EntityGetValue
 
-**String**
+**StringStream**
 
-|Parameter|Type             |Required|Summary|
-|:-------:|:---------------:|:------:|:-----:|
-|Entity   |[Entity](#Entity)|☑️      |       |
-|Property |`string`         |☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Entity   |[Entity](#Entity)            |☑️      |       |
+|Property |[StringStream](#StringStream)|☑️      |       |
 
 <a name="EntityHasProperty"></a>
 ## EntityHasProperty
 
 **Boolean**
 
-|Parameter|Type             |Required|Summary|
-|:-------:|:---------------:|:------:|:-----:|
-|Entity   |[Entity](#Entity)|☑️      |       |
-|Property |`string`         |☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Entity   |[Entity](#Entity)            |☑️      |       |
+|Property |[StringStream](#StringStream)|☑️      |       |
 
 <a name="EntityMap"></a>
 ## EntityMap
@@ -317,11 +318,11 @@
 
 **Entity**
 
-|Parameter|Type             |Required|Summary|
-|:-------:|:---------------:|:------:|:-----:|
-|Entity   |[Entity](#Entity)|☑️      |       |
-|Property |`string`         |☑️      |       |
-|Value    |[T](#T)          |☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Entity   |[Entity](#Entity)            |☑️      |       |
+|Property |[StringStream](#StringStream)|☑️      |       |
+|Value    |[T](#T)                      |☑️      |       |
 
 <a name="EntityStreamConcat"></a>
 ## EntityStreamConcat
@@ -332,6 +333,15 @@
 |:-----------:|:---------------------------------:|:------:|:-----:|
 |EntityStreams|List<[EntityStream](#EntityStream)>|☑️      |       |
 
+<a name="EntityStreamCreate"></a>
+## EntityStreamCreate
+
+**EntityStream**
+
+|Parameter|Type                    |Required|Summary|
+|:-------:|:----------------------:|:------:|:-----:|
+|Elements |IStep<[Entity](#Entity)>|☑️      |       |
+
 <a name="EntityStreamDistinct"></a>
 ## EntityStreamDistinct
 
@@ -340,7 +350,7 @@
 |Parameter   |Type                         |Required|Summary|Default Value|
 |:----------:|:---------------------------:|:------:|:-----:|:-----------:|
 |EntityStream|[EntityStream](#EntityStream)|☑️      |       |             |
-|KeySelector |`string`                     |☑️      |       |             |
+|KeySelector |[StringStream](#StringStream)|☑️      |       |             |
 |IgnoreCase  |`bool`                       |        |       |False        |
 
 <a name="EntityStreamFilter"></a>
@@ -361,7 +371,7 @@
 |Parameter   |Type                         |Required|Summary|Default Value|
 |:----------:|:---------------------------:|:------:|:-----:|:-----------:|
 |EntityStream|[EntityStream](#EntityStream)|☑️      |       |             |
-|KeySelector |`string`                     |☑️      |       |             |
+|KeySelector |[StringStream](#StringStream)|☑️      |       |             |
 |Descending  |`bool`                       |        |       |False        |
 
 <a name="FileExists"></a>
@@ -369,30 +379,30 @@
 
 **Boolean**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |[StringStream](#StringStream)|☑️      |       |
 
 <a name="FileExtract"></a>
 ## FileExtract
 
 **Unit**
 
-|Parameter      |Type    |Required|Summary|Default Value|
-|:-------------:|:------:|:------:|:-----:|:-----------:|
-|ArchiveFilePath|`string`|☑️      |       |             |
-|Destination    |`string`|☑️      |       |             |
-|Overwrite      |`bool`  |        |       |false        |
+|Parameter      |Type                         |Required|Summary|Default Value|
+|:-------------:|:---------------------------:|:------:|:-----:|:-----------:|
+|ArchiveFilePath|[StringStream](#StringStream)|☑️      |       |             |
+|Destination    |[StringStream](#StringStream)|☑️      |       |             |
+|Overwrite      |`bool`                       |        |       |false        |
 
 <a name="FileWrite"></a>
 ## FileWrite
 
 **Unit**
 
-|Parameter|Type             |Required|Summary|
-|:-------:|:---------------:|:------:|:-----:|
-|Path     |`string`         |☑️      |       |
-|Stream   |[Stream](#Stream)|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |[StringStream](#StringStream)|☑️      |       |
+|Stream   |[StringStream](#StringStream)|☑️      |       |
 
 <a name="FindElement<T>"></a>
 ## FindElement<T>
@@ -409,20 +419,20 @@
 
 **Int32**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|String   |`string`|☑️      |       |
-|SubString|`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
+|SubString|[StringStream](#StringStream)|☑️      |       |
 
 <a name="FindSubstring"></a>
 ## FindSubstring
 
 **Int32**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|String   |`string`|☑️      |       |
-|SubString|`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
+|SubString|[StringStream](#StringStream)|☑️      |       |
 
 <a name="For"></a>
 ## For
@@ -431,10 +441,10 @@
 
 |Parameter|Type         |Required|Summary|
 |:-------:|:-----------:|:------:|:-----:|
-|Action   |[Unit](#Unit)|☑️      |       |
 |From     |`int`        |☑️      |       |
-|Increment|`int`        |☑️      |       |
 |To       |`int`        |☑️      |       |
+|Increment|`int`        |☑️      |       |
+|Action   |[Unit](#Unit)|☑️      |       |
 
 <a name="ForEach<T>"></a>
 ## ForEach<T>
@@ -443,9 +453,9 @@
 
 |Parameter|Type                         |Required|Summary|
 |:-------:|:---------------------------:|:------:|:-----:|
-|Action   |[Unit](#Unit)                |☑️      |       |
 |Array    |List<[T](#T)>                |☑️      |       |
 |Variable |[VariableName](#VariableName)|☑️      |       |
+|Action   |[Unit](#Unit)                |☑️      |       |
 
 <a name="FromConcordance"></a>
 ## FromConcordance
@@ -454,11 +464,10 @@
 
 |Parameter          |Type                         |Required|Summary|Default Value|
 |:-----------------:|:---------------------------:|:------:|:-----:|:-----------:|
-|Stream             |[Stream](#Stream)            |☑️      |       |             |
-|Encoding           |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM  |
-|Delimiter          |`string`                     |        |       |\\u0014 - DC4|
-|QuoteCharacter     |`string`                     |        |       |þ            |
-|MultiValueDelimiter|`string`                     |        |       |\|           |
+|Stream             |[StringStream](#StringStream)|☑️      |       |             |
+|Delimiter          |[StringStream](#StringStream)|        |       |\\u0014 - DC4|
+|QuoteCharacter     |[StringStream](#StringStream)|        |       |þ            |
+|MultiValueDelimiter|[StringStream](#StringStream)|        |       |\|           |
 
 <a name="FromCSV"></a>
 ## FromCSV
@@ -467,28 +476,27 @@
 
 |Parameter          |Type                         |Required|Summary|Default Value|
 |:-----------------:|:---------------------------:|:------:|:-----:|:-----------:|
-|Stream             |[Stream](#Stream)            |☑️      |       |             |
-|Encoding           |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM  |
-|Delimiter          |`string`                     |        |       |,            |
-|CommentCharacter   |`string`                     |        |       |#            |
-|QuoteCharacter     |`string`                     |        |       |"            |
-|MultiValueDelimiter|`string`                     |        |       |             |
+|Stream             |[StringStream](#StringStream)|☑️      |       |             |
+|Delimiter          |[StringStream](#StringStream)|        |       |,            |
+|CommentCharacter   |[StringStream](#StringStream)|        |       |#            |
+|QuoteCharacter     |[StringStream](#StringStream)|        |       |"            |
+|MultiValueDelimiter|[StringStream](#StringStream)|        |       |             |
 
 <a name="GenerateDocumentation"></a>
 ## GenerateDocumentation
 
-**List`1**
+**StringStream**
 
 <a name="GetSubstring"></a>
 ## GetSubstring
 
-**String**
+**StringStream**
 
-|Parameter|Type    |Required|Summary|Default Value|
-|:-------:|:------:|:------:|:-----:|:-----------:|
-|Index    |`int`   |        |       |0            |
-|Length   |`int`   |☑️      |       |             |
-|String   |`string`|☑️      |       |             |
+|Parameter|Type                         |Required|Summary|Default Value|
+|:-------:|:---------------------------:|:------:|:-----:|:-----------:|
+|String   |[StringStream](#StringStream)|☑️      |       |             |
+|Length   |`int`                        |☑️      |       |             |
+|Index    |`int`                        |        |       |0            |
 
 <a name="GetVariable<T>"></a>
 ## GetVariable<T>
@@ -513,12 +521,12 @@
 <a name="IncrementVariable"></a>
 ## IncrementVariable
 
-**Int32**
+**Unit**
 
 |Parameter|Type                         |Required|Summary|Default Value|
 |:-------:|:---------------------------:|:------:|:-----:|:-----------:|
-|Amount   |`int`                        |        |       |1            |
 |Variable |[VariableName](#VariableName)|☑️      |       |             |
+|Amount   |`int`                        |        |       |1            |
 
 <a name="Not"></a>
 ## Not
@@ -532,11 +540,20 @@
 <a name="PathCombine"></a>
 ## PathCombine
 
-**String**
+**StringStream**
 
-|Parameter|Type          |Required|Summary|
-|:-------:|:------------:|:------:|:-----:|
-|Paths    |List<`string`>|☑️      |       |
+|Parameter|Type                               |Required|Summary|
+|:-------:|:---------------------------------:|:------:|:-----:|
+|Paths    |List<[StringStream](#StringStream)>|☑️      |       |
+
+<a name="Print<T>"></a>
+## Print<T>
+
+**Unit**
+
+|Parameter|Type   |Required|Summary|
+|:-------:|:-----:|:------:|:-----:|
+|Value    |[T](#T)|☑️      |       |
 
 <a name="Print<T>"></a>
 ## Print<T>
@@ -550,11 +567,12 @@
 <a name="ReadFile"></a>
 ## ReadFile
 
-**String**
+**StringStream**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|Default Value|
+|:-------:|:---------------------------:|:------:|:-----:|:-----------:|
+|Path     |[StringStream](#StringStream)|☑️      |       |             |
+|Encoding |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM  |
 
 <a name="Repeat<T>"></a>
 ## Repeat<T>
@@ -571,20 +589,21 @@
 
 **Unit**
 
-|Parameter|Type                         |Required|Summary|Default Value   |
-|:-------:|:---------------------------:|:------:|:-----:|:--------------:|
-|Path     |`string`                     |☑️      |       |                |
-|Arguments|List<`string`>               |        |       |No arguments    |
-|Encoding |[EncodingEnum](#EncodingEnum)|        |       |Default encoding|
+|Parameter|Type                               |Required|Summary|Default Value   |
+|:-------:|:---------------------------------:|:------:|:-----:|:--------------:|
+|Path     |[StringStream](#StringStream)      |☑️      |       |                |
+|Arguments|List<[StringStream](#StringStream)>|        |       |No arguments    |
+|Encoding |[EncodingEnum](#EncodingEnum)      |        |       |Default encoding|
 
-<a name="Sequence"></a>
-## Sequence
+<a name="Sequence<T>"></a>
+## Sequence<T>
 
-**Unit**
+**The same type as the final step**
 
-|Parameter|Type                |Required|Summary|
-|:-------:|:------------------:|:------:|:-----:|
-|Steps    |IStep<[Unit](#Unit)>|☑️      |       |
+|Parameter   |Type                |Required|Summary|
+|:----------:|:------------------:|:------:|:-----:|
+|InitialSteps|IStep<[Unit](#Unit)>|☑️      |       |
+|FinalStep   |[T](#T)             |☑️      |       |
 
 <a name="SetVariable<T>"></a>
 ## SetVariable<T>
@@ -593,127 +612,107 @@
 
 |Parameter|Type                         |Required|Summary|
 |:-------:|:---------------------------:|:------:|:-----:|
-|Value    |[T](#T)                      |☑️      |       |
 |Variable |[VariableName](#VariableName)|☑️      |       |
+|Value    |[T](#T)                      |☑️      |       |
 
 <a name="StringContains"></a>
 ## StringContains
 
 **Boolean**
 
-|Parameter |Type    |Required|Summary|Default Value|
-|:--------:|:------:|:------:|:-----:|:-----------:|
-|IgnoreCase|`bool`  |        |       |False        |
-|String    |`string`|☑️      |       |             |
-|Substring |`string`|☑️      |       |             |
-
-<a name="StringFromStream"></a>
-## StringFromStream
-
-**String**
-
-|Parameter|Type                         |Required|Summary|Default Value|
-|:-------:|:---------------------------:|:------:|:-----:|:-----------:|
-|Encoding |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM  |
-|Stream   |[Stream](#Stream)            |☑️      |       |             |
+|Parameter |Type                         |Required|Summary|Default Value|
+|:--------:|:---------------------------:|:------:|:-----:|:-----------:|
+|String    |[StringStream](#StringStream)|☑️      |       |             |
+|Substring |[StringStream](#StringStream)|☑️      |       |             |
+|IgnoreCase|`bool`                       |        |       |False        |
 
 <a name="StringIsEmpty"></a>
 ## StringIsEmpty
 
 **Boolean**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|String   |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
 
 <a name="StringJoin"></a>
 ## StringJoin
 
-**String**
+**StringStream**
 
-|Parameter|Type          |Required|Summary|
-|:-------:|:------------:|:------:|:-----:|
-|Delimiter|`string`      |☑️      |       |
-|Strings  |List<`string`>|☑️      |       |
+|Parameter|Type                               |Required|Summary|
+|:-------:|:---------------------------------:|:------:|:-----:|
+|Delimiter|[StringStream](#StringStream)      |☑️      |       |
+|Strings  |List<[StringStream](#StringStream)>|☑️      |       |
 
 <a name="StringLength"></a>
 ## StringLength
 
 **Int32**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|String   |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
 
 <a name="StringSplit"></a>
 ## StringSplit
 
 **List`1**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Delimiter|`string`|☑️      |       |
-|String   |`string`|☑️      |       |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
+|Delimiter|[StringStream](#StringStream)|☑️      |       |
 
 <a name="StringToCase"></a>
 ## StringToCase
 
-**String**
+**StringStream**
 
-|Parameter|Type                 |Required|Summary|
-|:-------:|:-------------------:|:------:|:-----:|
-|Case     |[TextCase](#TextCase)|☑️      |       |
-|String   |`string`             |☑️      |       |
-
-<a name="StringToStream"></a>
-## StringToStream
-
-**Stream**
-
-|Parameter|Type                         |Required|Summary|Default Value|
-|:-------:|:---------------------------:|:------:|:-----:|:-----------:|
-|String   |`string`                     |☑️      |       |             |
-|Encoding |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM  |
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|String   |[StringStream](#StringStream)|☑️      |       |
+|Case     |[TextCase](#TextCase)        |☑️      |       |
 
 <a name="StringTrim"></a>
 ## StringTrim
 
-**String**
+**StringStream**
 
-|Parameter|Type                 |Required|Summary|Default Value|
-|:-------:|:-------------------:|:------:|:-----:|:-----------:|
-|Side     |[TrimSide](#TrimSide)|        |       |Both         |
-|String   |`string`             |☑️      |       |             |
+|Parameter|Type                         |Required|Summary|Default Value|
+|:-------:|:---------------------------:|:------:|:-----:|:-----------:|
+|String   |[StringStream](#StringStream)|☑️      |       |             |
+|Side     |[TrimSide](#TrimSide)        |        |       |Both         |
 
 <a name="ToConcordance"></a>
 ## ToConcordance
 
-**Stream**
+**StringStream**
 
 |Parameter          |Type                         |Required|Summary|Default Value                                                  |Example            |
 |:-----------------:|:---------------------------:|:------:|:-----:|:-------------------------------------------------------------:|:-----------------:|
 |Entities           |[EntityStream](#EntityStream)|☑️      |       |                                                               |                   |
 |Encoding           |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM                                                    |                   |
-|Delimiter          |`string`                     |        |       |                                                              |                   |
+|Delimiter          |[StringStream](#StringStream)|        |       |                                                              |                   |
+|QuoteCharacter     |[StringStream](#StringStream)|        |       |þ                                                              |                   |
 |AlwaysQuote        |`bool`                       |        |       |false                                                          |                   |
-|QuoteCharacter     |`string`                     |        |       |þ                                                              |                   |
-|MultiValueDelimiter|`string`                     |        |       |                                                               |                   |
-|DateTimeFormat     |`string`                     |        |       |O - ISO 8601 compliant - e.g. 2009-06-15T13:45:30.0000000-07:00|yyyy/MM/dd HH:mm:ss|
+|MultiValueDelimiter|[StringStream](#StringStream)|        |       |                                                               |                   |
+|DateTimeFormat     |[StringStream](#StringStream)|        |       |O - ISO 8601 compliant - e.g. 2009-06-15T13:45:30.0000000-07:00|yyyy/MM/dd HH:mm:ss|
 
 <a name="ToCSV"></a>
 ## ToCSV
 
-**Stream**
+**StringStream**
 
 |Parameter          |Type                         |Required|Summary|Default Value                                                  |Example            |
 |:-----------------:|:---------------------------:|:------:|:-----:|:-------------------------------------------------------------:|:-----------------:|
 |Entities           |[EntityStream](#EntityStream)|☑️      |       |                                                               |                   |
 |Encoding           |[EncodingEnum](#EncodingEnum)|        |       |UTF8 no BOM                                                    |                   |
-|Delimiter          |`string`                     |        |       |,                                                              |                   |
+|Delimiter          |[StringStream](#StringStream)|        |       |,                                                              |                   |
+|QuoteCharacter     |[StringStream](#StringStream)|        |       |"                                                              |                   |
 |AlwaysQuote        |`bool`                       |        |       |false                                                          |                   |
-|QuoteCharacter     |`string`                     |        |       |"                                                              |                   |
-|MultiValueDelimiter|`string`                     |        |       |                                                               |                   |
-|DateTimeFormat     |`string`                     |        |       |O - ISO 8601 compliant - e.g. 2009-06-15T13:45:30.0000000-07:00|yyyy/MM/dd HH:mm:ss|
+|MultiValueDelimiter|[StringStream](#StringStream)|        |       |                                                               |                   |
+|DateTimeFormat     |[StringStream](#StringStream)|        |       |O - ISO 8601 compliant - e.g. 2009-06-15T13:45:30.0000000-07:00|yyyy/MM/dd HH:mm:ss|
 
 <a name="ValueIf<T>"></a>
 ## ValueIf<T>
@@ -723,8 +722,8 @@
 |Parameter|Type   |Required|Summary|
 |:-------:|:-----:|:------:|:-----:|
 |Condition|`bool` |☑️      |       |
-|Else     |[T](#T)|☑️      |       |
 |Then     |[T](#T)|☑️      |       |
+|Else     |[T](#T)|☑️      |       |
 
 <a name="While"></a>
 ## While
@@ -733,8 +732,8 @@
 
 |Parameter|Type         |Required|Summary|
 |:-------:|:-----------:|:------:|:-----:|
-|Action   |[Unit](#Unit)|☑️      |       |
 |Condition|`bool`       |☑️      |       |
+|Action   |[Unit](#Unit)|☑️      |       |
 
 # Nuix
 <a name="NuixAddConcordance"></a>
@@ -748,15 +747,15 @@
 
 *Requires NuixMETADATA_IMPORT*
 
-|Parameter             |Type    |Required|Summary|Default Value |Example                   |
-|:--------------------:|:------:|:------:|:-----:|:------------:|:------------------------:|
-|CasePath              |`string`|☑️      |       |              |C:/Cases/MyCase           |
-|ConcordanceDateFormat |`string`|☑️      |       |              |yyyy-MM-dd'T'HH:mm:ss.SSSZ|
-|ConcordanceProfileName|`string`|☑️      |       |              |MyProfile                 |
-|Custodian             |`string`|☑️      |       |              |                          |
-|Description           |`string`|        |       |No description|                          |
-|FilePath              |`string`|☑️      |       |              |C:/MyConcordance.dat      |
-|FolderName            |`string`|☑️      |       |              |                          |
+|Parameter             |Type                         |Required|Summary|Default Value |Example                   |
+|:--------------------:|:---------------------------:|:------:|:-----:|:------------:|:------------------------:|
+|CasePath              |[StringStream](#StringStream)|☑️      |       |              |C:/Cases/MyCase           |
+|FolderName            |[StringStream](#StringStream)|☑️      |       |              |                          |
+|Custodian             |[StringStream](#StringStream)|☑️      |       |              |                          |
+|FilePath              |[StringStream](#StringStream)|☑️      |       |              |C:/MyConcordance.dat      |
+|ConcordanceDateFormat |[StringStream](#StringStream)|☑️      |       |              |yyyy-MM-dd'T'HH:mm:ss.SSSZ|
+|ConcordanceProfileName|[StringStream](#StringStream)|☑️      |       |              |MyProfile                 |
+|Description           |[StringStream](#StringStream)|        |       |No description|                          |
 
 <a name="NuixAddItem"></a>
 ## NuixAddItem
@@ -767,19 +766,19 @@
 
 *Requires NuixCASE_CREATION*
 
-|Parameter                 |Type                         |Required|Summary|Default Value                                   |Example                            |Requirements|
-|:------------------------:|:---------------------------:|:------:|:-----:|:----------------------------------------------:|:---------------------------------:|:----------:|
-|CasePath                  |`string`                     |☑️      |       |                                                |C:/Cases/MyCase                    |            |
-|Custodian                 |`string`                     |☑️      |       |                                                |                                   |            |
-|Description               |`string`                     |        |       |No Description                                  |                                   |            |
-|FolderName                |`string`                     |☑️      |       |                                                |                                   |            |
-|MimeTypeSettings          |[EntityStream](#EntityStream)|        |       |Use default settings for all MIME types         |                                   |Nuix 8.2    |
-|ParallelProcessingSettings|[Entity](#Entity)            |        |       |Parallel processing settings will not be changed|                                   |            |
-|PasswordFilePath          |`string`                     |        |       |Do not attempt decryption                       |C:/Data/Passwords.txt              |Nuix 7.6    |
-|Paths                     |List<`string`>               |☑️      |       |                                                |C:/Data/File.txt                   |            |
-|ProcessingProfileName     |`string`                     |        |       |The default processing profile will be used.    |MyProcessingProfile                |Nuix 7.6    |
-|ProcessingProfilePath     |`string`                     |        |       |The default processing profile will be used.    |C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
-|ProcessingSettings        |[Entity](#Entity)            |        |       |Processing settings will not be changed         |                                   |            |
+|Parameter                 |Type                               |Required|Summary|Default Value                                   |Example                            |Requirements|
+|:------------------------:|:---------------------------------:|:------:|:-----:|:----------------------------------------------:|:---------------------------------:|:----------:|
+|CasePath                  |[StringStream](#StringStream)      |☑️      |       |                                                |C:/Cases/MyCase                    |            |
+|FolderName                |[StringStream](#StringStream)      |☑️      |       |                                                |                                   |            |
+|Custodian                 |[StringStream](#StringStream)      |☑️      |       |                                                |                                   |            |
+|Paths                     |List<[StringStream](#StringStream)>|☑️      |       |                                                |C:/Data/File.txt                   |            |
+|Description               |[StringStream](#StringStream)      |        |       |No Description                                  |                                   |            |
+|ProcessingProfileName     |[StringStream](#StringStream)      |        |       |The default processing profile will be used.    |MyProcessingProfile                |Nuix 7.6    |
+|ProcessingProfilePath     |[StringStream](#StringStream)      |        |       |The default processing profile will be used.    |C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
+|ProcessingSettings        |[Entity](#Entity)                  |        |       |Processing settings will not be changed         |                                   |            |
+|ParallelProcessingSettings|[Entity](#Entity)                  |        |       |Parallel processing settings will not be changed|                                   |            |
+|PasswordFilePath          |[StringStream](#StringStream)      |        |       |Do not attempt decryption                       |C:/Data/Passwords.txt              |Nuix 7.6    |
+|MimeTypeSettings          |[EntityStream](#EntityStream)      |        |       |Use default settings for all MIME types         |                                   |Nuix 8.2    |
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
@@ -792,15 +791,15 @@
 
 |Parameter           |Type                                         |Required|Summary|Default Value         |Example                 |
 |:------------------:|:-------------------------------------------:|:------:|:-----:|:--------------------:|:----------------------:|
-|CasePath            |`string`                                     |☑️      |       |                      |C:/Cases/MyCase         |
-|CustodianRanking    |List<`string`>                               |        |       |Do not rank custodians|                        |
-|DeduplicateBy       |[DeduplicateBy](#DeduplicateBy)              |        |       |Neither               |                        |
+|CasePath            |[StringStream](#StringStream)                |☑️      |       |                      |C:/Cases/MyCase         |
+|SearchTerm          |[StringStream](#StringStream)                |☑️      |       |                      |                        |
+|ItemSetName         |[StringStream](#StringStream)                |☑️      |       |                      |                        |
 |ItemSetDeduplication|[ItemSetDeduplication](#ItemSetDeduplication)|        |       |No deduplication      |                        |
-|ItemSetDescription  |`string`                                     |        |       |No description        |                        |
-|ItemSetName         |`string`                                     |☑️      |       |                      |                        |
+|ItemSetDescription  |[StringStream](#StringStream)                |        |       |No description        |                        |
+|DeduplicateBy       |[DeduplicateBy](#DeduplicateBy)              |        |       |Neither               |                        |
+|CustodianRanking    |List<[StringStream](#StringStream)>          |        |       |Do not rank custodians|                        |
+|Order               |[StringStream](#StringStream)                |        |       |Do not reorder        |name ASC, item-date DESC|
 |Limit               |`int`                                        |        |       |No limit              |                        |
-|Order               |`string`                                     |        |       |Do not reorder        |name ASC, item-date DESC|
-|SearchTerm          |`string`                                     |☑️      |       |                      |                        |
 
 <a name="NuixAddToProductionSet"></a>
 ## NuixAddToProductionSet
@@ -811,16 +810,16 @@
 
 *Requires NuixPRODUCTION_SET*
 
-|Parameter            |Type    |Required|Summary|Default Value                               |Example                            |Requirements|
-|:-------------------:|:------:|:------:|:-----:|:------------------------------------------:|:---------------------------------:|:----------:|
-|CasePath             |`string`|☑️      |       |                                            |C:/Cases/MyCase                    |            |
-|Description          |`string`|        |       |No description                              |                                   |            |
-|Limit                |`int`   |        |       |No limit                                    |                                   |            |
-|Order                |`string`|        |       |Default order                               |name ASC, item-date DESC           |            |
-|ProductionProfileName|`string`|        |       |The default processing profile will be used.|MyProcessingProfile                |Nuix 7.2    |
-|ProductionProfilePath|`string`|        |       |The default processing profile will be used.|C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
-|ProductionSetName    |`string`|☑️      |       |                                            |                                   |            |
-|SearchTerm           |`string`|☑️      |       |                                            |                                   |            |
+|Parameter            |Type                         |Required|Summary|Default Value                               |Example                            |Requirements|
+|:-------------------:|:---------------------------:|:------:|:-----:|:------------------------------------------:|:---------------------------------:|:----------:|
+|CasePath             |[StringStream](#StringStream)|☑️      |       |                                            |C:/Cases/MyCase                    |            |
+|SearchTerm           |[StringStream](#StringStream)|☑️      |       |                                            |                                   |            |
+|ProductionSetName    |[StringStream](#StringStream)|☑️      |       |                                            |                                   |            |
+|Description          |[StringStream](#StringStream)|        |       |No description                              |                                   |            |
+|ProductionProfileName|[StringStream](#StringStream)|        |       |The default processing profile will be used.|MyProcessingProfile                |Nuix 7.2    |
+|ProductionProfilePath|[StringStream](#StringStream)|        |       |The default processing profile will be used.|C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
+|Order                |[StringStream](#StringStream)|        |       |Default order                               |name ASC, item-date DESC           |            |
+|Limit                |`int`                        |        |       |No limit                                    |                                   |            |
 
 <a name="NuixAnnotateDocumentIdList"></a>
 ## NuixAnnotateDocumentIdList
@@ -831,11 +830,11 @@
 
 *Requires NuixPRODUCTION_SET*
 
-|Parameter        |Type    |Required|Summary|Example        |
-|:---------------:|:------:|:------:|:-----:|:-------------:|
-|CasePath         |`string`|☑️      |       |C:/Cases/MyCase|
-|DataPath         |`string`|☑️      |       |               |
-|ProductionSetName|`string`|☑️      |       |               |
+|Parameter        |Type                         |Required|Summary|Example        |
+|:---------------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath         |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|ProductionSetName|[StringStream](#StringStream)|☑️      |       |               |
+|DataPath         |[StringStream](#StringStream)|☑️      |       |               |
 
 <a name="NuixAssertPrintPreviewState"></a>
 ## NuixAssertPrintPreviewState
@@ -850,9 +849,9 @@
 
 |Parameter        |Type                                   |Required|Summary|Default Value|Example        |
 |:---------------:|:-------------------------------------:|:------:|:-----:|:-----------:|:-------------:|
-|CasePath         |`string`                               |☑️      |       |             |C:/Cases/MyCase|
+|CasePath         |[StringStream](#StringStream)          |☑️      |       |             |C:/Cases/MyCase|
+|ProductionSetName|[StringStream](#StringStream)          |☑️      |       |             |               |
 |ExpectedState    |[PrintPreviewState](#PrintPreviewState)|        |       |All          |               |
-|ProductionSetName|`string`                               |☑️      |       |             |               |
 
 <a name="NuixAssignCustodian"></a>
 ## NuixAssignCustodian
@@ -863,11 +862,11 @@
 
 *Requires NuixANALYSIS*
 
-|Parameter |Type    |Required|Summary|Example        |
-|:--------:|:------:|:------:|:-----:|:-------------:|
-|CasePath  |`string`|☑️      |       |C:/Cases/MyCase|
-|Custodian |`string`|☑️      |       |               |
-|SearchTerm|`string`|☑️      |       |\*.txt         |
+|Parameter |Type                         |Required|Summary|Example        |
+|:--------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath  |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|SearchTerm|[StringStream](#StringStream)|☑️      |       |\*.txt         |
+|Custodian |[StringStream](#StringStream)|☑️      |       |               |
 
 <a name="NuixCloseConnection"></a>
 ## NuixCloseConnection
@@ -881,10 +880,10 @@
 
 *Requires Nuix Version 5.0*
 
-|Parameter |Type    |Required|Summary|Example        |
-|:--------:|:------:|:------:|:-----:|:-------------:|
-|CasePath  |`string`|☑️      |       |C:/Cases/MyCase|
-|SearchTerm|`string`|☑️      |       |\*.txt         |
+|Parameter |Type                         |Required|Summary|Example        |
+|:--------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath  |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|SearchTerm|[StringStream](#StringStream)|☑️      |       |\*.txt         |
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
@@ -895,23 +894,23 @@
 
 *Requires NuixCASE_CREATION*
 
-|Parameter   |Type    |Required|Summary|Default Value |Example        |
-|:----------:|:------:|:------:|:-----:|:------------:|:-------------:|
-|CaseName    |`string`|☑️      |       |              |               |
-|CasePath    |`string`|☑️      |       |              |C:/Cases/MyCase|
-|Description |`string`|        |       |No Description|               |
-|Investigator|`string`|☑️      |       |              |               |
+|Parameter   |Type                         |Required|Summary|Default Value |Example        |
+|:----------:|:---------------------------:|:------:|:-----:|:------------:|:-------------:|
+|CasePath    |[StringStream](#StringStream)|☑️      |       |              |C:/Cases/MyCase|
+|CaseName    |[StringStream](#StringStream)|☑️      |       |              |               |
+|Investigator|[StringStream](#StringStream)|☑️      |       |              |               |
+|Description |[StringStream](#StringStream)|        |       |No Description|               |
 
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
 
-**String**
+**StringStream**
 
 *Requires Nuix Version 5.0*
 
-|Parameter|Type    |Required|Summary|Example        |
-|:-------:|:------:|:------:|:-----:|:-------------:|
-|CasePath |`string`|☑️      |       |C:/Cases/MyCase|
+|Parameter|Type                         |Required|Summary|Example        |
+|:-------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
@@ -922,37 +921,37 @@
 
 *Requires NuixANALYSIS*
 
-|Parameter        |Type    |Required|Summary|Example                                                                         |
-|:---------------:|:------:|:------:|:-----:|:------------------------------------------------------------------------------:|
-|CasePath         |`string`|☑️      |       |C:/Cases/MyCase                                                                 |
-|LocalResourcesURL|`string`|☑️      |       |C:\\Program Files\\Nuix\\Nuix 8.4\\user-data\\Reports\\Case Summary\\Resources\\|
-|NRTPath          |`string`|☑️      |       |                                                                                |
-|OutputFormat     |`string`|☑️      |       |PDF                                                                             |
-|OutputPath       |`string`|☑️      |       |C:/Temp/report.pdf                                                              |
+|Parameter        |Type                         |Required|Summary|Example                                                                         |
+|:---------------:|:---------------------------:|:------:|:-----:|:------------------------------------------------------------------------------:|
+|CasePath         |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase                                                                 |
+|NRTPath          |[StringStream](#StringStream)|☑️      |       |                                                                                |
+|OutputFormat     |[StringStream](#StringStream)|☑️      |       |PDF                                                                             |
+|OutputPath       |[StringStream](#StringStream)|☑️      |       |C:/Temp/report.pdf                                                              |
+|LocalResourcesURL|[StringStream](#StringStream)|☑️      |       |C:\\Program Files\\Nuix\\Nuix 8.4\\user-data\\Reports\\Case Summary\\Resources\\|
 
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
 
-**String**
+**StringStream**
 
 *Requires Nuix Version 6.2*
 
 *Requires NuixANALYSIS*
 
-|Parameter|Type    |Required|Summary|Example        |
-|:-------:|:------:|:------:|:-----:|:-------------:|
-|CasePath |`string`|☑️      |       |C:/Cases/MyCase|
+|Parameter|Type                         |Required|Summary|Example        |
+|:-------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
 
-**String**
+**StringStream**
 
 *Requires Nuix Version 5.0*
 
-|Parameter|Type    |Required|Summary|Example        |
-|:-------:|:------:|:------:|:-----:|:-------------:|
-|CasePath |`string`|☑️      |       |C:/Cases/MyCase|
+|Parameter|Type                         |Required|Summary|Example        |
+|:-------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
 
 <a name="NuixDoesCaseExist"></a>
 ## NuixDoesCaseExist
@@ -961,9 +960,9 @@
 
 *Requires Nuix Version 5.0*
 
-|Parameter|Type    |Required|Summary|Example        |
-|:-------:|:------:|:------:|:-----:|:-------------:|
-|CasePath |`string`|☑️      |       |C:/Cases/MyCase|
+|Parameter|Type                         |Required|Summary|Example        |
+|:-------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
 
 <a name="NuixExportConcordance"></a>
 ## NuixExportConcordance
@@ -976,11 +975,11 @@
 
 *Requires NuixEXPORT_ITEMS*
 
-|Parameter        |Type    |Required|Summary|Example        |
-|:---------------:|:------:|:------:|:-----:|:-------------:|
-|CasePath         |`string`|☑️      |       |C:/Cases/MyCase|
-|ExportPath       |`string`|☑️      |       |               |
-|ProductionSetName|`string`|☑️      |       |               |
+|Parameter        |Type                         |Required|Summary|Example        |
+|:---------------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath         |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|ExportPath       |[StringStream](#StringStream)|☑️      |       |               |
+|ProductionSetName|[StringStream](#StringStream)|☑️      |       |               |
 
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities
@@ -989,10 +988,10 @@
 
 *Requires Nuix Version 5.0*
 
-|Parameter   |Type    |Required|Summary|Example        |
-|:----------:|:------:|:------:|:-----:|:-------------:|
-|CasePath    |`string`|☑️      |       |C:/Cases/MyCase|
-|OutputFolder|`string`|☑️      |       |C:/Output      |
+|Parameter   |Type                         |Required|Summary|Example        |
+|:----------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath    |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|OutputFolder|[StringStream](#StringStream)|☑️      |       |C:/Output      |
 
 <a name="NuixGeneratePrintPreviews"></a>
 ## NuixGeneratePrintPreviews
@@ -1003,24 +1002,24 @@
 
 *Requires NuixPRODUCTION_SET*
 
-|Parameter        |Type    |Required|Summary|Example        |
-|:---------------:|:------:|:------:|:-----:|:-------------:|
-|CasePath         |`string`|☑️      |       |C:/Cases/MyCase|
-|ProductionSetName|`string`|☑️      |       |               |
+|Parameter        |Type                         |Required|Summary|Example        |
+|:---------------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath         |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|ProductionSetName|[StringStream](#StringStream)|☑️      |       |               |
 
 <a name="NuixGetItemProperties"></a>
 ## NuixGetItemProperties
 
-**String**
+**StringStream**
 
 *Requires Nuix Version 6.2*
 
-|Parameter    |Type    |Required|Summary|Default Value              |Example        |
-|:-----------:|:------:|:------:|:-----:|:-------------------------:|:-------------:|
-|CasePath     |`string`|☑️      |       |                           |C:/Cases/MyCase|
-|PropertyRegex|`string`|☑️      |       |                           |Date           |
-|SearchTerm   |`string`|☑️      |       |                           |\*.txt         |
-|ValueRegex   |`string`|        |       |All values will be returned|(199\\d)       |
+|Parameter    |Type                         |Required|Summary|Default Value              |Example        |
+|:-----------:|:---------------------------:|:------:|:-----:|:-------------------------:|:-------------:|
+|CasePath     |[StringStream](#StringStream)|☑️      |       |                           |C:/Cases/MyCase|
+|SearchTerm   |[StringStream](#StringStream)|☑️      |       |                           |\*.txt         |
+|PropertyRegex|[StringStream](#StringStream)|☑️      |       |                           |Date           |
+|ValueRegex   |[StringStream](#StringStream)|        |       |All values will be returned|(199\\d)       |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
@@ -1031,12 +1030,12 @@
 
 *Requires NuixPRODUCTION_SET*
 
-|Parameter                    |Type    |Required|Summary|Default Value|Example        |
-|:---------------------------:|:------:|:------:|:-----:|:-----------:|:-------------:|
-|AreSourceProductionSetsInData|`bool`  |        |       |false        |               |
-|CasePath                     |`string`|☑️      |       |             |C:/Cases/MyCase|
-|DataPath                     |`string`|☑️      |       |             |               |
-|ProductionSetName            |`string`|☑️      |       |             |               |
+|Parameter                    |Type                         |Required|Summary|Default Value|Example        |
+|:---------------------------:|:---------------------------:|:------:|:-----:|:-----------:|:-------------:|
+|CasePath                     |[StringStream](#StringStream)|☑️      |       |             |C:/Cases/MyCase|
+|ProductionSetName            |[StringStream](#StringStream)|☑️      |       |             |               |
+|DataPath                     |[StringStream](#StringStream)|☑️      |       |             |               |
+|AreSourceProductionSetsInData|`bool`                       |        |       |false        |               |
 
 <a name="NuixMigrateCase"></a>
 ## NuixMigrateCase
@@ -1045,9 +1044,9 @@
 
 *Requires Nuix Version 7.2*
 
-|Parameter|Type    |Required|Summary|Example        |
-|:-------:|:------:|:------:|:-----:|:-------------:|
-|CasePath |`string`|☑️      |       |C:/Cases/MyCase|
+|Parameter|Type                         |Required|Summary|Example        |
+|:-------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
 
 <a name="NuixPerformOCR"></a>
 ## NuixPerformOCR
@@ -1058,12 +1057,12 @@
 
 *Requires NuixOCR_PROCESSING*
 
-|Parameter     |Type    |Required|Summary|Default Value                                                                                                                                      |Example                    |Requirements|
-|:------------:|:------:|:------:|:-----:|:-------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------:|:----------:|
-|CasePath      |`string`|☑️      |       |                                                                                                                                                   |C:/Cases/MyCase            |            |
-|OCRProfileName|`string`|        |       |The default profile will be used.                                                                                                                  |MyOcrProfile               |            |
-|OCRProfilePath|`string`|        |       |The default profile will be used.                                                                                                                  |C:\\Profiles\\MyProfile.xml|Nuix 7.6    |
-|SearchTerm    |`string`|        |       |NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:\*) OR (mime-type:image/\* AND ( flag:text_not_indexed OR content:( NOT \* ) )))|                           |            |
+|Parameter     |Type                         |Required|Summary|Default Value                                                                                                                                      |Example                    |Requirements|
+|:------------:|:---------------------------:|:------:|:-----:|:-------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------:|:----------:|
+|CasePath      |[StringStream](#StringStream)|☑️      |       |                                                                                                                                                   |C:/Cases/MyCase            |            |
+|SearchTerm    |[StringStream](#StringStream)|        |       |NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:\*) OR (mime-type:image/\* AND ( flag:text_not_indexed OR content:( NOT \* ) )))|                           |            |
+|OCRProfileName|[StringStream](#StringStream)|        |       |The default profile will be used.                                                                                                                  |MyOcrProfile               |            |
+|OCRProfilePath|[StringStream](#StringStream)|        |       |The default profile will be used.                                                                                                                  |C:\\Profiles\\MyProfile.xml|Nuix 7.6    |
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet
@@ -1074,11 +1073,11 @@
 
 *Requires NuixPRODUCTION_SET*
 
-|Parameter        |Type    |Required|Summary|Default Value             |Example        |
-|:---------------:|:------:|:------:|:-----:|:------------------------:|:-------------:|
-|CasePath         |`string`|☑️      |       |                          |C:/Cases/MyCase|
-|ProductionSetName|`string`|☑️      |       |                          |               |
-|SearchTerm       |`string`|        |       |All items will be removed.|Tag:sushi      |
+|Parameter        |Type                         |Required|Summary|Default Value             |Example        |
+|:---------------:|:---------------------------:|:------:|:-----:|:------------------------:|:-------------:|
+|CasePath         |[StringStream](#StringStream)|☑️      |       |                          |C:/Cases/MyCase|
+|ProductionSetName|[StringStream](#StringStream)|☑️      |       |                          |               |
+|SearchTerm       |[StringStream](#StringStream)|        |       |All items will be removed.|Tag:sushi      |
 
 <a name="NuixReorderProductionSet"></a>
 ## NuixReorderProductionSet
@@ -1091,8 +1090,8 @@
 
 |Parameter        |Type                                             |Required|Summary|Default Value|Example        |
 |:---------------:|:-----------------------------------------------:|:------:|:-----:|:-----------:|:-------------:|
-|CasePath         |`string`                                         |☑️      |       |             |C:/Cases/MyCase|
-|ProductionSetName|`string`                                         |☑️      |       |             |               |
+|CasePath         |[StringStream](#StringStream)                    |☑️      |       |             |C:/Cases/MyCase|
+|ProductionSetName|[StringStream](#StringStream)                    |☑️      |       |             |               |
 |SortOrder        |[ProductionSetSortOrder](#ProductionSetSortOrder)|        |       |Position     |               |
 
 <a name="NuixSearchAndTag"></a>
@@ -1104,11 +1103,25 @@
 
 *Requires NuixANALYSIS*
 
-|Parameter |Type    |Required|Summary|Example        |
-|:--------:|:------:|:------:|:-----:|:-------------:|
-|CasePath  |`string`|☑️      |       |C:/Cases/MyCase|
-|SearchTerm|`string`|☑️      |       |\*.txt         |
-|Tag       |`string`|☑️      |       |               |
+|Parameter |Type                         |Required|Summary|Example        |
+|:--------:|:---------------------------:|:------:|:-----:|:-------------:|
+|CasePath  |[StringStream](#StringStream)|☑️      |       |C:/Cases/MyCase|
+|SearchTerm|[StringStream](#StringStream)|☑️      |       |\*.txt         |
+|Tag       |[StringStream](#StringStream)|☑️      |       |               |
+
+<a name="NuixRunScript"></a>
+## NuixRunScript
+
+**StringStream**
+
+*Requires Nuix Version 8.2*
+
+|Parameter            |Type                         |Required|Summary|Default Value         |
+|:-------------------:|:---------------------------:|:------:|:-----:|:--------------------:|
+|FunctionName         |[StringStream](#StringStream)|☑️      |       |                      |
+|ScriptText           |[StringStream](#StringStream)|☑️      |       |                      |
+|Parameters           |[Entity](#Entity)            |☑️      |       |                      |
+|EntityStreamParameter|[EntityStream](#EntityStream)|        |       |Do not stream entities|
 
 # Enums
 <a name="BooleanOperator"></a>
@@ -1145,7 +1158,6 @@
 |Default         |       |
 |Ascii           |       |
 |BigEndianUnicode|       |
-|UTF7            |       |
 |UTF8            |       |
 |UTF8BOM         |       |
 |UTF32           |       |

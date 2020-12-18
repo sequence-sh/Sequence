@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
+    <DebugType>embedded</DebugType>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -28,7 +29,7 @@
     <PackageReleaseNotes>https://gitlab.com/reductech/edr/edr/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
-    <Authors>reductech</Authors>
+    <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
   </PropertyGroup>
@@ -41,14 +42,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.6" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.4.0-a.master.2012090406" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2012071439" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.4.0-a.dev.2012171202" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2012171115" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
   </ItemGroup>
 

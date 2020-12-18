@@ -35,9 +35,9 @@ variables:
   artifacts:
     name: "$PACKAGE_NAME_EXE-$PROJECT_VERSION"
     paths:
+      - appsettings.json
       - CHANGELOG.md
       - EDR.exe
-      - EDR.pdb
       - LICENSE
       - README.md
 
@@ -52,7 +52,7 @@ package exe dev:
     - version check dev
   script:
     - dotnet publish --no-build --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
-      -p:PublishSingleFile=true --output ./
+      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
   artifacts:
     expire_in: 3 months
 
@@ -67,7 +67,7 @@ package exe release:
     - version check release
   script:
     - dotnet publish --no-build --configuration $CONFIG_RELEASE
-      -p:PublishSingleFile=true --output ./
+      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
   artifacts:
     expire_in: 2 hours
 
@@ -94,3 +94,7 @@ sign exe release:
 code_quality:
   tags:
     - rt-dind
+
+mutation testing:
+  rules:
+    - when: never

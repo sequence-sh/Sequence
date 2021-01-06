@@ -44,12 +44,17 @@ variables:
 package exe dev:
   stage: package
   extends:
+    - .default_before_script
     - .rules_dev_manual
     - .exe_artifacts_default
   needs:
     - build dev
     - test dev
     - version check dev
+  variables:
+    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
+    NUGET_USERNAME: $NUGET_USER_DEV
+    NUGET_TOKEN: $NUGET_TOKEN_DEV
   script:
     - dotnet publish --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
       -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
@@ -59,12 +64,17 @@ package exe dev:
 package exe release:
   stage: package
   extends:
+    - .default_before_script
     - .rules_release
     - .exe_artifacts_default
   needs:
     - build release
     - test release
     - version check release
+  variables:
+    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
+    NUGET_USERNAME: $NUGET_USER_DEV
+    NUGET_TOKEN: $NUGET_TOKEN_DEV
   script:
     - dotnet publish --configuration $CONFIG_RELEASE
       -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./

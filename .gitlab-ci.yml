@@ -51,7 +51,7 @@ package exe dev:
     - test dev
     - version check dev
   script:
-    - dotnet publish --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
+    - dotnet publish --no-restore --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
       -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
   artifacts:
     expire_in: 3 months
@@ -66,7 +66,7 @@ package exe release:
     - test release
     - version check release
   script:
-    - dotnet publish --configuration $CONFIG_RELEASE
+    - dotnet publish --no-restore --configuration $CONFIG_RELEASE
       -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
   artifacts:
     expire_in: 2 hours

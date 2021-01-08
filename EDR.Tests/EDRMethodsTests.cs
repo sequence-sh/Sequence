@@ -14,105 +14,113 @@ using Xunit;
 
 namespace EDR.Tests
 {
-    public class EDRMethodsTests
+
+public class EDRMethodsTests
+{
+    private const string TheUltimateTestString = "Print Value: 'Hello World'";
+
+    private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger) =>
+        GetDefaultServiceProvider(logger, null);
+
+    private static IServiceProvider GetDefaultServiceProvider(
+        ILogger<EDRMethods> logger,
+        IFileSystem fileSystem)
     {
-        private const string TheUltimateTestString = "Print Value: 'Hello World'";
-
-        private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger) =>
-            GetDefaultServiceProvider(logger, null);
-        
-        private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger,
-            IFileSystem fileSystem)
-        {
-            var config = Options.Create(new NuixConfig
+        var config = Options.Create(
+            new NuixConfig
             {
-                UseDongle = true,
+                UseDongle      = true,
                 ExeConsolePath = "Test Path",
-                Version = new Version(0, 0),
-                Features = new[] { "CASE_CREATION", "METADATA_IMPORT" }
-            });
+                Version        = new Version(0, 0),
+                Features       = new[] { "CASE_CREATION", "METADATA_IMPORT" }
+            }
+        );
 
-            var edrm = fileSystem == null ? new EDRMethods(logger, config) :
-                new EDRMethods(logger, config, fileSystem);
+        var edrm = fileSystem == null
+            ? new EDRMethods(logger, config)
+            : new EDRMethods(logger, config, fileSystem);
 
-            var serviceProvider = new ServiceCollection().AddSingleton(edrm).BuildServiceProvider();
+        var serviceProvider = new ServiceCollection().AddSingleton(edrm).BuildServiceProvider();
 
-            return serviceProvider;
-        }
+        return serviceProvider;
+    }
 
-        [Fact]
-        public void Execute_WhenSCLFunctionIsSuccess_LogsMessage()
-        {
-            var logger = new TestLogger<EDRMethods>();
-            var sp = GetDefaultServiceProvider(logger);
+    [Fact]
+    public void Execute_WhenSCLFunctionIsSuccess_LogsMessage()
+    {
+        var logger = new TestLogger<EDRMethods>();
+        var sp     = GetDefaultServiceProvider(logger);
 
-            var result = new AppRunner<EDRMethods>()
-                .UseMicrosoftDependencyInjection(sp)
-                .UseDefaultMiddleware()
-                .RunInMem($"-s \"{TheUltimateTestString}\"");
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem($"-s \"{TheUltimateTestString}\"");
 
-            result.ExitCode.Should().Be(0);
-            result.Console.OutText().Should().Be("");
+        result.ExitCode.Should().Be(0);
+        result.Console.OutText().Should().Be("");
 
-            logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
-        }
-        
-        [Fact]
-        public void Execute_WhenPathFunctionIsSuccess_LogsMessage()
-        {
-            var logger = new TestLogger<EDRMethods>();
+        logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
+    }
 
-            var filePath = @"C:\config.scl";
-            
-            var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+    [Fact]
+    public void Execute_WhenPathFunctionIsSuccess_LogsMessage()
+    {
+        var logger = new TestLogger<EDRMethods>();
+
+        var filePath = @"C:\config.scl";
+
+        var fs = new MockFileSystem(
+            new Dictionary<string, MockFileData>
             {
                 { filePath, new MockFileData(TheUltimateTestString) }
-            });
-            
-            var sp = GetDefaultServiceProvider(logger, fs);
+            }
+        );
 
-            var result = new AppRunner<EDRMethods>()
-                .UseMicrosoftDependencyInjection(sp)
-                .UseDefaultMiddleware()
-                .RunInMem($"-p {filePath}");
+        var sp = GetDefaultServiceProvider(logger, fs);
 
-            result.ExitCode.Should().Be(0);
-            result.Console.OutText().Should().Be("");
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem($"-p {filePath}");
 
-            logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
-        }
-        
-        [Fact]
-        public void Execute_WhenFunctionIsFailure_LogsErrorMessage()
-        {
-            var logger = new TestLogger<EDRMethods>();
-            var sp = GetDefaultServiceProvider(logger);
+        result.ExitCode.Should().Be(0);
+        result.Console.OutText().Should().Be("");
 
-            var result = new AppRunner<EDRMethods>()
-                .UseMicrosoftDependencyInjection(sp)
-                .UseDefaultMiddleware()
-                .RunInMem("-s \"Pront Value: 'Hello World'\"");
+        logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
+    }
 
-            result.ExitCode.Should().Be(0);
-            result.Console.OutText().Should().Be("");
-            
-            logger.LoggedValues[0].Should().Be("The step 'Pront' does not exist");
-        }
+    [Fact]
+    public void Execute_WhenFunctionIsFailure_LogsErrorMessage()
+    {
+        var logger = new TestLogger<EDRMethods>();
+        var sp     = GetDefaultServiceProvider(logger);
 
-        [Fact]
-        public void Execute_WhenSCLAndPathAreNull_Throws()
-        {
-            var logger = new TestLogger<EDRMethods>();
-            var sp = GetDefaultServiceProvider(logger);
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem("-s \"Pront Value: 'Hello World'\"");
 
-            var result = Assert.Throws<ArgumentException>(() => new AppRunner<EDRMethods>()
+        result.ExitCode.Should().Be(0);
+        result.Console.OutText().Should().Be("");
+
+        logger.LoggedValues[0].Should().Be("The step 'Pront' does not exist");
+    }
+
+    [Fact]
+    public void Execute_WhenSCLAndPathAreNull_Throws()
+    {
+        var logger = new TestLogger<EDRMethods>();
+        var sp     = GetDefaultServiceProvider(logger);
+
+        var result = Assert.Throws<ArgumentException>(
+            () => new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("-s \"\"")
-            );
+        );
 
-            Assert.Equal("Please provide a Sequence string (-s) or path (-p).", result.Message);
-        }
-
+        Assert.Equal("Please provide a Sequence string (-s) or path (-p).", result.Message);
     }
+}
+
 }

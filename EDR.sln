@@ -7,10 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDR", "EDR\EDR.csproj", "{1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7BD2EDD3-B17F-4C79-BCC4-E2E6352D0323}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+		CHANGELOG.md = CHANGELOG.md
 		documentation.md = documentation.md
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+		EDR.sln.DotSettings = EDR.sln.DotSettings
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDR.Tests", "EDR.Tests\EDR.Tests.csproj", "{8F1DD1D9-7511-4534-8F33-BD1245B923D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDR.Tests", "EDR.Tests\EDR.Tests.csproj", "{8F1DD1D9-7511-4534-8F33-BD1245B923D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

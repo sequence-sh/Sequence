@@ -14,7 +14,8 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
+using Reductech.EDR.Core.Internal.Parser;
+using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
@@ -106,8 +107,9 @@ public class EDRMethods
             ConnectorTypes.Append(typeof(IStep)).ToArray()
         );
 
-        var freezeResult =
-            SequenceParsing.ParseSequence(scl).Bind(x => x.TryFreeze(stepFactoryStore));
+        var freezeResult = SCLParsing.ParseSequence(scl)
+            .Bind(x => x.TryFreeze(stepFactoryStore))
+            .Map(SCLRunner.ConvertToUnitStep);
 
         if (freezeResult.IsFailure)
             LogError(_logger, freezeResult.Error);

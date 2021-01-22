@@ -17,7 +17,7 @@ namespace EDR.Tests
 
 public class EDRMethodsTests
 {
-    private const string TheUltimateTestString = "Print Value: 'Hello World'";
+    private const string TheUltimateTestString = "'Hello World'";
 
     private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger) =>
         GetDefaultServiceProvider(logger, null);

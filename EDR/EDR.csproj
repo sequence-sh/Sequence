@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier> 
     <OutputType>Exe</OutputType>
     <DebugType>embedded</DebugType>
     <IsPackable>false</IsPackable>
@@ -35,16 +35,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandDotNet" Version="4.1.4" />
+    <PackageReference Include="CommandDotNet" Version="4.1.5" />
     <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="NLog" Version="4.7.6" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.4.0-a.dev.2012171202" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2012171115" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.5" />
+    <PackageReference Include="NLog" Version="4.7.7" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.4.0-a.master.2101131154" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2101221118" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.9" />
   </ItemGroup>
 
   <ItemGroup>

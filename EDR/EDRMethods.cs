@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -28,31 +26,32 @@ namespace Reductech.EDR
 public class EDRMethods
 {
     private readonly ILogger<EDRMethods> _logger;
-    private readonly NuixConfig _nuixConfig;
+
+    private readonly SCLSettings _settings;
     private readonly IFileSystem _fileSystem;
 
     /// <summary>
     /// Instantiate EDRMethods using the default IFileSystem provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="nuixConfig">Configuration for the Nuix connector.</param>
-    public EDRMethods(ILogger<EDRMethods> logger, IOptions<NuixConfig> nuixConfig)
-        : this(logger, nuixConfig, new FileSystem()) { }
+    /// <param name="settings">Configuration for connectors.</param>
+    public EDRMethods(ILogger<EDRMethods> logger, SCLSettings settings)
+        : this(logger, settings, new FileSystem()) { }
 
     /// <summary>
     /// Instantiate EDRMethods using the specified IFileSystem provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="nuixConfig">Configuration for the Nuix connector.</param>
+    /// <param name="settings">Configuration</param>
     /// <param name="fileSystem">An instance of the FileSystem helper. Used for testing.</param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
-        IOptions<NuixConfig> nuixConfig,
+        SCLSettings settings,
         IFileSystem fileSystem)
     {
         _logger     = logger;
-        _nuixConfig = nuixConfig.Value;
         _fileSystem = fileSystem;
+        _settings   = settings;
     }
 
     /// <summary>
@@ -115,11 +114,9 @@ public class EDRMethods
             LogError(_logger, freezeResult.Error);
         else
         {
-            var nuixSettings = CreateNuixSettings();
-
             var stateMonad = new StateMonad(
                 _logger,
-                nuixSettings,
+                _settings,
                 ExternalProcessRunner.Instance,
                 FileSystemHelper.Instance,
                 stepFactoryStore
@@ -130,25 +127,6 @@ public class EDRMethods
             if (runResult.IsFailure)
                 LogError(_logger, runResult.Error);
         }
-    }
-
-    private NuixSettings CreateNuixSettings()
-    {
-        var nuixFeatures = new HashSet<NuixFeature>();
-
-        foreach (var feature in _nuixConfig.Features)
-            if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf)
-             && nf is NuixFeature nuixFeature)
-                nuixFeatures.Add(nuixFeature);
-
-        var nuixSettings = new NuixSettings(
-            _nuixConfig.UseDongle,
-            _nuixConfig.ExeConsolePath,
-            _nuixConfig.Version,
-            nuixFeatures
-        );
-
-        return nuixSettings;
     }
 
     private static void LogError(ILogger logger, IError error)

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using Reductech.EDR.Core;
 
 namespace Reductech.EDR
 {
@@ -42,9 +43,9 @@ internal class Program
 
     private static IHostBuilder CreateHostBuilder() => new HostBuilder()
         .ConfigureAppConfiguration(
-            (context, config) =>
+            (_, config) =>
             {
-                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+                config.AddJsonFile("appsettings.json", false, false);
                 config.AddEnvironmentVariables(prefix: "EDR_");
             }
         )
@@ -52,7 +53,10 @@ internal class Program
             (context, services) =>
             {
                 services.AddSingleton<EDRMethods>();
-                services.Configure<NuixConfig>(context.Configuration.GetSection("connectors:nuix"));
+
+                var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);
+
+                services.AddSingleton(sclSettings);
             }
         )
         .ConfigureLogging(

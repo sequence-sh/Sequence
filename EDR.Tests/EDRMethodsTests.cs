@@ -8,8 +8,9 @@ using CommandDotNet.TestTools;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Reductech.EDR;
+using Reductech.EDR.Connectors.Nuix;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Xunit;
 
 namespace EDR.Tests
@@ -26,21 +27,21 @@ public class EDRMethodsTests
         ILogger<EDRMethods> logger,
         IFileSystem fileSystem)
     {
-        var config = Options.Create(
-            new NuixConfig
-            {
-                UseDongle      = true,
-                ExeConsolePath = "Test Path",
-                Version        = new Version(0, 0),
-                Features       = new[] { "CASE_CREATION", "METADATA_IMPORT" }
-            }
-        );
+        var settings =
+            NuixSettings.CreateSettings(
+                "Test Path",
+                new Version(0, 0),
+                true,
+                new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT }
+            );
 
         var edrm = fileSystem == null
-            ? new EDRMethods(logger, config)
-            : new EDRMethods(logger, config, fileSystem);
+            ? new EDRMethods(logger, settings)
+            : new EDRMethods(logger, settings, fileSystem);
 
-        var serviceProvider = new ServiceCollection().AddSingleton(edrm).BuildServiceProvider();
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton(edrm)
+            .BuildServiceProvider();
 
         return serviceProvider;
     }

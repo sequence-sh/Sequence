@@ -1,4 +1,4 @@
-## v0.4.0 (2021-01-31)
+## v0.4.0 (2021-01-29)
 
 Major rework of the configuration language and data streaming features
 so lots of **breaking changes**:
@@ -18,7 +18,6 @@ so lots of **breaking changes**:
 
 Also:
 
-- Added Powershell connector to allow for inline scripts to be executed in Sequences
 - Added Step to execute inline Ruby scripts when running the Nuix Connector
 - Added steps for working with JSON and IDX
 - Documentation has now been moved to https://docs.reductech.io
@@ -28,11 +27,9 @@ For more details see the release notes for core and connectors:
 
 - [Core v0.4.0](https://gitlab.com/reductech/edr/core/-/releases/v0.4.0)
 - [Nuix Connector v0.4.0](https://gitlab.com/reductech/edr/connectors/nuix/-/releases/v0.4.0)
-- [Pwsh Connector v0.4.0](https://gitlab.com/reductech/edr/connectors/pwsh/-/releases/v0.4.0)
 
 ### New Features
 
-- Add Pwsh connector to EDR #42
 - Change settings to use Dynamic Settings #38
 - Print results of steps that do not return type Unit, to make the config more concise #27
 - Use dependency injection for connector and logging configuration #22

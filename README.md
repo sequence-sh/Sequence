@@ -19,7 +19,6 @@ EDR includes:
     - Control flow, e.g. If, ForEach, While
 - Connectors that interact with various applications
   - [Nuix](https://gitlab.com/reductech/edr/connectors/nuix)
-  - [Pwsh](https://gitlab.com/reductech/edr/connectors/pwsh)
 
 A `Step` is a unit of work in an application such as
 creating a case, ingesting data, searching or exporting data
@@ -41,9 +40,5 @@ Documentation is available at [docs.reductech.io](https://docs.reductech.io)
 
 EDR is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).
 
-However, we're currently only using the `win10-x64` runtime identifier for
-our [releases](https://gitlab.com/reductech/edr/edr/-/releases) which are
-compatible with:
-
-- Windows 10 x64 1607+
-- Windows Server 2016
+However, we're currently only targeting the `win-x64` runtime identifier for
+our [releases](https://gitlab.com/reductech/edr/edr/-/releases).

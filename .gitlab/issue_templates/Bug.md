@@ -1,9 +1,10 @@
-/label ~"bug::possible" 
-/label ~"severity::3" 
-/label ~"priority::3" 
-/label ~"wf::backlog" 
-/label ~"area::tooling" 
+/label ~"bug::possible"
+/label ~"severity::3"
+/label ~"priority::3"
+/label ~"wf::backlog"
+/label ~"area::tooling"
 /label ~"edr"
+
 ## Summary
 
 Concise description of the bug.
@@ -26,13 +27,13 @@ What is the correct behaviour.
 Any relevant logs and/or screenshots, attached as files, or
 inserted directly as a code (```) block.
 
-Here's a screenshot: ![image](https://gitlab.com/reductech/templates/dotnetlibrary/uploads/f58bcd6503bb71111306108ad4314d3b/image.png)
+Here's a screenshot: `![image](https://gitlab.com/reductech/edr/edr/uploads/f58bcd6503bb71111306108ad4314d3b/image.png)`
 
 ## Suggested Fix(es)
 
 Link to the line of code that's causing the behaviour.
 
------
+---
 
 > **Everything below here can and should be deleted.**
 

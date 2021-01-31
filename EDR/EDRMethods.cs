@@ -8,7 +8,6 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Connectors.Pwsh;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
@@ -153,10 +152,7 @@ public class EDRMethods
     /// <summary>
     /// One type for each connector.
     /// </summary>
-    private IEnumerable<Type> ConnectorTypes { get; } = new List<Type>
-    {
-        typeof(IRubyScriptStep), typeof(PwshRunScript)
-    };
+    private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> { typeof(IRubyScriptStep) };
 }
 
 }

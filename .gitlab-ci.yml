@@ -39,6 +39,7 @@ variables:
       - CHANGELOG.md
       - EDR.exe
       - LICENSE
+      - nuixconnectorscript.rb
       - README.md
 
 package exe dev:

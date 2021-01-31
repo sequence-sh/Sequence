@@ -1,69 +1,49 @@
-[![Gitter](https://badges.gitter.im/reductech/edr.svg)](https://gitter.im/reductech/edr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![pipeline status](https://gitlab.com/reductech/edr/edr/badges/master/pipeline.svg)](https://gitlab.com/reductech/edr/edr/-/commits/master)
-[![coverage report](https://gitlab.com/reductech/edr/edr/badges/master/coverage.svg)](https://gitlab.com/reductech/edr/edr/-/commits/master)
+# E-Discovery Reduct
 
-# Introduction
+Reductech EDR is a collection of libraries that automates
+cross-application e-discovery and forensic workflows.
 
-This is a project that lets you execute various processes in NUIX from outside of NUIX and construct pipelines to automate entire workflows.<br>
-We intend to add other connectors apart from Nuix in the future<br>
+The EDR project is a command-line application to run Sequences of Steps using
+the sequence configuration language (SCL).
 
-To do this you will need to create a settings file with details about your NUIX application and a YAML file explaining your pipeline.
+EDR includes:
 
-### Running a sequence
+- [Core](https://gitlab.com/reductech/edr/core) which is:
+  - An interpreter for the Sequence Configuration Language
+  - A collection of application-independent Steps that:
+    - Can be used to import/export data and structure workflows
+    - Work with various file formats: CSV, Json, Concordance
+    - Manipulate strings, e.g. Append, Concatenate, ChangeCase
+    - Enforce data standards and convert between various formats through the use of Schemas
+    - Create and manipulate entities (structured objects that represent data)
+    - Control flow, e.g. If, ForEach, While
+- Connectors that interact with various applications
+  - [Nuix](https://gitlab.com/reductech/edr/connectors/nuix)
+  - [Pwsh](https://gitlab.com/reductech/edr/connectors/pwsh)
 
-To run a sequence, use the EDR.exe application
+A `Step` is a unit of work in an application such as
+creating a case, ingesting data, searching or exporting data
+A `Sequence` is a series of `Steps` that are executed in order.
+EDR allows for data and configuration to be passed between Steps.
 
-`EDR.exe execute -p C:/MySequence.yaml`
+## Quick Start
 
-### Yaml
+1. Download the latest release from the [Releases](https://gitlab.com/reductech/edr/edr/-/releases) page
+2. Unzip the file and open a shell (cmd, pwsh, powershell) of your choice in that directory
+3. Run `EDR.exe -s "- Print 'Hello world'"`
+4. That's it, now try something a bit more useful in the [Quick Start](https://docs.reductech.io/howto/quick-start.html)
 
-Yaml is a human-readable data-serialization language you can use to define your pipelines.<br>
-You define a list of steps and their parameters and they will be performed in order. <br>
-For a list of possible steps see the [Documentation](documentation.md)<br>
+## Documentation
 
-The following yaml does the following
+Documentation is available at [docs.reductech.io](https://docs.reductech.io)
 
-- Create a new case
-- Add an item to the case
-- Write a report on the case
-- Perform OCR on relevant files
-- Assign a tag to all items matching a particular search term
-- Add all tagged items to a new item set
-- Add everything in that item set to a new production set
-- Export that production set as concordance
+## OS Compatibility
 
-```yaml
-- NuixCreateCase(CaseName = 'My Case', CasePath = 'C:/MyCase', Investigator = 'Sherlock Holmes')
-- NuixAddItem(CasePath = 'C:/MyCase', Custodian = 'Moriarty', FolderName = 'My Folder', Path = 'C:/Data/MyFile.txt')
-- WriteFile(FileName = 'Report', Folder = 'C:/Output', Text = NuixCreateReport(CasePath = 'C:/MyCase'))
-- NuixPerformOCR(CasePath = 'C:/MyCase', OCRProfileName = 'My OCR Profile', SearchTerm = 'NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))')
-- NuixSearchAndTag(CasePath = 'C:/MyCase', SearchTerm = 'Diamond', Tag = 'Gems')
-- NuixAddToItemSet(CasePath = 'C:/MyCase', ItemSetName = 'TaggedItems', SearchTerm = 'Tag:*')
-- NuixAddToProductionSet(CasePath = 'C:/MyCase', ProductionSetName = 'TaggedItemsProductionSet', SearchTerm = 'ItemSet:TaggedItems')
-- NuixExportConcordance(CasePath = 'C:/MyCase', ExportPath = 'C:/Export', ProductionSetName = 'TaggedItemsProductionSet')
-```
+EDR is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).
 
-### Settings
+However, we're currently only using the `win10-x64` runtime identifier for
+our [releases](https://gitlab.com/reductech/edr/edr/-/releases) which are
+compatible with:
 
-You need to edit the App.config file to match your Nuix configuration<br>
-
-Adjust the following settings<br>
-
-- NuixUseDongle : Whether the Nuix authentication is supplied by a dongle
-- NuixExeConsolePath : The path to the nuix console application
-- NuixVersion: The version of that is installed
-- NuixFeatures: The Nuix features you have available
-
-The file should look like this
-
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <appSettings>
-    <add key="NuixUseDongle" value="true"/>
-    <add key="NuixExeConsolePath" value="C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe"/>
-    <add key="NuixVersion" value="8.2"/>
-    <add key="NuixFeatures" value="ANALYSIS,CASE_CREATION,EXPORT_ITEMS,METADATA_IMPORT,OCR_PROCESSING,PRODUCTION_SET"/>
-  </appSettings>
-</configuration>
-```
+- Windows 10 x64 1607+
+- Windows Server 2016

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier> 
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
     <DebugType>embedded</DebugType>
     <IsPackable>false</IsPackable>
@@ -43,6 +43,7 @@
     <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
     <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.4.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.4.0" />
     <PackageReference Include="Reductech.EDR.Core" Version="0.4.0" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.9" />
   </ItemGroup>

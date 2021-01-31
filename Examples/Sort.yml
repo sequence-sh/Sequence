@@ -1,7 +1,0 @@
-- <SourceFile> = 'Dinosaurs.csv'
-- <TargetFile> = 'SortedDinosaurs.csv'
-- <EntityStream> = FromCSV(Stream = ReadFile(Path = PathCombine(Paths = [<SourceFile>])))
-#Sort the Dinosaurs by Name
-- <EntityStream> = EntityStreamSort(EntityStream = <EntityStream>, KeySelector=EntityGetValue(Entity=<Entity>,Property='Name'))
-- <WriteStream> = ToCSV(Entities = <EntityStream>)
-- FileWrite(Path = PathCombine(Paths = [<TargetFile>]), Stream = <WriteStream>)

@@ -1,7 +1,0 @@
-- <SourceFile> = 'Dinosaurs.csv'
-- <TargetFile> = 'MappedDinosaurs.csv'
-- <EntityStream> = FromCSV(Stream = ReadFile(Path = PathCombine(Paths = [<SourceFile>])))
-#Change the 'Name' property to 'Dino'
-- <EntityStream> = EntityMapProperties(EntityStream = <EntityStream>, Mappings = (Name = 'Dino'))
-- <WriteStream> = ToCSV(Entities = <EntityStream>)
-- FileWrite(Path = PathCombine(Paths = [<TargetFile>]), Stream = <WriteStream>)

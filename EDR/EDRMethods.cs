@@ -11,6 +11,7 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Internal.Logging;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.Util;
@@ -120,6 +121,11 @@ public class EDRMethods
                 _settings,
                 stepFactoryStore,
                 _externalContext
+            );
+
+            _logger.LogSituation(
+                LogSituation.SequenceStarted,
+                new object[] { _settings.Entity.Serialize() }
             );
 
             var runResult = await freezeResult.Value.Run<Unit>(stateMonad, cancellationToken);

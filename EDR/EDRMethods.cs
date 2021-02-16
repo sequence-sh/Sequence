@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
@@ -28,7 +27,7 @@ public class EDRMethods
     private readonly ILogger<EDRMethods> _logger;
 
     private readonly SCLSettings _settings;
-    private readonly IFileSystem _fileSystem;
+    private readonly IExternalContext _externalContext;
 
     /// <summary>
     /// Instantiate EDRMethods using the default IFileSystem provider.
@@ -36,22 +35,22 @@ public class EDRMethods
     /// <param name="logger">The logger.</param>
     /// <param name="settings">Configuration for connectors.</param>
     public EDRMethods(ILogger<EDRMethods> logger, SCLSettings settings)
-        : this(logger, settings, new FileSystem()) { }
+        : this(logger, settings, ExternalContext.Default) { }
 
     /// <summary>
     /// Instantiate EDRMethods using the specified IFileSystem provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="settings">Configuration</param>
-    /// <param name="fileSystem">An instance of the FileSystem helper. Used for testing.</param>
+    /// <param name="externalContext">The external context. Can be mocked for testing.</param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
         SCLSettings settings,
-        IFileSystem fileSystem)
+        IExternalContext externalContext)
     {
-        _logger     = logger;
-        _fileSystem = fileSystem;
-        _settings   = settings;
+        _logger          = logger;
+        _externalContext = externalContext;
+        _settings        = settings;
     }
 
     /// <summary>
@@ -96,7 +95,9 @@ public class EDRMethods
 
     private async Task ExecuteFromPathAsync(string path, CancellationToken cancellationToken)
     {
-        var text = await _fileSystem.File.ReadAllTextAsync(path, cancellationToken);
+        var text =
+            await _externalContext.FileSystemHelper.File.ReadAllTextAsync(path, cancellationToken);
+
         await ExecuteFromStringAsync(text, cancellationToken);
     }
 
@@ -117,9 +118,8 @@ public class EDRMethods
             var stateMonad = new StateMonad(
                 _logger,
                 _settings,
-                ExternalProcessRunner.Instance,
-                FileSystemHelper.Instance,
-                stepFactoryStore
+                stepFactoryStore,
+                _externalContext
             );
 
             var runResult = await freezeResult.Value.Run<Unit>(stateMonad, cancellationToken);

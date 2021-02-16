@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.IO.Abstractions;
-using System.IO.Abstractions.TestingHelpers;
+using System.Threading;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
 using Reductech.EDR;
 using Reductech.EDR.Connectors.Nuix;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.ExternalProcesses;
+using Thinktecture;
+using Thinktecture.IO;
+using Thinktecture.IO.Adapters;
 using Xunit;
 
 namespace EDR.Tests
@@ -25,7 +30,7 @@ public class EDRMethodsTests
 
     private static IServiceProvider GetDefaultServiceProvider(
         ILogger<EDRMethods> logger,
-        IFileSystem fileSystem)
+        IExternalContext externalContext)
     {
         var settings =
             NuixSettings.CreateSettings(
@@ -35,9 +40,9 @@ public class EDRMethodsTests
                 new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT }
             );
 
-        var edrm = fileSystem == null
+        var edrm = externalContext == null
             ? new EDRMethods(logger, settings)
-            : new EDRMethods(logger, settings, fileSystem);
+            : new EDRMethods(logger, settings, externalContext);
 
         var serviceProvider = new ServiceCollection()
             .AddSingleton(edrm)
@@ -70,14 +75,31 @@ public class EDRMethodsTests
 
         var filePath = @"C:\config.scl";
 
-        var fs = new MockFileSystem(
-            new Dictionary<string, MockFileData>
-            {
-                { filePath, new MockFileData(TheUltimateTestString) }
-            }
+        var repo = new MockRepository(MockBehavior.Strict);
+
+        var mockFile = repo.Create<IFile>();
+
+        mockFile.Setup(x => x.ReadAllTextAsync(filePath, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(TheUltimateTestString);
+
+        IExternalContext externalContext = new ExternalContext(
+            new FileSystemAdapter(
+                repo.Create<IDirectory>().Object,
+                mockFile.Object,
+                repo.Create<ICompression>().Object
+            ),
+            repo.Create<IExternalProcessRunner>().Object,
+            repo.Create<IConsole>().Object
         );
 
-        var sp = GetDefaultServiceProvider(logger, fs);
+        //var fs = new MockFileSystem(
+        //    new Dictionary<string, MockFileData>
+        //    {
+        //        { filePath, new MockFileData(TheUltimateTestString) }
+        //    }
+        //);
+
+        var sp = GetDefaultServiceProvider(logger, externalContext);
 
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)

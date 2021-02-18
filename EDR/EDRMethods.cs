@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
+using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Sql.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
 
 namespace Reductech.EDR
@@ -82,7 +84,13 @@ public class EDRMethods
             ShortName   = "p",
             Description = "Run a Sequence defined in a file."
         )]
-        string? path = null) => ExecuteAbstractAsync(scl, path, cancellationToken);
+        string? path = null,
+        [Option(
+            LongName    = "build",
+            ShortName   = "b",
+            Description = "If set, build the SCL but do not execute it."
+        )]
+        bool validate = false) => ExecuteAbstractAsync(scl, path, validate, cancellationToken);
 
     /// <summary>
     /// Executes SCL from either a file or a string.
@@ -90,36 +98,62 @@ public class EDRMethods
     private async Task ExecuteAbstractAsync(
         string? scl,
         string? path,
+        bool validate,
         CancellationToken cancellationToken)
     {
         if (!string.IsNullOrWhiteSpace(scl))
-            await ExecuteFromStringAsync(scl, cancellationToken);
+            await ExecuteFromStringAsync(scl, validate, cancellationToken);
         else if (!string.IsNullOrWhiteSpace(path))
-            await ExecuteFromPathAsync(path, cancellationToken);
+            await ExecuteFromPathAsync(path, validate, cancellationToken);
         else
             throw new ArgumentException("Please provide a Sequence string (-s) or path (-p).");
     }
 
-    private async Task ExecuteFromPathAsync(string path, CancellationToken cancellationToken)
+    private async Task ExecuteFromPathAsync(
+        string path,
+        bool validate,
+        CancellationToken cancellationToken)
     {
         var text =
             await _externalContext.FileSystemHelper.File.ReadAllTextAsync(path, cancellationToken);
 
-        await ExecuteFromStringAsync(text, cancellationToken);
+        await ExecuteFromStringAsync(text, validate, cancellationToken);
     }
 
-    private async Task ExecuteFromStringAsync(string scl, CancellationToken cancellationToken)
+    private async Task ExecuteFromStringAsync(
+        string scl,
+        bool validate,
+        CancellationToken cancellationToken)
     {
         var stepFactoryStore = StepFactoryStore.CreateUsingReflection(
             ConnectorTypes.Append(typeof(IStep)).ToArray()
         );
 
-        var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
+        if (validate)
+        {
+            ValidateSCL(scl, stepFactoryStore);
+        }
+        else
+        {
+            var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
-        var r = await runner.RunSequenceFromTextAsync(scl, cancellationToken);
+            var r = await runner.RunSequenceFromTextAsync(scl, cancellationToken);
 
-        if (r.IsFailure)
-            SCLRunner.LogError(_logger, r.Error);
+            if (r.IsFailure)
+                SCLRunner.LogError(_logger, r.Error);
+        }
+    }
+
+    private void ValidateSCL(string scl, StepFactoryStore stepFactoryStore)
+    {
+        var stepResult = SCLParsing.ParseSequence(scl)
+            .Bind(x => x.TryFreeze(stepFactoryStore))
+            .Map(SCLRunner.ConvertToUnitStep);
+
+        if (stepResult.IsFailure)
+            SCLRunner.LogError(_logger, stepResult.Error);
+        else
+            _logger.LogInformation("Build Successful");
     }
 
     /// <summary>

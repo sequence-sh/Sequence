@@ -2,7 +2,7 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "-s \"print Value: 123\""
+      "commandLineArgs": "-s \"SQLQuery 'cs' 'query'\""
     }
   }
 }

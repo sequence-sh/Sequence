@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
-using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Connectors.Sql.Steps;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
-using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
 {
@@ -28,7 +24,7 @@ public class EDRMethods
     private readonly ILogger<EDRMethods> _logger;
 
     private readonly SCLSettings _settings;
-    private readonly IFileSystem _fileSystem;
+    private readonly IExternalContext _externalContext;
 
     /// <summary>
     /// Instantiate EDRMethods using the default IFileSystem provider.
@@ -36,22 +32,32 @@ public class EDRMethods
     /// <param name="logger">The logger.</param>
     /// <param name="settings">Configuration for connectors.</param>
     public EDRMethods(ILogger<EDRMethods> logger, SCLSettings settings)
-        : this(logger, settings, new FileSystem()) { }
+        : this(
+            logger,
+            settings,
+            new ExternalContext(
+                ExternalContext.Default.FileSystemHelper,
+                ExternalContext.Default.ExternalProcessRunner,
+                ExternalContext.Default.Console,
+                (Connectors.Sql.DbConnectionFactory.DbConnectionName,
+                 Connectors.Sql.DbConnectionFactory.Instance) //SQL database stuff
+            )
+        ) { }
 
     /// <summary>
     /// Instantiate EDRMethods using the specified IFileSystem provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="settings">Configuration</param>
-    /// <param name="fileSystem">An instance of the FileSystem helper. Used for testing.</param>
+    /// <param name="externalContext">The external context. Can be mocked for testing.</param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
         SCLSettings settings,
-        IFileSystem fileSystem)
+        IExternalContext externalContext)
     {
-        _logger     = logger;
-        _fileSystem = fileSystem;
-        _settings   = settings;
+        _logger          = logger;
+        _externalContext = externalContext;
+        _settings        = settings;
     }
 
     /// <summary>
@@ -96,7 +102,9 @@ public class EDRMethods
 
     private async Task ExecuteFromPathAsync(string path, CancellationToken cancellationToken)
     {
-        var text = await _fileSystem.File.ReadAllTextAsync(path, cancellationToken);
+        var text =
+            await _externalContext.FileSystemHelper.File.ReadAllTextAsync(path, cancellationToken);
+
         await ExecuteFromStringAsync(text, cancellationToken);
     }
 
@@ -106,53 +114,19 @@ public class EDRMethods
             ConnectorTypes.Append(typeof(IStep)).ToArray()
         );
 
-        var freezeResult = SCLParsing.ParseSequence(scl)
-            .Bind(x => x.TryFreeze(stepFactoryStore))
-            .Map(SCLRunner.ConvertToUnitStep);
+        var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
-        if (freezeResult.IsFailure)
-            LogError(_logger, freezeResult.Error);
-        else
-        {
-            var stateMonad = new StateMonad(
-                _logger,
-                _settings,
-                ExternalProcessRunner.Instance,
-                FileSystemHelper.Instance,
-                stepFactoryStore
-            );
+        var r = await runner.RunSequenceFromTextAsync(scl, cancellationToken);
 
-            var runResult = await freezeResult.Value.Run<Unit>(stateMonad, cancellationToken);
-
-            if (runResult.IsFailure)
-                LogError(_logger, runResult.Error);
-        }
-    }
-
-    private static void LogError(ILogger logger, IError error)
-    {
-        foreach (var singleError in error.GetAllErrors())
-        {
-            if (singleError.Exception != null)
-                logger.LogError(
-                    singleError.Exception,
-                    "{Error} - {Location}",
-                    singleError.Message,
-                    singleError.Location.AsString
-                );
-            else
-                logger.LogError(
-                    "{Error} - {Location}",
-                    singleError.Message,
-                    singleError.Location.AsString
-                );
-        }
+        if (r.IsFailure)
+            SCLRunner.LogError(_logger, r.Error);
     }
 
     /// <summary>
     /// One type for each connector.
     /// </summary>
-    private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> { typeof(IRubyScriptStep) };
+    private IEnumerable<Type> ConnectorTypes { get; } =
+        new List<Type> { typeof(IRubyScriptStep), typeof(SqlInsert) };
 }
 
 }

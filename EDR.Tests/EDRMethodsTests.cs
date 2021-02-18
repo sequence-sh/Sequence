@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
@@ -15,7 +16,6 @@ using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Thinktecture;
 using Thinktecture.IO;
-using Thinktecture.IO.Adapters;
 using Xunit;
 
 namespace EDR.Tests
@@ -54,8 +54,9 @@ public class EDRMethodsTests
     [Fact]
     public void Execute_WhenSCLFunctionIsSuccess_LogsMessage()
     {
-        var logger = new TestLogger<EDRMethods>();
-        var sp     = GetDefaultServiceProvider(logger);
+        var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var logger  = factory.CreateLogger<EDRMethods>();
+        var sp      = GetDefaultServiceProvider(logger);
 
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
@@ -65,13 +66,20 @@ public class EDRMethodsTests
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
 
-        logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "EDR Sequence Started",
+                "Hello World",
+                "EDR Sequence Completed"
+            );
     }
 
     [Fact]
     public void Execute_WhenPathFunctionIsSuccess_LogsMessage()
     {
-        var logger = new TestLogger<EDRMethods>();
+        var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var logger  = factory.CreateLogger<EDRMethods>();
 
         var filePath = @"C:\config.scl";
 
@@ -109,14 +117,22 @@ public class EDRMethodsTests
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
 
-        logger.LoggedValues.Should().BeEquivalentTo(new object[] { "Hello World" });
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "EDR Sequence Started",
+                "Hello World",
+                "EDR Sequence Completed"
+            );
     }
 
     [Fact]
     public void Execute_WhenFunctionIsFailure_LogsErrorMessage()
     {
-        var logger = new TestLogger<EDRMethods>();
-        var sp     = GetDefaultServiceProvider(logger);
+        var factory = MELT.TestLoggerFactory.Create();
+        var logger  = factory.CreateLogger<EDRMethods>();
+
+        var sp = GetDefaultServiceProvider(logger);
 
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
@@ -126,14 +142,20 @@ public class EDRMethodsTests
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
 
-        logger.LoggedValues[0].Should().Be("The step 'Pront' does not exist");
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "The step 'Pront' does not exist - (null) Line: 1, Col: 0, Idx: 0 - Line: 1, Col: 25, Idx: 25 Text: Pront Value: 'Hello World'"
+            );
     }
 
     [Fact]
     public void Execute_WhenSCLAndPathAreNull_Throws()
     {
-        var logger = new TestLogger<EDRMethods>();
-        var sp     = GetDefaultServiceProvider(logger);
+        var factory = MELT.TestLoggerFactory.Create();
+        var logger  = factory.CreateLogger<EDRMethods>();
+
+        var sp = GetDefaultServiceProvider(logger);
 
         var result = Assert.Throws<ArgumentException>(
             () => new AppRunner<EDRMethods>()

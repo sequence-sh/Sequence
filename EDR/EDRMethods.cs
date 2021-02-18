@@ -4,17 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
-using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Logging;
-using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
-using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR
 {
@@ -108,51 +103,12 @@ public class EDRMethods
             ConnectorTypes.Append(typeof(IStep)).ToArray()
         );
 
-        var freezeResult = SCLParsing.ParseSequence(scl)
-            .Bind(x => x.TryFreeze(stepFactoryStore))
-            .Map(SCLRunner.ConvertToUnitStep);
+        var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
-        if (freezeResult.IsFailure)
-            LogError(_logger, freezeResult.Error);
-        else
-        {
-            var stateMonad = new StateMonad(
-                _logger,
-                _settings,
-                stepFactoryStore,
-                _externalContext
-            );
+        var r = await runner.RunSequenceFromTextAsync(scl, cancellationToken);
 
-            _logger.LogSituation(
-                LogSituation.SequenceStarted,
-                new object[] { _settings.Entity.Serialize() }
-            );
-
-            var runResult = await freezeResult.Value.Run<Unit>(stateMonad, cancellationToken);
-
-            if (runResult.IsFailure)
-                LogError(_logger, runResult.Error);
-        }
-    }
-
-    private static void LogError(ILogger logger, IError error)
-    {
-        foreach (var singleError in error.GetAllErrors())
-        {
-            if (singleError.Exception != null)
-                logger.LogError(
-                    singleError.Exception,
-                    "{Error} - {Location}",
-                    singleError.Message,
-                    singleError.Location.AsString
-                );
-            else
-                logger.LogError(
-                    "{Error} - {Location}",
-                    singleError.Message,
-                    singleError.Location.AsString
-                );
-        }
+        if (r.IsFailure)
+            SCLRunner.LogError(_logger, r.Error);
     }
 
     /// <summary>

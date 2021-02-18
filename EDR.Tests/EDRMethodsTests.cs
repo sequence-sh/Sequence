@@ -76,6 +76,48 @@ public class EDRMethodsTests
     }
 
     [Fact]
+    public void Build_WhenSCLFunctionIsValid_LogsMessage()
+    {
+        var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var logger  = factory.CreateLogger<EDRMethods>();
+        var sp      = GetDefaultServiceProvider(logger);
+
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem($"-b -s \"1 / 0\"");
+
+        result.ExitCode.Should().Be(0);
+        result.Console.OutText().Should().Be("");
+
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo("Build Successful");
+    }
+
+    [Fact]
+    public void Build_WhenSCLFunctionIsInvalid_LogsMessage()
+    {
+        var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var logger  = factory.CreateLogger<EDRMethods>();
+        var sp      = GetDefaultServiceProvider(logger);
+
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem($"-b -s \"Pront 123\"");
+
+        result.ExitCode.Should().Be(0);
+        result.Console.OutText().Should().Be("");
+
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "The step 'Pront' does not exist - (null) Line: 1, Col: 0, Idx: 0 - Line: 1, Col: 8, Idx: 8 Text: Pront 123"
+            );
+    }
+
+    [Fact]
     public void Execute_WhenPathFunctionIsSuccess_LogsMessage()
     {
         var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));

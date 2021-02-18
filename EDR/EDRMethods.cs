@@ -152,8 +152,8 @@ public class EDRMethods
 
         if (stepResult.IsFailure)
             SCLRunner.LogError(_logger, stepResult.Error);
-
-        _logger.LogInformation("Build Successful");
+        else
+            _logger.LogInformation("Build Successful");
     }
 
     /// <summary>

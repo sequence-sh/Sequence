@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommandDotNet;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Connectors.Sql.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
@@ -31,7 +32,17 @@ public class EDRMethods
     /// <param name="logger">The logger.</param>
     /// <param name="settings">Configuration for connectors.</param>
     public EDRMethods(ILogger<EDRMethods> logger, SCLSettings settings)
-        : this(logger, settings, ExternalContext.Default) { }
+        : this(
+            logger,
+            settings,
+            new ExternalContext(
+                ExternalContext.Default.FileSystemHelper,
+                ExternalContext.Default.ExternalProcessRunner,
+                ExternalContext.Default.Console,
+                (Connectors.Sql.DbConnectionFactory.DbConnectionName,
+                 Connectors.Sql.DbConnectionFactory.Instance) //SQL database stuff
+            )
+        ) { }
 
     /// <summary>
     /// Instantiate EDRMethods using the specified IFileSystem provider.
@@ -114,7 +125,8 @@ public class EDRMethods
     /// <summary>
     /// One type for each connector.
     /// </summary>
-    private IEnumerable<Type> ConnectorTypes { get; } = new List<Type> { typeof(IRubyScriptStep) };
+    private IEnumerable<Type> ConnectorTypes { get; } =
+        new List<Type> { typeof(IRubyScriptStep), typeof(SqlInsert) };
 }
 
 }

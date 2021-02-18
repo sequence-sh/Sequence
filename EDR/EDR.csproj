@@ -43,6 +43,7 @@
     <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
     <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.5.0-a.master.2102181340" />
+    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.1.0-a.master.2102121828" />
     <PackageReference Include="Reductech.EDR.Core" Version="0.5.0-a.master.2102181136" />
   </ItemGroup>
 

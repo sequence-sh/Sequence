@@ -2,7 +2,7 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "-b -s \"SQLQuery 'cs' 'query'\""
+      "commandLineArgs": "-s \"NuixDoesCaseExist 'abc'\""
     }
   }
 }

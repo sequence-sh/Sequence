@@ -92,6 +92,56 @@ sign exe release:
   artifacts:
     expire_in: never
 
+# Temporary release that doesn't use single-file publish to include the
+# powershell connector (see reductech/edr/connectors/pwsh#5)
+.exe_artifacts_pwsh:
+  artifacts:
+    name: '$PACKAGE_NAME_EXE-$PROJECT_VERSION-Win10x64'
+    paths:
+      - bin/
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
+
+package pwsh dev:
+  stage: package
+  extends:
+    - .rules_dev_manual
+    - .exe_artifacts_pwsh
+  needs:
+    - test dev
+    - version check dev
+  script:
+    - dotnet publish --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
+      --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
+  artifacts:
+    expire_in: 3 months
+
+package pwsh release:
+  stage: package
+  extends:
+    - .rules_release
+    - .exe_artifacts_pwsh
+  needs:
+    - test release
+    - version check release
+  script:
+    - dotnet publish --configuration $CONFIG_RELEASE
+      --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
+  artifacts:
+    expire_in: 2 hours
+
+sign pwsh release:
+  extends:
+    - sign exe release
+    - .exe_artifacts_pwsh
+  needs:
+    - version check release
+    - package pwsh release
+  script:
+    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\bin\EDR.exe
+
 code_quality:
   tags:
     - rt-dind

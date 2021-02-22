@@ -17,6 +17,10 @@ using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.Util;
 
+#if INCLUDE_PWSH
+using Reductech.EDR.Connectors.Pwsh;
+#endif
+
 namespace Reductech.EDR
 {
 
@@ -163,7 +167,13 @@ public class EDRMethods
     /// One type for each connector.
     /// </summary>
     private IEnumerable<Type> ConnectorTypes { get; } =
-        new List<Type> { typeof(IRubyScriptStep), typeof(SqlInsert) };
+        new List<Type> {
+            typeof(IRubyScriptStep),
+            typeof(SqlInsert)
+#if INCLUDE_PWSH
+            ,typeof(PwshRunScript)
+#endif
+        };
 }
 
 /// <summary>

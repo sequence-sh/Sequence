@@ -8,6 +8,7 @@
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <RootNamespace>Reductech.EDR</RootNamespace>
     <AssemblyName>EDR</AssemblyName>
     <Nullable>enable</Nullable>

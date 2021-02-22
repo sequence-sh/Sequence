@@ -19,6 +19,8 @@ EDR includes:
     - Control flow, e.g. If, ForEach, While
 - Connectors that interact with various applications
   - [Nuix](https://gitlab.com/reductech/edr/connectors/nuix)
+  - [PowerShell](https://gitlab.com/reductech/edr/connectors/pwsh)
+  - [SQL](https://gitlab.com/reductech/edr/connectors/sql)
 
 A `Step` is a unit of work in an application such as
 creating a case, ingesting data, searching or exporting data
@@ -42,3 +44,11 @@ EDR is compatible with any [OS supported by .NET 5](https://github.com/dotnet/co
 
 However, we're currently only targeting the `win-x64` runtime identifier for
 our [releases](https://gitlab.com/reductech/edr/edr/-/releases).
+
+## Builds that include the PowerShell connector
+
+PowerShell is not currently compatible with single-file executables
+created by .NET 5 (see reductech/edr/connectors/pwsh#5). As a temporary
+workaround, there is an additional Windows 10 x64 package of `EDR`
+that is compatible with the powershell connector. It has the `Win10x64`
+suffix.

@@ -117,7 +117,8 @@ package pwsh dev:
     NUGET_USERNAME: $NUGET_USER_DEV
     NUGET_TOKEN: $NUGET_TOKEN_DEV
   script:
-    - dotnet publish --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
+    - dotnet restore --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH
+    - dotnet publish --no-restore --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
       --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
   artifacts:
     expire_in: 3 months
@@ -136,7 +137,8 @@ package pwsh release:
     NUGET_USERNAME: $NUGET_USER_PROD
     NUGET_TOKEN: $NUGET_TOKEN_PROD
   script:
-    - dotnet publish --configuration $CONFIG_RELEASE
+    - dotnet restore --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH
+    - dotnet publish --no-restore --configuration $CONFIG_RELEASE
       --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
   artifacts:
     expire_in: 2 hours

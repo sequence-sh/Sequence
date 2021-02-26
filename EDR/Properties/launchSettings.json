@@ -2,7 +2,7 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "-s \"NuixDoesCaseExist 'abc'\""
+      "commandLineArgs": "-p \"C:\\Users\\Mark\\source\\random\\BugExample1.scl\""
     }
   }
 }

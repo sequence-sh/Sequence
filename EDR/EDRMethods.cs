@@ -11,11 +11,8 @@ using Reductech.EDR.Connectors.Sql.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Logging;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
-using Reductech.EDR.Core.Util;
 
 #if INCLUDE_PWSH
 using Reductech.EDR.Connectors.Pwsh;
@@ -124,7 +121,23 @@ public class EDRMethods
         var text =
             await _externalContext.FileSystemHelper.File.ReadAllTextAsync(path, cancellationToken);
 
-        await ExecuteFromStringAsync(text, validate, cancellationToken);
+        var stepFactoryStore = StepFactoryStore.CreateUsingReflection(
+            ConnectorTypes.Append(typeof(IStep)).ToArray()
+        );
+
+        var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
+
+        var r = await runner.RunSequence(
+            text,
+            new Dictionary<string, object>()
+            {
+                { SCLRunner.SequenceIdName, Guid.NewGuid() }, { SCLRunner.SCLPathName, path }
+            },
+            cancellationToken
+        );
+
+        if (r.IsFailure)
+            SCLRunner.LogError(_logger, r.Error);
     }
 
     private async Task ExecuteFromStringAsync(
@@ -146,7 +159,7 @@ public class EDRMethods
 
             var r = await runner.RunSequenceFromTextAsync(
                 scl,
-                new Dictionary<string, object>(),
+                new Dictionary<string, object>() { },
                 cancellationToken
             );
 
@@ -175,7 +188,7 @@ public class EDRMethods
         {
             typeof(IRubyScriptStep), typeof(SqlInsert)
 #if INCLUDE_PWSH
-          ,typeof(PwshRunScript)
+  ,typeof(PwshRunScript)
 #endif
         };
 }

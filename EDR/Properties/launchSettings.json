@@ -2,7 +2,8 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "-p \"C:\\Users\\Mark\\source\\random\\BugExample1.scl\""
+      //"commandLineArgs": "-s \"GenerateDocumentation | ElementAtIndex 0 | Print\""
+      "commandLineArgs": "-p \"C:\\Users\\Mark\\source\\random\\build-docs.scl\""
     }
   }
 }

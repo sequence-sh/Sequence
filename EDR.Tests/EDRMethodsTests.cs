@@ -142,13 +142,6 @@ public class EDRMethodsTests
             repo.Create<IConsole>().Object
         );
 
-        //var fs = new MockFileSystem(
-        //    new Dictionary<string, MockFileData>
-        //    {
-        //        { filePath, new MockFileData(TheUltimateTestString) }
-        //    }
-        //);
-
         var sp = GetDefaultServiceProvider(logger, externalContext);
 
         var result = new AppRunner<EDRMethods>()

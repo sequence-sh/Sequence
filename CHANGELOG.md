@@ -2,9 +2,21 @@
 
 ## Summary of Changes
 
+### New Connectors
 
+- [Pwsh](https://gitlab.com/reductech/edr/connectors/pwsh)
+- [SQL](https://gitlab.com/reductech/edr/connectors/sql)
 
-- Added `Build` Flag (`-b`) to EDR
+### Sequence Configuration Language
+
+- Added `Build` Flag (`-b`) to validate SCL without running
+
+### Logging and Monitoring
+
+- Logging is now structured
+- Added elastic target
+
+For all changes in this release, please see the Core and Connector changelogs.
 
 ## Issues Closed in this Release
 

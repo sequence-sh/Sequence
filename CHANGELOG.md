@@ -1,3 +1,38 @@
+# v0.5.0 (2021-03-01)
+
+## Summary of Changes
+
+### New Connectors
+
+- [Pwsh](https://gitlab.com/reductech/edr/connectors/pwsh)
+- [SQL](https://gitlab.com/reductech/edr/connectors/sql)
+
+### Sequence Configuration Language
+
+- Added `Build` Flag (`-b`) to validate SCL without running
+
+### Logging and Monitoring
+
+- Logging is now structured
+- Added elastic target
+
+For all changes in this release, please see the Core and Connector changelogs.
+
+## Issues Closed in this Release
+
+### New Features
+
+- Update Version of Core to support Structed Logging #50
+- Add Pwsh connector to EDR #42
+- Add elastic target for nlog #47
+- Add a Build Command line parameter to support IDE plugins #45
+- Add CI job to publish documentation as gitlab pages #36
+
+### Bug Fixes
+
+- package pwsh jobs fail when using prerelease version #49
+- Bug: Unhandled exception after using Nuix #48
+
 ## v0.4.0 (2021-01-29)
 
 Major rework of the configuration language and data streaming features

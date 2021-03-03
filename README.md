@@ -38,6 +38,10 @@ EDR allows for data and configuration to be passed between Steps.
 
 Documentation is available at [docs.reductech.io](https://docs.reductech.io)
 
+For details on how to setup various logging targets, including
+JSON and Elastic, see the [logging](https://docs.reductech.io/edr/how-to/logging.html)
+section of the documentation.
+
 ## OS Compatibility
 
 EDR is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).

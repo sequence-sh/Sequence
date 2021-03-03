@@ -1,3 +1,17 @@
+# v0.5.1 (2021-03-03)
+
+## Summary of Changes
+
+Bug fix release.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Documentation step should generate summaries for steps #53
+- Set default log level to debug for file and info for console #52
+- Version 0.5.0 has incorrect powershell connector version #54
+
 # v0.5.0 (2021-03-01)
 
 ## Summary of Changes

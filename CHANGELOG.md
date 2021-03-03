@@ -2,9 +2,7 @@
 
 ## Summary of Changes
 
-
-
-Maintenance release with a couple of bug fixes.
+Bug fix release.
 
 ## Issues Closed in this Release
 

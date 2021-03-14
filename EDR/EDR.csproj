@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,7 +12,7 @@
     <RootNamespace>Reductech.EDR</RootNamespace>
     <AssemblyName>EDR</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.5.1$(VersionSuffix)</Version>
+    <Version>0.6.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>

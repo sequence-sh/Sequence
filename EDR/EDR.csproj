@@ -41,16 +41,16 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="NLog" Version="4.7.7" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.0" />
+    <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.1" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.5.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.5.0" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.5.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.6.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.6.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains(INCLUDE_PWSH))">
-    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.5.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>

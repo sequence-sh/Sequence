@@ -171,7 +171,7 @@ public class EDRMethods
     private void ValidateSCL(string scl, StepFactoryStore stepFactoryStore)
     {
         var stepResult = SCLParsing.ParseSequence(scl)
-            .Bind(x => x.TryFreeze(stepFactoryStore))
+            .Bind(x => x.TryFreeze(TypeReference.Any.Instance, stepFactoryStore))
             .Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsFailure)

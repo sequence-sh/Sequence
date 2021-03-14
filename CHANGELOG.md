@@ -1,3 +1,13 @@
+# v0.6.0 (2021-03-14)
+
+## Summary of Changes
+
+- SCL now supports string interpolation
+- EntityGetValue now supports nested entities
+- Additional Steps and Parameters for the [Nuix Connector](https://gitlab.com/reductech/edr/connectors/nuix/-/blob/v0.6.0/CHANGELOG.md)
+
+For all changes in this release, please see the Core and Connector changelogs.
+
 # v0.5.1 (2021-03-03)
 
 ## Summary of Changes

@@ -15,11 +15,12 @@ namespace Reductech.EDR
 
 internal class Program
 {
-    public static async Task Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         var host = CreateHostBuilder().Build();
 
         var logger = LogManager.GetCurrentClassLogger();
+        int result;
 
         try
         {
@@ -27,18 +28,21 @@ internal class Program
                 .UseDefaultMiddleware()
                 .UseMicrosoftDependencyInjection(host.Services);
 
-            await appRunner.RunAsync(args);
+            result = await appRunner.RunAsync(args);
         }
         #pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception e)
         {
             logger.Error(e);
+            result = 1;
         }
         #pragma warning restore CA1031 // Do not catch general exception types
         finally
         {
             LogManager.Shutdown();
         }
+
+        return result;
     }
 
     private static IHostBuilder CreateHostBuilder() => new HostBuilder()

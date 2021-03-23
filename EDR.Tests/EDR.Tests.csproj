@@ -17,6 +17,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="StrykerOutput\**" />
+    <EmbeddedResource Remove="StrykerOutput\**" />
+    <None Remove="StrykerOutput\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommandDotNet.TestTools" Version="3.0.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="MELT.Xunit" Version="0.6.0" />

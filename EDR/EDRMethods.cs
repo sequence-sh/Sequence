@@ -75,7 +75,7 @@ public class EDRMethods
         Description =
             "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
     )]
-    public Task Execute(
+    public Task<int> Execute(
         CancellationToken cancellationToken,
         [Option(
             LongName    = "sequence",
@@ -99,21 +99,21 @@ public class EDRMethods
     /// <summary>
     /// Executes SCL from either a file or a string.
     /// </summary>
-    private async Task ExecuteAbstractAsync(
+    private async Task<int> ExecuteAbstractAsync(
         string? scl,
         string? path,
         bool validate,
         CancellationToken cancellationToken)
     {
         if (!string.IsNullOrWhiteSpace(scl))
-            await ExecuteFromStringAsync(scl, validate, cancellationToken);
+            return await ExecuteFromStringAsync(scl, validate, cancellationToken);
         else if (!string.IsNullOrWhiteSpace(path))
-            await ExecuteFromPathAsync(path, validate, cancellationToken);
+            return await ExecuteFromPathAsync(path, validate, cancellationToken);
         else
             throw new ArgumentException("Please provide a Sequence string (-s) or path (-p).");
     }
 
-    private async Task ExecuteFromPathAsync(
+    private async Task<int> ExecuteFromPathAsync(
         string path,
         bool validate,
         CancellationToken cancellationToken)
@@ -124,6 +124,11 @@ public class EDRMethods
         var stepFactoryStore = StepFactoryStore.CreateUsingReflection(
             ConnectorTypes.Append(typeof(IStep)).ToArray()
         );
+
+        if (validate)
+        {
+            return ValidateSCL(text, stepFactoryStore);
+        }
 
         var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
@@ -136,11 +141,14 @@ public class EDRMethods
             cancellationToken
         );
 
-        if (r.IsFailure)
-            SCLRunner.LogError(_logger, r.Error);
+        if (!r.IsFailure)
+            return 0;
+
+        SCLRunner.LogError(_logger, r.Error);
+        return 1;
     }
 
-    private async Task ExecuteFromStringAsync(
+    private async Task<int> ExecuteFromStringAsync(
         string scl,
         bool validate,
         CancellationToken cancellationToken)
@@ -151,33 +159,41 @@ public class EDRMethods
 
         if (validate)
         {
-            ValidateSCL(scl, stepFactoryStore);
+            return ValidateSCL(scl, stepFactoryStore);
         }
-        else
-        {
-            var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
-            var r = await runner.RunSequenceFromTextAsync(
-                scl,
-                new Dictionary<string, object>() { },
-                cancellationToken
-            );
+        var runner = new SCLRunner(_settings, _logger, stepFactoryStore, _externalContext);
 
-            if (r.IsFailure)
-                SCLRunner.LogError(_logger, r.Error);
-        }
+        var r = await runner.RunSequenceFromTextAsync(
+            scl,
+            new Dictionary<string, object>(),
+            cancellationToken
+        );
+
+        if (!r.IsFailure)
+            return 0;
+
+        SCLRunner.LogError(_logger, r.Error);
+        return 1;
     }
 
-    private void ValidateSCL(string scl, StepFactoryStore stepFactoryStore)
+    private int ValidateSCL(string scl, StepFactoryStore stepFactoryStore)
     {
         var stepResult = SCLParsing.ParseSequence(scl)
             .Bind(x => x.TryFreeze(TypeReference.Any.Instance, stepFactoryStore))
             .Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsFailure)
+        {
             SCLRunner.LogError(_logger, stepResult.Error);
+            return 1;
+        }
+
         else
+        {
             _logger.LogInformation("Build Successful");
+            return 0;
+        }
     }
 
     /// <summary>

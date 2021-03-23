@@ -107,7 +107,7 @@ public class EDRMethodsTests
             .UseDefaultMiddleware()
             .RunInMem($"-b -s \"Pront 123\"");
 
-        result.ExitCode.Should().Be(0);
+        result.ExitCode.Should().Be(1);
         result.Console.OutText().Should().Be("");
 
         factory.Sink.LogEntries.Select(x => x.Message)
@@ -174,7 +174,7 @@ public class EDRMethodsTests
             .UseDefaultMiddleware()
             .RunInMem("-s \"Pront Value: 'Hello World'\"");
 
-        result.ExitCode.Should().Be(0);
+        result.ExitCode.Should().Be(1);
         result.Console.OutText().Should().Be("");
 
         factory.Sink.LogEntries.Select(x => x.Message)

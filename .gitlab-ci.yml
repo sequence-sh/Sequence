@@ -84,9 +84,9 @@ test package exe dev:
   needs:
     - package exe dev
   script:
-    - EDR.exe -p .\Examples\core-sequence.scl
-    - EDR.exe -p .\Examples\nuix-sequence.scl
-    - EDR.exe -p .\Examples\pwsh-sequence.scl
+    - .\EDR.exe -p .\Examples\core-sequence.scl
+    - .\EDR.exe -p .\Examples\nuix-sequence.scl
+    - .\EDR.exe -p .\Examples\pwsh-sequence.scl
 
 test package exe release:
   extends:
@@ -174,10 +174,14 @@ test package pwsh dev:
     - .rules_dev_manual
   needs:
     - package pwsh dev
+  script:
+    - .\bin\EDR.exe -p .\Examples\core-sequence.scl
+    - .\bin\EDR.exe -p .\Examples\nuix-sequence.scl
+    - .\bin\EDR.exe -p .\Examples\pwsh-sequence.scl
 
 test package pwsh release:
   extends:
-    - test package exe dev
+    - test package pwsh dev
     - .rules_release
   needs:
     - package pwsh release

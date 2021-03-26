@@ -1,0 +1,16 @@
+- <CaseName>     = 'Case001'
+- <Investigator> = 'Antony'
+- <CasePath>     = 'case'
+
+- If (Not (DirectoryExists <CasePath>)) Then: (CreateDirectory <CasePath>)
+
+- NuixCreateCase
+    CaseName: <CaseName>
+    CasePath: <CasePath>
+    Investigator: <Investigator>
+
+#- Print (NuixGetCaseDetails)
+
+# Tests
+- AssertTrue (NuixDoesCaseExist <CasePath>)
+- Delete Folder: <CasePath>

@@ -1,0 +1,20 @@
+- <OutputDir> = '.\output'
+- <DataUri>   = 'https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv'
+
+- If (Not (DoesDirectoryExist <OutputDir>))
+    (CreateDirectory <OutputDir>)
+
+- PwshRunScript '
+    Set-Location $OutPath
+    $fileName = Split-Path $DataUri -Leaf
+    Invoke-WebRequest -Uri $DataUri -OutFile $fileName
+  '
+  Variables: (
+    DataUri: <DataUri>
+    OutPath: <OutputDir>
+  )
+| ForEach (Print <Entity>) # This is a hack, otherwise script won't execute
+
+# Tests
+- AssertTrue (DoesFileExist (PathCombine [<OutputDir>, 'artist_data.csv']))
+- Delete Folder: <OutputDir>

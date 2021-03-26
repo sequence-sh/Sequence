@@ -90,7 +90,7 @@ test package exe dev:
 
 test package exe release:
   extends:
-    - test package dev
+    - test package exe dev
     - .rules_release
   needs:
     - package exe release
@@ -170,14 +170,14 @@ package pwsh release:
 # Test the pwsh package
 test package pwsh dev:
   extends:
-    - test package dev
+    - test package exe dev
     - .rules_dev_manual
   needs:
     - package pwsh dev
 
 test package pwsh release:
   extends:
-    - test package dev
+    - test package exe dev
     - .rules_release
   needs:
     - package pwsh release

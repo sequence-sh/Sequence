@@ -9,7 +9,7 @@
     CasePath: <CasePath>
     Investigator: <Investigator>
 
-- Print (NuixGetCaseDetails)
+#- Print (NuixGetCaseDetails)
 
 # Tests
 - AssertTrue (NuixDoesCaseExist <CasePath>)

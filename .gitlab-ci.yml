@@ -86,7 +86,6 @@ test package exe dev:
   script:
     - .\EDR.exe -p .\Examples\core-sequence.scl
     - .\EDR.exe -p .\Examples\nuix-sequence.scl
-    - .\EDR.exe -p .\Examples\pwsh-sequence.scl
 
 test package exe release:
   extends:

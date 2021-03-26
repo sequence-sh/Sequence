@@ -1,3 +1,19 @@
+# v0.7.0 (2021-03-26)
+
+## Summary of Changes
+
+- EDR.exe now returns a non-zero exit code in case of failure.
+
+## Issues Closed in this Release
+
+### New Features
+
+- Make EDR return a non-zero exit code on error #59
+
+### Maintenance
+
+- Add tests for the EDR.exe package #43
+
 # v0.6.0 (2021-03-14)
 
 ## Summary of Changes

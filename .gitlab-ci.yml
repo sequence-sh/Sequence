@@ -74,7 +74,7 @@ package exe release:
     expire_in: 2 hours
 
 # Test the package
-test package dev:
+test package exe dev:
   stage: package-test
   tags:
     - nuix
@@ -88,7 +88,7 @@ test package dev:
     - EDR.exe -p .\Examples\nuix-sequence.scl
     - EDR.exe -p .\Examples\pwsh-sequence.scl
 
-test package release:
+test package exe release:
   extends:
     - test package dev
     - .rules_release

@@ -1,0 +1,34 @@
+- <ArtworkCSV> = 'artwork_data.csv'
+- <SchemaJSON> = 'ArtistSchema.json'
+
+- [
+    (Artist: "Blake, Robert" ArtistId: "38" Name: "Six Drawings of Figures with Outstretched Arms" Date: "date not known"),
+    (Artist: "Calvert, Edward" ArtistId: "81" Name: "Ideal Pastoral Life" Date: "1829"),
+    (Artist: "Sterne, Hedda" ArtistId: "16798" Name: "NY, NY No. X" Date: 1948)
+  ]
+| ToCSV
+| FileWrite <ArtworkCSV>
+
+- <SchemaOut> = (
+    Name: 'Default Artist Schema'
+    AllowExtraProperties: true
+    Properties: (
+      Artist: (Type: 'String' Multiplicity: 'ExactlyOne')
+      ArtistId: (Type: 'Integer' Multiplicity: 'ExactlyOne')
+      Date: (Type: 'Date' Multiplicity: 'ExactlyOne' DateFormat: 'yyyy')
+    )
+  )
+- FileWrite (ToJson <SchemaOut>) <SchemaJSON>
+
+- <SchemaIn> = FileRead <SchemaJSON> | FromJson
+
+- FileRead <ArtworkCSV>
+| FromCSV
+| EnforceSchema <SchemaIn> ErrorBehavior: 'Warning'
+| ForEach (Print <Entity>)
+
+# Tests
+- AssertTrue (DoesFileExist <ArtworkCSV>)
+- AssertTrue (DoesFileExist <SchemaJSON>)
+- Delete File: <ArtworkCSV>
+- Delete File: <SchemaJSON>

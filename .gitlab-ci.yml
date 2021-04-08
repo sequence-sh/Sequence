@@ -204,3 +204,13 @@ code_quality:
 mutation testing:
   rules:
     - when: never
+
+code coverage dev:
+  image: mcr.microsoft.com/dotnet/sdk:5.0
+  tags:
+    - rt-linux
+
+code coverage release:
+  image: mcr.microsoft.com/dotnet/sdk:5.0
+  tags:
+    - rt-linux

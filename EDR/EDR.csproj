@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains(INCLUDE_PWSH))">
-    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.7.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.8.0" />
   </ItemGroup>
 
   <ItemGroup>

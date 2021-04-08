@@ -1,6 +1,19 @@
 # v0.8.0 (2021-04-08)
 
-- Update of Core dependencies only
+## Summary of Changes
+
+### Steps
+
+- Added
+  - `AssertEqual`
+  - `GetSettings`
+  - `NuixGetVersion`
+- Updated
+  - `NuixAddConcordance` - added parameters to customise processing options
+
+## Issues Closed in this Release
+
+- Update of Core and Nuix Connector only
 
 # v0.7.0 (2021-03-26)
 

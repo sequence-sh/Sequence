@@ -44,9 +44,9 @@
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.1" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.7.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.7.0" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.7.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.8.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.8.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.8.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains(INCLUDE_PWSH))">
@@ -60,16 +60,10 @@
     </None>
   </ItemGroup>
 
-  <Target Name="_ResolveCopyLocalNuGetPackagePdbsAndXml"
-          Condition="$(CopyLocalLockFileAssemblies) == true"
-          AfterTargets="ResolveReferences">
+  <Target Name="_ResolveCopyLocalNuGetPackagePdbsAndXml" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">
     <ItemGroup>
-      <ReferenceCopyLocalPaths
-        Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')"
-        Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
-      <ReferenceCopyLocalPaths
-        Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')"
-        Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
 

@@ -8,12 +8,20 @@
   - `AssertEqual`
   - `GetSettings`
   - `NuixGetVersion`
+  - `PwshRunScriptAsync`
 - Updated
   - `NuixAddConcordance` - added parameters to customise processing options
+  - `PwshRunScript` now runs without having to read its output
 
 ## Issues Closed in this Release
 
-- Update of Core and Nuix Connector only
+### Bug Fixes
+
+- Stop using single file publish #63
+
+### Maintenance
+
+- Revert back to using --no-build for package jobs #34
 
 # v0.7.0 (2021-03-26)
 

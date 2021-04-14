@@ -379,3 +379,7 @@ nupkg/
 version.env
 dnSpy/
 ahp/
+mingit/
+mingit.zip
+lib/
+EDR.exe

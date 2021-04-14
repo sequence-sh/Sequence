@@ -3,7 +3,6 @@
     "EDR": {
       "commandName": "Project",
       "commandLineArgs": "-s \"Print 'hello'\""
-      //"commandLineArgs": "-p \"C:\\Users\\Mark\\source\\random\\build-docs.scl\""
     }
   }
 }

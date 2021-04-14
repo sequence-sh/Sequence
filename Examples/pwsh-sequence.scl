@@ -13,7 +13,6 @@
     DataUri: <DataUri>
     OutPath: <OutputDir>
   )
-| ForEach (Print <Entity>) # This is a hack, otherwise script won't execute
 
 # Tests
 - AssertTrue (DoesFileExist (PathCombine [<OutputDir>, 'artist_data.csv']))

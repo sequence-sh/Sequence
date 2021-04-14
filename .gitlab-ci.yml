@@ -36,11 +36,10 @@ variables:
   artifacts:
     name: '$PACKAGE_NAME_EXE-$PROJECT_VERSION'
     paths:
-      - appsettings.json
+      - lib/
       - CHANGELOG.md
       - EDR.exe
       - LICENSE
-      - nuixconnectorscript.rb
       - README.md
 
 package exe dev:
@@ -53,8 +52,9 @@ package exe dev:
     - test dev
     - version check dev
   script:
-    - dotnet publish --no-restore --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
-      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
+    - dotnet publish --no-build --configuration $CONFIG_DEV --output ./lib
+      --version-suffix $VERSION_SUFFIX
+    - ./single-fileish.ps1
   artifacts:
     expire_in: 3 months
 
@@ -68,8 +68,8 @@ package exe release:
     - test release
     - version check release
   script:
-    - dotnet publish --no-restore --configuration $CONFIG_RELEASE
-      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
+    - dotnet publish --no-build --configuration $CONFIG_RELEASE --output ./lib
+    - ./single-fileish.ps1
   artifacts:
     expire_in: 2 hours
 
@@ -86,6 +86,7 @@ test package exe dev:
   script:
     - .\EDR.exe -p .\Examples\core-sequence.scl
     - .\EDR.exe -p .\Examples\nuix-sequence.scl
+    - .\EDR.exe -p .\Examples\pwsh-sequence.scl
 
 test package exe release:
   extends:
@@ -112,6 +113,8 @@ sign exe release:
   script:
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
+    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\EDR.exe
   artifacts:
     expire_in: never
 

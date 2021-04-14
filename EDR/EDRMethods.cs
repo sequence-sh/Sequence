@@ -7,16 +7,13 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Connectors.Pwsh;
 using Reductech.EDR.Connectors.Sql.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
-
-#if INCLUDE_PWSH
-using Reductech.EDR.Connectors.Pwsh;
-#endif
 
 namespace Reductech.EDR
 {
@@ -200,13 +197,7 @@ public class EDRMethods
     /// One type for each connector.
     /// </summary>
     private IEnumerable<Type> ConnectorTypes { get; } =
-        new List<Type>
-        {
-            typeof(IRubyScriptStep), typeof(SqlInsert)
-#if INCLUDE_PWSH
-,typeof(PwshRunScript)
-#endif
-        };
+        new List<Type> { typeof(IRubyScriptStep), typeof(SqlInsert), typeof(PwshRunScript) };
 }
 
 }

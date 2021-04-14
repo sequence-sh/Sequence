@@ -36,12 +36,22 @@ variables:
   artifacts:
     name: '$PACKAGE_NAME_EXE-$PROJECT_VERSION'
     paths:
-      - appsettings.json
+      - lib/
       - CHANGELOG.md
       - EDR.exe
       - LICENSE
-      - nuixconnectorscript.rb
       - README.md
+
+test dev:
+  script:
+    - dotnet test --no-build --configuration $CONFIG --collect:"XPlat Code Coverage" --results-directory ./
+      -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=true
+    - |
+      $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
+      $fixPaths = $report -replace "filename=`".+?edr(/|\\)edr(/|\\)", "filename=`"" ;
+      $fixPaths = $fixPaths -replace '\\', '/' ;
+      $outPath = Join-Path (Get-Location) "coverage.$($env:CI_JOB_NAME -replace "[^\w]+", "-").xml" ;
+      [System.IO.File]::WriteAllText($outPath, $fixPaths) ;
 
 package exe dev:
   stage: package
@@ -53,8 +63,9 @@ package exe dev:
     - test dev
     - version check dev
   script:
-    - dotnet publish --no-restore --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
-      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
+    - dotnet publish --no-build --configuration $CONFIG_DEV --output ./lib
+      --version-suffix $VERSION_SUFFIX
+    - ./single-fileish.ps1
   artifacts:
     expire_in: 3 months
 
@@ -68,8 +79,8 @@ package exe release:
     - test release
     - version check release
   script:
-    - dotnet publish --no-restore --configuration $CONFIG_RELEASE
-      -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./
+    - dotnet publish --no-build --configuration $CONFIG_RELEASE --output ./lib
+    - ./single-fileish.ps1
   artifacts:
     expire_in: 2 hours
 
@@ -86,6 +97,7 @@ test package exe dev:
   script:
     - .\EDR.exe -p .\Examples\core-sequence.scl
     - .\EDR.exe -p .\Examples\nuix-sequence.scl
+    - .\EDR.exe -p .\Examples\pwsh-sequence.scl
 
 test package exe release:
   extends:
@@ -112,90 +124,10 @@ sign exe release:
   script:
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
+    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\EDR.exe
   artifacts:
     expire_in: never
-
-# Temporary release that doesn't use single-file publish to include the
-# powershell connector (see reductech/edr/connectors/pwsh#5)
-.exe_artifacts_pwsh:
-  artifacts:
-    name: '$PACKAGE_NAME_EXE-$PROJECT_VERSION-Win10x64'
-    paths:
-      - bin/
-      - CHANGELOG.md
-      - LICENSE
-      - README.md
-
-package pwsh dev:
-  stage: package
-  extends:
-    - .default_before_script
-    - .rules_dev_manual
-    - .exe_artifacts_pwsh
-  needs:
-    - test dev
-    - version check dev
-  variables:
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  script:
-    - dotnet restore --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH
-    - dotnet publish --no-restore --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX
-      --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
-  artifacts:
-    expire_in: 3 months
-
-package pwsh release:
-  stage: package
-  extends:
-    - .default_before_script
-    - .rules_release
-    - .exe_artifacts_pwsh
-  needs:
-    - test release
-    - version check release
-  variables:
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
-    NUGET_USERNAME: $NUGET_USER_PROD
-    NUGET_TOKEN: $NUGET_TOKEN_PROD
-  script:
-    - dotnet restore --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH
-    - dotnet publish --no-restore --configuration $CONFIG_RELEASE
-      --runtime win10-x64 -p:DefineConstants=INCLUDE_PWSH --output ./bin
-  artifacts:
-    expire_in: 2 hours
-
-# Test the pwsh package
-test package pwsh dev:
-  extends:
-    - test package exe dev
-    - .rules_dev_manual
-  needs:
-    - package pwsh dev
-  script:
-    - .\bin\EDR.exe -p .\Examples\core-sequence.scl
-    - .\bin\EDR.exe -p .\Examples\nuix-sequence.scl
-    - .\bin\EDR.exe -p .\Examples\pwsh-sequence.scl
-
-test package pwsh release:
-  extends:
-    - test package pwsh dev
-    - .rules_release
-  needs:
-    - package pwsh release
-
-sign pwsh release:
-  extends:
-    - sign exe release
-    - .exe_artifacts_pwsh
-  needs:
-    - version check release
-    - package pwsh release
-    - test package pwsh release
-  script:
-    - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
-      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\bin\EDR.exe
 
 code_quality:
   tags:

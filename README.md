@@ -46,7 +46,7 @@ section of the documentation.
 
 EDR is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).
 
-However, we're currently only targeting the `win-x64` runtime identifier for
+However, we're currently only targeting the `win10-x64` runtime identifier for
 our [releases](https://gitlab.com/reductech/edr/edr/-/releases).
 
 ## Builds that include the PowerShell connector

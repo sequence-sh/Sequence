@@ -2,7 +2,7 @@
 /label ~"wf::backlog"
 /label ~"area::tooling"
 /label ~"edr"
-/epic reductech&12
+/epic reductech&24
 
 ## Story
 

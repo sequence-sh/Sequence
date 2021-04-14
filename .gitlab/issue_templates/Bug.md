@@ -4,6 +4,7 @@
 /label ~"wf::backlog"
 /label ~"area::tooling"
 /label ~"edr"
+/epic reductech&24
 
 ## Summary
 

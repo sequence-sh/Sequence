@@ -377,3 +377,5 @@ nupkg/
 ####
 **/StrykerOutput/
 version.env
+dnSpy/
+ahp/

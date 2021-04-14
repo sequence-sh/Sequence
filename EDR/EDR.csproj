@@ -36,13 +36,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandDotNet" Version="4.1.6" />
+    <PackageReference Include="CommandDotNet" Version="4.1.8" />
     <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="NLog" Version="4.7.8" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.1" />
+    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
     <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.8.0" />
     <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.8.0" />
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains(INCLUDE_PWSH))">
-    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.8.0" />
+    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.8.1" />
   </ItemGroup>
 
   <ItemGroup>

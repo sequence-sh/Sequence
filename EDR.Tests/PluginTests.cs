@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
@@ -16,6 +17,7 @@ using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Serialization;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace EDR.Tests
 {
@@ -47,6 +49,43 @@ public class PluginTests
     }}
 }}
 }}";
+
+    [Fact]
+    public async Task TestBadlyConfiguredPlugin()
+    {
+        var factory = MELT.TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var logger  = factory.CreateLogger<EDRMethods>();
+
+        var settings = SCLSettings.CreateFromString(
+            SettingsString.Replace("ExampleConnector", "MissingConnector")
+        );
+
+        var mockRepository = new MockRepository(MockBehavior.Strict);
+
+        IExternalContext externalContext = new ExternalContext(
+            mockRepository.OneOf<IExternalProcessRunner>(),
+            mockRepository.OneOf<IConsole>()
+        );
+
+        var methods = new EDRMethods(
+            logger,
+            settings,
+            externalContext,
+            mockRepository.OneOf<IFileSystem>()
+        );
+
+        try
+        {
+            await methods.Execute(CancellationToken.None, "Log (GetTestString)");
+        }
+        catch (InvalidOperationException e)
+        {
+            e.Message.Should().Contain("Dependency resolution failed for component");
+            return;
+        }
+
+        throw new XunitException("Expected InvalidOperationException");
+    }
 
     [Fact]
     public async Task TestConnectorFromEDRMethods()

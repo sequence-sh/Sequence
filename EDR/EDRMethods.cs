@@ -130,7 +130,12 @@ public class EDRMethods
 
         if (stepFactoryStore.IsFailure)
         {
-            throw new Exception(stepFactoryStore.Error.AsString);
+            SCLRunner.LogError(
+                _logger,
+                stepFactoryStore.Error.WithLocation(ErrorLocation.EmptyLocation)
+            );
+
+            return 1;
         }
 
         if (validate)
@@ -203,7 +208,12 @@ public class EDRMethods
 
         if (stepFactoryStore.IsFailure)
         {
-            throw new Exception(stepFactoryStore.Error.AsString);
+            SCLRunner.LogError(
+                _logger,
+                stepFactoryStore.Error.WithLocation(ErrorLocation.EmptyLocation)
+            );
+
+            return 1;
         }
 
         if (validate)

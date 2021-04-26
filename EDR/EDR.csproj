@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -44,10 +44,8 @@
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Nuix" Version="0.8.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.Pwsh" Version="0.8.1" />
-    <PackageReference Include="Reductech.EDR.Connectors.Sql" Version="0.8.0" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.8.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104261457" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.29" />
   </ItemGroup>
 
   <ItemGroup>

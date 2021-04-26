@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
@@ -57,6 +58,8 @@ internal class Program
             (context, services) =>
             {
                 services.AddSingleton<EDRMethods>();
+
+                services.AddSingleton<IFileSystem>(new FileSystem());
 
                 var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);
 

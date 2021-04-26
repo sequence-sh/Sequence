@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
 using CommandDotNet;
@@ -10,12 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.Connectors.Nuix;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
-using Thinktecture;
-using Thinktecture.IO;
 using Xunit;
 
 namespace EDR.Tests
@@ -26,23 +23,24 @@ public class EDRMethodsTests
     private const string TheUltimateTestString = "'Hello World'";
 
     private static IServiceProvider GetDefaultServiceProvider(ILogger<EDRMethods> logger) =>
-        GetDefaultServiceProvider(logger, null);
+        GetDefaultServiceProvider(logger, null, null);
 
     private static IServiceProvider GetDefaultServiceProvider(
         ILogger<EDRMethods> logger,
-        IExternalContext externalContext)
+        IExternalContext externalContext,
+        IFileSystem fileSystem)
     {
-        var settings =
-            NuixSettings.CreateSettings(
-                "Test Path",
-                new Version(0, 0),
-                true,
-                new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT }
-            );
+        var settings = SCLSettings.EmptySettings;
+        //NuixSettings.CreateSettings(
+        //    "Test Path",
+        //    new Version(0, 0),
+        //    true,
+        //    new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT }
+        //);
 
         var edrm = externalContext == null
-            ? new EDRMethods(logger, settings)
-            : new EDRMethods(logger, settings, externalContext);
+            ? new EDRMethods(logger, settings, fileSystem)
+            : new EDRMethods(logger, settings, externalContext, fileSystem);
 
         var serviceProvider = new ServiceCollection()
             .AddSingleton(edrm)
@@ -127,22 +125,17 @@ public class EDRMethodsTests
 
         var repo = new MockRepository(MockBehavior.Strict);
 
-        var mockFile = repo.Create<IFile>();
+        var mockFileSystem = repo.Create<IFileSystem>();
 
-        mockFile.Setup(x => x.ReadAllTextAsync(filePath, It.IsAny<CancellationToken>()))
+        mockFileSystem.Setup(x => x.File.ReadAllTextAsync(filePath, It.IsAny<CancellationToken>()))
             .ReturnsAsync(TheUltimateTestString);
 
         IExternalContext externalContext = new ExternalContext(
-            new FileSystemAdapter(
-                repo.Create<IDirectory>().Object,
-                mockFile.Object,
-                repo.Create<ICompression>().Object
-            ),
             repo.Create<IExternalProcessRunner>().Object,
             repo.Create<IConsole>().Object
         );
 
-        var sp = GetDefaultServiceProvider(logger, externalContext);
+        var sp = GetDefaultServiceProvider(logger, externalContext, mockFileSystem.Object);
 
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)

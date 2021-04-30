@@ -1,0 +1,13 @@
+- <root> = 'edr/steps'
+- <docs> = GenerateDocumentation
+- <docs>
+  | ArrayDistinct (From <Entity> 'Directory')
+  | ForEach (
+      CreateDirectory (PathCombine [<root>, (From <Entity> 'Directory')])
+    )
+- <docs>
+  | Foreach (
+      FileWrite
+        (From <Entity> 'FileText')
+        (PathCombine [<root>, (From <Entity> 'Directory'), (From <Entity> 'FileName')])
+    )

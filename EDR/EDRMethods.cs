@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
@@ -25,6 +27,7 @@ public class EDRMethods
 {
     private readonly ILogger<EDRMethods> _logger;
     private readonly IFileSystem _fileSystem;
+    private readonly IConnectorManager _connectorManager;
 
     private readonly SCLSettings _settings;
 
@@ -37,12 +40,16 @@ public class EDRMethods
     private const int Failure = 1;
 
     /// <summary>
-    /// Instantiate EDRMethods using the default IFileSystem provider.
+    /// Instantiate EDRMethods using the default IExternalContext provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="settings">Configuration for connectors.</param>
     /// <param name="fileSystem">The file system</param>
-    public EDRMethods(ILogger<EDRMethods> logger, SCLSettings settings, IFileSystem fileSystem)
+    /// <param name="connectorManager"></param>
+    public EDRMethods(
+        ILogger<EDRMethods> logger,
+        SCLSettings settings,
+        IFileSystem fileSystem,
+        IConnectorManager connectorManager)
         : this(
             logger,
             settings,
@@ -50,26 +57,29 @@ public class EDRMethods
                 ExternalContext.Default.ExternalProcessRunner,
                 ExternalContext.Default.Console
             ),
-            fileSystem
+            fileSystem,
+            connectorManager
         ) { }
 
     /// <summary>
-    /// Instantiate EDRMethods using the specified IFileSystem provider.
+    /// Instantiate EDRMethods using the specified IExternalContext provider.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="settings">Configuration</param>
     /// <param name="baseExternalContext">The external context. Can be mocked for testing.</param>
     /// <param name="fileSystem">The file system</param>
+    /// <param name="connectorManager"></param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
         SCLSettings settings,
         IExternalContext baseExternalContext,
-        IFileSystem fileSystem)
+        IFileSystem fileSystem,
+        IConnectorManager connectorManager)
     {
         _logger              = logger;
         _baseExternalContext = baseExternalContext;
         _fileSystem          = fileSystem;
         _settings            = settings;
+        _connectorManager    = connectorManager;
     }
 
     /// <summary>
@@ -103,6 +113,12 @@ public class EDRMethods
         bool validate = false) => ExecuteAbstractAsync(scl, path, validate, cancellationToken);
 
     /// <summary>
+    /// 
+    /// </summary>
+    [SubCommand]
+    public ConnectorCommand Connector { get; set; }
+
+    /// <summary>
     /// Executes SCL from either a file or a string.
     /// </summary>
     private async Task<int> ExecuteAbstractAsync(
@@ -119,6 +135,24 @@ public class EDRMethods
             throw new ArgumentException("Please provide a Sequence string (-s) or path (-p).");
     }
 
+    private async Task<ConnectorData[]> GetConnectors()
+    {
+        if (!await _connectorManager.Verify())
+            throw new InvalidConfigurationException("Could not validate installed connectors.");
+
+        var connectors = _connectorManager.List()
+            .Select(c => c.data)
+            .Where(c => c.ConnectorSettings.Enable)
+            .ToArray();
+
+        if (connectors.GroupBy(c => c.ConnectorSettings.Id).Any(g => g.Count() > 1))
+            throw new InvalidConfigurationException(
+                "More than one connector configuration with the same id."
+            );
+
+        return connectors;
+    }
+
     private async Task<int> ExecuteFromPathAsync(
         string path,
         bool validate,
@@ -126,27 +160,13 @@ public class EDRMethods
     {
         var text = await _fileSystem.File.ReadAllTextAsync(path, cancellationToken);
 
-        var stepFactoryStore = StepFactoryStore.TryCreateFromSettings(_settings, _logger);
-
-        if (stepFactoryStore.IsFailure)
-        {
-            SCLRunner.LogError(
-                _logger,
-                stepFactoryStore.Error.WithLocation(ErrorLocation.EmptyLocation)
-            );
-
-            return 1;
-        }
+        var connectors       = await GetConnectors();
+        var stepFactoryStore = StepFactoryStore.Create(connectors);
 
         if (validate)
-        {
-            return ValidateSCL(text, stepFactoryStore.Value);
-        }
+            return ValidateSCL(text, stepFactoryStore);
 
-        var externalContext = GetInjectedExternalContext(
-            stepFactoryStore.Value,
-            _baseExternalContext
-        );
+        var externalContext = GetInjectedExternalContext(stepFactoryStore, _baseExternalContext);
 
         if (externalContext.IsFailure)
         {
@@ -161,7 +181,7 @@ public class EDRMethods
         var runner = new SCLRunner(
             _settings,
             _logger,
-            stepFactoryStore.Value,
+            stepFactoryStore,
             externalContext.Value
         );
 
@@ -204,23 +224,14 @@ public class EDRMethods
         bool validate,
         CancellationToken cancellationToken)
     {
-        var stepFactoryStore = StepFactoryStore.TryCreateFromSettings(_settings, _logger);
-
-        if (stepFactoryStore.IsFailure)
-        {
-            SCLRunner.LogError(
-                _logger,
-                stepFactoryStore.Error.WithLocation(ErrorLocation.EmptyLocation)
-            );
-
-            return 1;
-        }
+        var connectors       = await GetConnectors();
+        var stepFactoryStore = StepFactoryStore.Create(connectors);
 
         if (validate)
-            return ValidateSCL(scl, stepFactoryStore.Value);
+            return ValidateSCL(scl, stepFactoryStore);
 
         var externalContext = GetInjectedExternalContext(
-            stepFactoryStore.Value,
+            stepFactoryStore,
             _baseExternalContext
         );
 
@@ -237,7 +248,7 @@ public class EDRMethods
         var runner = new SCLRunner(
             _settings,
             _logger,
-            stepFactoryStore.Value,
+            stepFactoryStore,
             externalContext.Value
         );
 

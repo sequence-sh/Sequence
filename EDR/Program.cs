@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core;
 
 namespace Reductech.EDR
@@ -57,9 +58,15 @@ internal class Program
         .ConfigureServices(
             (context, services) =>
             {
-                services.AddSingleton<EDRMethods>();
+                var fs = new FileSystem();
 
-                services.AddSingleton<IFileSystem>(new FileSystem());
+                services.AddSingleton<IFileSystem>(fs);
+
+                services.AddConnectorManager(context.Configuration, fs);
+
+                services.AddSingleton<ConnectorCommand>();
+
+                services.AddSingleton<EDRMethods>();
 
                 var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);
 

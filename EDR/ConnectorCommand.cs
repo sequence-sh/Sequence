@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
 using ConsoleTables;
-using Microsoft.Extensions.Primitives;
 using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR
 {

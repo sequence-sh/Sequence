@@ -14,8 +14,8 @@ namespace Reductech.EDR
 /// </summary>
 [Command(
     Name        = "connector",
-    Usage       = "connector <command> <arguments>",
-    Description = "Connector management"
+    Usage       = "connector [command] [arguments]",
+    Description = "Provides commands to manage Connectors"
 )]
 public class ConnectorCommand
 {
@@ -37,14 +37,14 @@ public class ConnectorCommand
     /// <param name="filter"></param>
     [Command(
         Name        = "list",
-        Description = "List the Connectors currently installed"
+        Description = "List the Connector configurations currently installed"
     )]
     public async Task List(
         CancellationToken ct,
         [Option(
             LongName    = "filter",
             ShortName   = "f",
-            Description = "Filter available connectors using this regex."
+            Description = "Filter configuration names using a regular expression"
         )]
         string? filter = null)
     {
@@ -80,14 +80,14 @@ public class ConnectorCommand
     /// <returns></returns>
     [Command(
         Name        = "find",
-        Description = "Find EDR connectors"
+        Description = "List EDR Connectors available in the registry."
     )]
     public async Task Find(
         CancellationToken ct,
         [Option(
             LongName    = "filter",
             ShortName   = "f",
-            Description = "Filter available connectors using this regex."
+            Description = "Filter connector Ids using a regular expression"
         )]
         string? search = null,
         [Option(Description = "Include prerelease versions of connectors.")]
@@ -103,7 +103,7 @@ public class ConnectorCommand
     /// 
     /// </summary>
     /// <param name="ct"></param>
-    /// <param name="name"></param>
+    /// <param name="connectorId"></param>
     /// <param name="configuration"></param>
     /// <param name="version"></param>
     /// <param name="force"></param>
@@ -112,39 +112,36 @@ public class ConnectorCommand
     /// <exception cref="ArgumentException"></exception>
     [Command(
         Name        = "add",
-        Description = "Add Connector to EDR"
+        Description = "Add a Connector configuration"
     )]
     public async Task Add(
         CancellationToken ct,
         [Operand(
-            Name = "name",
+            Name = "connectorId",
             Description =
-                "The name of the connector to add. e.g. Reductech.EDR.Connectors.StructuredData"
+                "The id of the connector to add. e.g. Reductech.EDR.Connectors.StructuredData"
         )]
-        string name,
+        string connectorId,
         [Option(
-            //LongName  = "configuration",
             ShortName = "c",
             Description =
-                "Name of the configuration. By default this is the same as the connector name."
+                "Name of the configuration. By default this is the same as the connector id."
         )]
         string? configuration = null,
         [Option(
-            //LongName  = "version",
             ShortName = "v",
             Description =
                 "Add the specified version of the connector. By default the latest version will be added."
         )]
         string? version = null,
         [Option(
-            //LongName    = "force",
             ShortName   = "f",
-            Description = "If a connector already exists, overwrite"
+            Description = "If a configuration already exists, overwrite."
         )]
         bool force = false,
         [Option(Description = "Include prerelease versions of connectors.")]
         bool prerelease = false) => await _connectorManager.Add(
-        name,
+        connectorId,
         configuration,
         version,
         prerelease,
@@ -161,14 +158,14 @@ public class ConnectorCommand
     /// <returns></returns>
     [Command(
         Name        = "remove",
-        Description = "Remove a connector from EDR"
+        Description = "Remove a Connector configuration"
     )]
     public async Task RemoveConnector(
         CancellationToken ct,
         [Operand(
             Name = "name",
             Description =
-                "The name of the connector to add. e.g. Reductech.EDR.Connectors.StructuredData"
+                "The name of the configuration to remove."
         )]
         string name,
         [Option(Description = "Do not remove the installation directory.")]

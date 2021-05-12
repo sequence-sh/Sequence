@@ -22,14 +22,12 @@ namespace Reductech.EDR
 /// <summary>
 /// EDR methods to be run in the console.
 /// </summary>
-[Command(Description = "Executes EDR Sequences")]
+[Command]
 public class EDRMethods
 {
     private readonly ILogger<EDRMethods> _logger;
     private readonly IFileSystem _fileSystem;
     private readonly IConnectorManager _connectorManager;
-
-    private readonly SCLSettings _settings;
 
     /// <summary>
     /// External context without injected contexts
@@ -47,18 +45,16 @@ public class EDRMethods
     /// <param name="connectorManager"></param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
-        SCLSettings settings,
         IFileSystem fileSystem,
         IConnectorManager connectorManager)
         : this(
             logger,
-            settings,
+            fileSystem,
+            connectorManager,
             new ExternalContext(
                 ExternalContext.Default.ExternalProcessRunner,
                 ExternalContext.Default.Console
-            ),
-            fileSystem,
-            connectorManager
+            )
         ) { }
 
     /// <summary>
@@ -70,33 +66,31 @@ public class EDRMethods
     /// <param name="connectorManager"></param>
     public EDRMethods(
         ILogger<EDRMethods> logger,
-        SCLSettings settings,
-        IExternalContext baseExternalContext,
         IFileSystem fileSystem,
-        IConnectorManager connectorManager)
+        IConnectorManager connectorManager,
+        IExternalContext baseExternalContext)
     {
         _logger              = logger;
         _baseExternalContext = baseExternalContext;
         _fileSystem          = fileSystem;
-        _settings            = settings;
         _connectorManager    = connectorManager;
     }
 
     /// <summary>
     /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL) either from file or from a string.
     /// </summary>
-    [DefaultMethod]
+    //[DefaultMethod]
     [Command(
         Name = "run",
         Description =
             "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
     )]
-    public Task<int> Execute(
+    public async Task<int> Execute(
         CancellationToken cancellationToken,
         [Option(
-            LongName    = "sequence",
+            LongName    = "scl",
             ShortName   = "s",
-            Description = "Run a Sequence from a string."
+            Description = "Run a Sequence from an SCL string."
         )]
         string? scl = null,
         [Option(
@@ -110,7 +104,23 @@ public class EDRMethods
             ShortName   = "b",
             Description = "If set, build the SCL but do not execute it."
         )]
-        bool validate = false) => ExecuteAbstractAsync(scl, path, validate, cancellationToken);
+        bool validate = false)
+    {
+        if (string.IsNullOrWhiteSpace(scl) && string.IsNullOrWhiteSpace(path))
+            throw new CommandLineArgumentException(
+                "Please provide either an SCL string (-s) or path (-p)."
+            );
+
+        if (!string.IsNullOrWhiteSpace(scl))
+            return await ExecuteFromStringAsync(scl, validate, cancellationToken);
+
+        if (!string.IsNullOrWhiteSpace(path))
+            return await ExecuteFromPathAsync(path, validate, cancellationToken);
+
+        throw new CommandLineArgumentException(
+            "Please provide a Sequence string (-s) or path (-p)."
+        );
+    }
 
     /// <summary>
     /// 
@@ -118,27 +128,10 @@ public class EDRMethods
     [SubCommand]
     public ConnectorCommand Connector { get; set; }
 
-    /// <summary>
-    /// Executes SCL from either a file or a string.
-    /// </summary>
-    private async Task<int> ExecuteAbstractAsync(
-        string? scl,
-        string? path,
-        bool validate,
-        CancellationToken cancellationToken)
-    {
-        if (!string.IsNullOrWhiteSpace(scl))
-            return await ExecuteFromStringAsync(scl, validate, cancellationToken);
-        else if (!string.IsNullOrWhiteSpace(path))
-            return await ExecuteFromPathAsync(path, validate, cancellationToken);
-        else
-            throw new ArgumentException("Please provide a Sequence string (-s) or path (-p).");
-    }
-
     private async Task<ConnectorData[]> GetConnectors()
     {
         if (!await _connectorManager.Verify())
-            throw new InvalidConfigurationException("Could not validate installed connectors.");
+            throw new ConnectorConfigurationException("Could not validate installed connectors.");
 
         var connectors = _connectorManager.List()
             .Select(c => c.data)
@@ -146,7 +139,7 @@ public class EDRMethods
             .ToArray();
 
         if (connectors.GroupBy(c => c.ConnectorSettings.Id).Any(g => g.Count() > 1))
-            throw new InvalidConfigurationException(
+            throw new ConnectorConfigurationException(
                 "More than one connector configuration with the same id."
             );
 
@@ -179,7 +172,7 @@ public class EDRMethods
         }
 
         var runner = new SCLRunner(
-            _settings,
+            SCLSettings.EmptySettings,
             _logger,
             stepFactoryStore,
             externalContext.Value
@@ -205,7 +198,7 @@ public class EDRMethods
         StepFactoryStore sfs,
         IExternalContext baseExternalContext)
     {
-        var injectedContextsResult = sfs.TryGetInjectedContexts(_settings);
+        var injectedContextsResult = sfs.TryGetInjectedContexts(SCLSettings.EmptySettings);
 
         if (injectedContextsResult.IsFailure)
             return injectedContextsResult.ConvertFailure<IExternalContext>();
@@ -246,7 +239,7 @@ public class EDRMethods
         }
 
         var runner = new SCLRunner(
-            _settings,
+            SCLSettings.EmptySettings,
             _logger,
             stepFactoryStore,
             externalContext.Value

@@ -2,6 +2,7 @@
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CommandDotNet;
+using CommandDotNet.Diagnostics;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,19 @@ internal class Program
                 .UseMicrosoftDependencyInjection(host.Services);
 
             result = await appRunner.RunAsync(args);
+        }
+        catch (CommandLineArgumentException ae)
+        {
+            logger.Info(ae.Message);
+            Console.WriteLine();
+            ae.GetCommandContext()?.PrintHelp();
+            result = 1;
+        }
+        catch (ConnectorConfigurationException ce)
+        {
+            logger.Error(ce);
+            ce.GetCommandContext()?.PrintHelp();
+            result = 1;
         }
         #pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception e)

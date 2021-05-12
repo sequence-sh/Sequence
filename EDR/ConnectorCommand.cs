@@ -14,7 +14,6 @@ namespace Reductech.EDR
 /// </summary>
 [Command(
     Name        = "connector",
-    Usage       = "connector [command] [arguments]",
     Description = "Provides commands to manage Connectors"
 )]
 public class ConnectorCommand

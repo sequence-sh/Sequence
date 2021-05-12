@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
@@ -10,13 +12,46 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.Core;
+using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Xunit;
 
 namespace EDR.Tests
 {
+
+public class FakeConnectorManager : IConnectorManager
+{
+    public Task Add(
+        string id,
+        string? name = null,
+        string? version = null,
+        bool prerelease = false,
+        bool force = false,
+        CancellationToken ct = default) => throw new NotImplementedException();
+
+    public Task Update(
+        string name,
+        string? version = null,
+        bool prerelease = false,
+        CancellationToken ct = default) => throw new NotImplementedException();
+
+    public Task Remove(
+        string name,
+        bool configurationOnly = false,
+        CancellationToken ct = default) => throw new NotImplementedException();
+
+    public IEnumerable<(string name, ConnectorData data)> List(string? nameFilter = null) =>
+        Array.Empty<(string name, ConnectorData data)>();
+
+    public Task<ICollection<ConnectorMetadata>> Find(
+        string? search = null,
+        bool prerelease = false,
+        CancellationToken ct = new CancellationToken()) => throw new NotImplementedException();
+
+    public Task<bool> Verify(CancellationToken ct = default) => Task.FromResult(true);
+}
 
 public class EDRMethodsTests
 {
@@ -27,20 +62,12 @@ public class EDRMethodsTests
 
     private static IServiceProvider GetDefaultServiceProvider(
         ILogger<EDRMethods> logger,
-        IExternalContext externalContext,
-        IFileSystem fileSystem)
+        IExternalContext? externalContext,
+        IFileSystem? fileSystem)
     {
-        var settings = SCLSettings.EmptySettings;
-        //NuixSettings.CreateSettings(
-        //    "Test Path",
-        //    new Version(0, 0),
-        //    true,
-        //    new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT }
-        //);
-
         var edrm = externalContext == null
-            ? new EDRMethods(logger, settings, fileSystem)
-            : new EDRMethods(logger, settings, externalContext, fileSystem);
+            ? new EDRMethods(logger, fileSystem, new FakeConnectorManager())
+            : new EDRMethods(logger, fileSystem, new FakeConnectorManager(), externalContext);
 
         var serviceProvider = new ServiceCollection()
             .AddSingleton(edrm)
@@ -59,7 +86,7 @@ public class EDRMethodsTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem($"-s \"{TheUltimateTestString}\"");
+            .RunInMem($"run -s \"{TheUltimateTestString}\"");
 
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
@@ -83,7 +110,7 @@ public class EDRMethodsTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem($"-b -s \"1 / 0\"");
+            .RunInMem("run -b -s \"1 / 0\"");
 
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
@@ -103,7 +130,7 @@ public class EDRMethodsTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem($"-b -s \"Pront 123\"");
+            .RunInMem("run -b -s \"Pront 123\"");
 
         result.ExitCode.Should().Be(1);
         result.Console.OutText().Should().Be("");
@@ -140,7 +167,7 @@ public class EDRMethodsTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem($"-p {filePath}");
+            .RunInMem($"run -p {filePath}");
 
         result.ExitCode.Should().Be(0);
         result.Console.OutText().Should().Be("");
@@ -165,7 +192,7 @@ public class EDRMethodsTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem("-s \"Pront Value: 'Hello World'\"");
+            .RunInMem("run -s \"Pront Value: 'Hello World'\"");
 
         result.ExitCode.Should().Be(1);
         result.Console.OutText().Should().Be("");
@@ -185,14 +212,14 @@ public class EDRMethodsTests
 
         var sp = GetDefaultServiceProvider(logger);
 
-        var result = Assert.Throws<ArgumentException>(
+        var result = Assert.Throws<CommandLineArgumentException>(
             () => new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
-                .RunInMem("-s \"\"")
+                .RunInMem("run")
         );
 
-        Assert.Equal("Please provide a Sequence string (-s) or path (-p).", result.Message);
+        Assert.Equal("Please provide either an SCL string (-s) or path (-p).", result.Message);
     }
 }
 

@@ -6,6 +6,7 @@
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>

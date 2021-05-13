@@ -25,6 +25,8 @@ internal class Program
         var logger = LogManager.GetCurrentClassLogger();
         int result;
 
+        Console.WriteLine();
+
         try
         {
             var appRunner = new AppRunner<EDRMethods>()
@@ -76,10 +78,11 @@ internal class Program
 
                 services.AddSingleton<IFileSystem>(fs);
 
-                services.AddConnectorManager(context.Configuration, fs);
+                services.AddConnectorManager(context.Configuration);
 
+                services.AddSingleton<RunCommand>();
                 services.AddSingleton<ConnectorCommand>();
-
+                services.AddSingleton<ValidateCommand>();
                 services.AddSingleton<EDRMethods>();
 
                 var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);

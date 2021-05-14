@@ -34,6 +34,8 @@ public class StepsCommand
     [DefaultMethod]
     public async Task List(
         CancellationToken cancellationToken,
+        [Operand(Description = "Filter step name and connectors using a regular expression")]
+        string? filter = null,
         [Option(
             ShortName   = "n",
             Description = "Filter step names using a regular expression"
@@ -60,6 +62,12 @@ public class StepsCommand
                 s => Regex.IsMatch(s.DocumentationCategory, connector, RegexOptions.IgnoreCase)
             );
 
+        if (filter != null)
+            allSteps = allSteps.Where(
+                s => Regex.IsMatch(s.Name,                  filter, RegexOptions.IgnoreCase)
+                  || Regex.IsMatch(s.DocumentationCategory, filter, RegexOptions.IgnoreCase)
+            );
+
         var steps = allSteps.Select(
                 s => new ConnectorRow(
                     s.Name,
@@ -71,8 +79,8 @@ public class StepsCommand
 
         if (steps.Count > 0)
         {
-            var maxLen = Console.WindowWidth - steps.Max(s => s.Name.Length + s.Connector.Length)
-                                             - 15;
+            var maxLen = Console.WindowWidth - steps.Max(s => s.Name.Length)
+                                             - steps.Max(s => s.Connector.Length) - 7;
 
             var formattedSteps = steps.Select(
                 s => s with

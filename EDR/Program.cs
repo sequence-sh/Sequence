@@ -30,6 +30,7 @@ internal class Program
         try
         {
             var appRunner = new AppRunner<EDRMethods>()
+                .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
                 .UseDefaultMiddleware()
                 .UseMicrosoftDependencyInjection(host.Services);
 
@@ -80,8 +81,9 @@ internal class Program
 
                 services.AddConnectorManager(context.Configuration);
 
-                services.AddSingleton<RunCommand>();
                 services.AddSingleton<ConnectorCommand>();
+                services.AddSingleton<RunCommand>();
+                services.AddSingleton<StepsCommand>();
                 services.AddSingleton<ValidateCommand>();
                 services.AddSingleton<EDRMethods>();
 

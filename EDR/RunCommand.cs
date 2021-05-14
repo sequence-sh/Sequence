@@ -17,11 +17,11 @@ namespace Reductech.EDR
 {
 
 /// <summary>
-/// 
+/// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
 /// </summary>
 [Command(
-    Name        = "run",
-    Usage       = "run <path>",
+    Name = "run",
+    //Usage       = "run <path>",
     Description = "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
 )]
 public class RunCommand
@@ -38,9 +38,6 @@ public class RunCommand
     /// <summary>
     /// Instantiate EDRMethods using the default IExternalContext provider.
     /// </summary>
-    /// <param name="logger">The logger.</param>
-    /// <param name="fileSystem">The file system</param>
-    /// <param name="connectorManager"></param>
     public RunCommand(
         ILogger<RunCommand> logger,
         IFileSystem fileSystem,
@@ -58,10 +55,6 @@ public class RunCommand
     /// <summary>
     /// Instantiate EDRMethods using the specified IExternalContext provider.
     /// </summary>
-    /// <param name="logger">The logger.</param>
-    /// <param name="baseExternalContext">The external context. Can be mocked for testing.</param>
-    /// <param name="fileSystem">The file system</param>
-    /// <param name="connectorManager"></param>
     public RunCommand(
         ILogger<RunCommand> logger,
         IFileSystem fileSystem,
@@ -74,19 +67,25 @@ public class RunCommand
         _connectorManager    = connectorManager;
     }
 
+    /// <summary>
+    /// Shorthand for the path command.
+    /// </summary>
     [DefaultMethod]
     public async Task<int> RunDefault(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file.")]
+        [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
         string pathToSCLFile) => await RunPath(cancellationToken, pathToSCLFile);
 
+    /// <summary>
+    /// Run a Sequence from a file
+    /// </summary>
     [Command(
         Name        = "path",
-        Description = "Run from path"
+        Description = "Run a Sequence from a file"
     )]
     public async Task<int> RunPath(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file.")]
+        [Operand(Description = "Path to the SCL file")]
         string pathToSCLFile)
     {
         if (string.IsNullOrWhiteSpace(pathToSCLFile) || !_fileSystem.File.Exists(pathToSCLFile))
@@ -118,14 +117,16 @@ public class RunCommand
         return Failure;
     }
 
+    /// <summary>
+    /// Execute an in-line SCL string
+    /// </summary>
     [Command(
         Name        = "scl",
-        Description = "Run from "
+        Description = "Execute an in-line SCL string"
     )]
     public async Task<int> RunSCL(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file.")]
-        string scl)
+        [Operand(Description = "SCL string")] string scl)
     {
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");

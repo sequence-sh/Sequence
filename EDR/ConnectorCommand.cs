@@ -10,30 +10,26 @@ namespace Reductech.EDR
 {
 
 /// <summary>
-/// 
+/// Provides commands to manage Connectors configurations
 /// </summary>
 [Command(
     Name        = "connector",
-    Description = "Provides commands to manage Connectors"
+    Description = "Provides commands to manage Connectors configurations"
 )]
 public class ConnectorCommand
 {
     private readonly IConnectorManager _connectorManager;
 
     /// <summary>
-    /// 
+    /// Instantiate this command with the specified connector manager.
     /// </summary>
     /// <param name="connectorManager"></param>
-    public ConnectorCommand(IConnectorManager connectorManager)
-    {
+    public ConnectorCommand(IConnectorManager connectorManager) =>
         _connectorManager = connectorManager;
-    }
 
     /// <summary>
-    /// 
+    /// List the Connector configurations currently installed
     /// </summary>
-    /// <param name="ct"></param>
-    /// <param name="filter"></param>
     [Command(
         Name        = "list",
         Description = "List the Connector configurations currently installed"
@@ -71,15 +67,11 @@ public class ConnectorCommand
     private record ListRow(string Configuration, string ConnectorId, string Version, bool Enabled);
 
     /// <summary>
-    /// 
+    /// List EDR Connectors available in the configured registry
     /// </summary>
-    /// <param name="ct"></param>
-    /// <param name="search"></param>
-    /// <param name="prerelease"></param>
-    /// <returns></returns>
     [Command(
         Name        = "find",
-        Description = "List EDR Connectors available in the registry."
+        Description = "List EDR Connectors available in the configured registry"
     )]
     public async Task Find(
         CancellationToken ct,
@@ -99,19 +91,11 @@ public class ConnectorCommand
     }
 
     /// <summary>
-    /// 
+    /// Add a Connector configuration, installing the specified connector
     /// </summary>
-    /// <param name="ct"></param>
-    /// <param name="connectorId"></param>
-    /// <param name="configuration"></param>
-    /// <param name="version"></param>
-    /// <param name="force"></param>
-    /// <param name="prerelease"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
     [Command(
         Name        = "add",
-        Description = "Add a Connector configuration"
+        Description = "Add a Connector configuration, installing the specified connector"
     )]
     public async Task Add(
         CancellationToken ct,
@@ -149,12 +133,8 @@ public class ConnectorCommand
     );
 
     /// <summary>
-    /// 
+    /// Remove a Connector configuration
     /// </summary>
-    /// <param name="ct"></param>
-    /// <param name="name"></param>
-    /// <param name="configurationOnly"></param>
-    /// <returns></returns>
     [Command(
         Name        = "remove",
         Description = "Remove a Connector configuration"

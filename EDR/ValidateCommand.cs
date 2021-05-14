@@ -14,11 +14,11 @@ namespace Reductech.EDR
 {
 
 /// <summary>
-/// 
+/// Check if a Sequence Configuration Language file or string is valid
 /// </summary>
 [Command(
-    Name        = "validate",
-    Usage       = "validate [command] [path or scl]",
+    Name = "validate",
+    //Usage       = "validate [command] [path or scl]",
     Description = "Check if a Sequence Configuration Language file or string is valid"
 )]
 public class ValidateCommand
@@ -28,11 +28,8 @@ public class ValidateCommand
     private readonly IConnectorManager _connectorManager;
 
     /// <summary>
-    /// 
+    /// Instantiate using the provided logger, file system and connector manager.
     /// </summary>
-    /// <param name="logger">The logger.</param>
-    /// <param name="fileSystem">The file system</param>
-    /// <param name="connectorManager"></param>
     public ValidateCommand(
         ILogger<ValidateCommand> logger,
         IFileSystem fileSystem,
@@ -44,32 +41,24 @@ public class ValidateCommand
     }
 
     /// <summary>
-    /// 
+    /// Shorthand for the path command.
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    /// <exception cref="CommandLineArgumentException"></exception>
     [DefaultMethod]
     public async Task<int> ValidateDefault(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file, or in-line SCL.")]
+        [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
         string sclPath) => await ValidatePath(cancellationToken, sclPath);
 
     /// <summary>
-    /// 
+    /// Validate a Sequence in a file
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    /// <exception cref="CommandLineArgumentException"></exception>
     [Command(
         Name        = "path",
-        Description = "Run from path"
+        Description = "Validate a Sequence in a file"
     )]
     public async Task<int> ValidatePath(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file, or in-line SCL.")]
+        [Operand(Description = "Path to the SCL file")]
         string path)
     {
         if (string.IsNullOrWhiteSpace(path) || !_fileSystem.File.Exists(path))
@@ -81,22 +70,18 @@ public class ValidateCommand
     }
 
     /// <summary>
-    /// 
+    /// Validate an in-line SCL string
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <param name="scl"></param>
-    /// <returns></returns>
     [Command(
         Name        = "scl",
-        Description = "Run from "
+        Description = "Validate an in-line SCL string"
     )]
     public async Task<int> ValidateSCL(
         CancellationToken cancellationToken,
-        [Operand(Description = "A path to an SCL file, or in-line SCL.")]
-        string scl)
+        [Operand(Description = "SCL string")] string scl)
     {
         if (string.IsNullOrWhiteSpace(scl))
-            throw new CommandLineArgumentException("Need an SCL string.");
+            throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
         var stepFactoryStore =
             await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
@@ -107,7 +92,7 @@ public class ValidateCommand
 
         if (stepResult.IsSuccess)
         {
-            _logger.LogInformation("SCL is valid");
+            _logger.LogInformation("Successfully validated SCL.");
 
             return Success;
         }

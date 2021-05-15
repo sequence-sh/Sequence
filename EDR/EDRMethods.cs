@@ -1,5 +1,4 @@
 ﻿using CommandDotNet;
-using Reductech.EDR.Core.Internal.Documentation;
 
 namespace Reductech.EDR
 {

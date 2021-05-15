@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
 using FluentAssertions;
-using MELT;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement;

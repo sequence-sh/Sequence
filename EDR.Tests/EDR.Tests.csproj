@@ -6,6 +6,7 @@
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,10 +26,10 @@
   <ItemGroup>
     <PackageReference Include="CommandDotNet.TestTools" Version="3.0.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="MELT.Xunit" Version="0.7.0" />
+    <PackageReference Include="MELT.Xunit" Version="0.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Moq" Version="4.16.1" />
-    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.29" />
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.31" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>

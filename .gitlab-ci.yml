@@ -38,7 +38,7 @@ variables:
     paths:
       - lib/
       - CHANGELOG.md
-      - EDR.exe
+      - edr.exe
       - LICENSE
       - README.md
 
@@ -95,9 +95,10 @@ test package exe dev:
   needs:
     - package exe dev
   script:
-    - .\EDR.exe -p .\Examples\core-sequence.scl
-    - .\EDR.exe -p .\Examples\nuix-sequence.scl
-    - .\EDR.exe -p .\Examples\pwsh-sequence.scl
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe run .\Examples\core-sequence.scl
+    - .\edr.exe run .\Examples\nuix-sequence.scl
+    - .\edr.exe run .\Examples\pwsh-sequence.scl
 
 test package exe release:
   extends:
@@ -123,9 +124,9 @@ sign exe release:
     ALGO_TIME_DIGEST: SHA256
   script:
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
-      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\EDR.exe
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\edr.exe
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
-      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\EDR.exe
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\edr.exe
   artifacts:
     expire_in: never
 

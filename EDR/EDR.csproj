@@ -10,9 +10,9 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <RootNamespace>Reductech.EDR</RootNamespace>
-    <AssemblyName>EDR</AssemblyName>
+    <AssemblyName>edr</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.8.0$(VersionSuffix)</Version>
+    <Version>0.9.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -38,18 +38,24 @@
   <ItemGroup>
     <PackageReference Include="CommandDotNet" Version="4.1.8" />
     <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="3.0.0" />
+    <PackageReference Include="ConsoleTables" Version="2.4.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104261457" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.29" />
+    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.1.0-a.master.2105131135" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2105140851" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.31" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
+    <None Update="connectors.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>

@@ -1,5 +1,3 @@
-using System;
-using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using CommandDotNet;
@@ -11,45 +9,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Xunit;
+using static EDR.Tests.Helpers;
 
 namespace EDR.Tests
 {
 
 public class RunCommandTests
 {
-    private const string TheUltimateTestString = "Hello World";
-
-    private static IServiceProvider GetDefaultServiceProvider() =>
-        GetDefaultServiceProvider(null, null, null);
-
-    private static IServiceProvider GetDefaultServiceProvider(ILoggerFactory loggerFactory) =>
-        GetDefaultServiceProvider(loggerFactory, null, null);
-
-    private static IServiceProvider GetDefaultServiceProvider(
-        ILoggerFactory? loggerFactory,
-        IFileSystem? fileSystem,
-        IConnectorManager? connectorManager)
-    {
-        var lf = loggerFactory ?? TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
-        var fs = fileSystem ?? new MockFileSystem();
-        var connMan = connectorManager ?? new FakeConnectorManager();
-
-        var serviceProvider = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connMan))
-            .AddSingleton(new RunCommand(lf.CreateLogger<RunCommand>(), fs, connMan))
-            .AddSingleton(new StepsCommand(connMan))
-            .AddSingleton(new ValidateCommand(lf.CreateLogger<ValidateCommand>(), fs, connMan))
-            .AddSingleton<EDRMethods>()
-            .BuildServiceProvider();
-
-        return serviceProvider;
-    }
-
     [Fact]
     public void RunSCL_WhenSCLFunctionIsSuccess_ReturnsSuccess()
     {

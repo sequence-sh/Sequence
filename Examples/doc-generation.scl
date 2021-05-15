@@ -1,4 +1,4 @@
-- <root> = 'edr/steps'
+- <root> = 'steps'
 - <docs> = GenerateDocumentation
 - <docs>
   | ArrayDistinct (From <Entity> 'Directory')
@@ -11,3 +11,12 @@
         (From <Entity> 'FileText')
         (PathCombine [<root>, (From <Entity> 'Directory'), (From <Entity> 'FileName')])
     )
+
+# Tests
+- AssertTrue (DoesDirectoryExist <root>)
+- AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'Core']))
+- AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'Enums']))
+- AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'FileSystem']))
+- AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'StructuredData']))
+- AssertTrue (DoesFileExist (PathCombine [<root>, 'Contents.md']))
+- Delete Folder: <root>

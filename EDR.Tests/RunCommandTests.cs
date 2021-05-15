@@ -33,7 +33,6 @@ public class RunCommandTests
             .RunInMem($"run scl \"Log '{TheUltimateTestString}'\"");
 
         result.ExitCode.Should().Be(0);
-        result.Console.OutText().Should().Be(string.Empty);
 
         factory.Sink.LogEntries.Select(x => x.Message)
             .Should()
@@ -57,7 +56,6 @@ public class RunCommandTests
             .RunInMem($"run scl \"Loog '{TheUltimateTestString}'\"");
 
         result.ExitCode.Should().Be(1);
-        result.Console.OutText().Should().Be(string.Empty);
 
         Assert.Contains(
             factory.Sink.LogEntries,
@@ -107,7 +105,6 @@ public class RunCommandTests
             .RunInMem($"run scl \"Log '{TheUltimateTestString}'\"");
 
         result.ExitCode.Should().Be(1);
-        result.Console.OutText().Should().Be(string.Empty);
 
         Assert.Contains(
             factory.Sink.LogEntries,
@@ -148,7 +145,6 @@ public class RunCommandTests
             .RunInMem($"run {path}");
 
         result.ExitCode.Should().Be(0);
-        result.Console.OutText().Should().Be(string.Empty);
 
         factory.Sink.LogEntries.Select(x => x.Message)
             .Should()

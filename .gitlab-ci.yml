@@ -108,6 +108,28 @@ test package exe release:
   needs:
     - package exe release
 
+# Test SQL Connector with package
+test package exe dev sql:
+  tags:
+    - rt-windows
+  services:
+    - mariadb:latest
+  variables:
+    MARIADB_DATABASE: test
+    MYSQL_ROOT_PASSWORD: test
+  extends:
+    - test package exe dev
+  script:
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe run .\Examples\sql-sequence.scl
+
+test package exe release sql:
+  extends:
+    - test package exe dev sql
+    - .rules_release
+  needs:
+    - package exe release
+
 sign exe release:
   stage: sign
   image: registry.gitlab.com/reductech/containers/codesigning

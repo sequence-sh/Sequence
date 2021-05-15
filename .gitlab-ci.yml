@@ -99,6 +99,7 @@ test package exe dev:
     - .\edr.exe run .\Examples\core-sequence.scl
     - .\edr.exe run .\Examples\nuix-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
+    - .\edr.exe run .\Examples\doc-generation.scl
 
 test package exe release:
   extends:

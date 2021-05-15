@@ -17,8 +17,7 @@ namespace Reductech.EDR
 /// Check if a Sequence Configuration Language file or string is valid
 /// </summary>
 [Command(
-    Name = "validate",
-    //Usage       = "validate [command] [path or scl]",
+    Name        = "validate",
     Description = "Check if a Sequence Configuration Language file or string is valid"
 )]
 public class ValidateCommand
@@ -92,7 +91,7 @@ public class ValidateCommand
 
         if (stepResult.IsSuccess)
         {
-            _logger.LogInformation("Successfully validated SCL.");
+            _logger.LogInformation("Successfully validated SCL");
 
             return Success;
         }

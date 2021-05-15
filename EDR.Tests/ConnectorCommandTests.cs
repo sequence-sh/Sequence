@@ -26,7 +26,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var error = Assert.Throws<InvalidConfigurationException>(
+        var error = Assert.Throws<ConnectorConfigurationException>(
             () => new AppRunner<EDRMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()

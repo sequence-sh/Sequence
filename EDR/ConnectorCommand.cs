@@ -39,7 +39,7 @@ public class ConnectorCommand
         string? filter = null)
     {
         if (!await _connectorManager.Verify(ct))
-            throw new InvalidConfigurationException("Could not validate installed connectors.");
+            throw new ConnectorConfigurationException("Could not validate installed connectors.");
 
         var connectors = _connectorManager.List(filter).ToArray();
 

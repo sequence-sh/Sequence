@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
@@ -36,11 +35,7 @@ public class ConnectorCommand
     )]
     public async Task List(
         CancellationToken ct,
-        [Option(
-            LongName    = "filter",
-            ShortName   = "f",
-            Description = "Filter configuration names using a regular expression"
-        )]
+        [Operand(Description = "Filter configuration names using a regular expression")]
         string? filter = null)
     {
         if (!await _connectorManager.Verify(ct))

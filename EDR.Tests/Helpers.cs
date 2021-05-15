@@ -20,6 +20,10 @@ public static class Helpers
     internal static IServiceProvider GetDefaultServiceProvider(ILoggerFactory loggerFactory) =>
         GetDefaultServiceProvider(loggerFactory, null, null);
 
+    internal static IServiceProvider
+        GetDefaultServiceProvider(IConnectorManager connectorManager) =>
+        GetDefaultServiceProvider(null, null, connectorManager);
+
     internal static IServiceProvider GetDefaultServiceProvider(
         ILoggerFactory? loggerFactory,
         IFileSystem? fileSystem,

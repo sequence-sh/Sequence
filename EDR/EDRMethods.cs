@@ -16,25 +16,25 @@ public class EDRMethods
     /// The connector command
     /// </summary>
     [SubCommand]
-    public ConnectorCommand Connector { get; set; }
+    public ConnectorCommand Connector { get; set; } = null!;
 
     /// <summary>
     /// The run command
     /// </summary>
     [SubCommand]
-    public RunCommand Run { get; set; }
+    public RunCommand Run { get; set; } = null!;
 
     /// <summary>
     /// The steps command
     /// </summary>
     [SubCommand]
-    public StepsCommand Steps { get; set; }
+    public StepsCommand Steps { get; set; } = null!;
 
     /// <summary>
     /// The validate command
     /// </summary>
     [SubCommand]
-    public ValidateCommand Validate { get; set; }
+    public ValidateCommand Validate { get; set; } = null!;
 }
 
 }

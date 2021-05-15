@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -79,8 +81,24 @@ public class StepsCommand
 
         if (steps.Count > 0)
         {
-            var maxLen = Console.WindowWidth - steps.Max(s => s.Name.Length)
-                                             - steps.Max(s => s.Connector.Length) - 7;
+            int width;
+
+            try
+            {
+                width = Console.WindowWidth;
+            }
+            catch (IOException)
+            {
+                width = 120;
+            }
+
+            var maxName = steps.Max(s => s.Name.Length) + 2;
+            maxName = maxName < 6 ? 6 : maxName;
+
+            var maxConnector = steps.Max(s => s.Connector.Length) + 2;
+            maxConnector = maxConnector < 11 ? 11 : maxConnector;
+
+            var maxLen = width - maxName - maxConnector - 3;
 
             var formattedSteps = steps.Select(
                 s => s with
@@ -91,11 +109,14 @@ public class StepsCommand
                 }
             );
 
-            ConsoleTable.From(formattedSteps).Write(Format.Minimal);
+            WriteTable(formattedSteps);
         }
     }
 
-    private record ConnectorRow(string Name, string Connector, string Description);
+    internal record ConnectorRow(string Name, string Connector, string Description);
+
+    internal virtual void WriteTable(IEnumerable<ConnectorRow> steps) =>
+        ConsoleTable.From(steps).Write(Format.Minimal);
 }
 
 }

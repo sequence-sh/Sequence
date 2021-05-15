@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Serialization;
 using static Reductech.EDR.Result;
@@ -20,8 +21,7 @@ namespace Reductech.EDR
 /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
 /// </summary>
 [Command(
-    Name = "run",
-    //Usage       = "run <path>",
+    Name        = "run",
     Description = "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
 )]
 public class RunCommand
@@ -74,14 +74,14 @@ public class RunCommand
     public async Task<int> RunDefault(
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
-        string pathToSCLFile) => await RunPath(cancellationToken, pathToSCLFile);
+        string sclPath) => await RunPath(cancellationToken, sclPath);
 
     /// <summary>
     /// Run a Sequence from a file
     /// </summary>
     [Command(
         Name        = "path",
-        Description = "Run a Sequence from a file"
+        Description = "Execute a Sequence from an SCL file"
     )]
     public async Task<int> RunPath(
         CancellationToken cancellationToken,
@@ -91,30 +91,15 @@ public class RunCommand
         if (string.IsNullOrWhiteSpace(pathToSCLFile) || !_fileSystem.File.Exists(pathToSCLFile))
             throw new CommandLineArgumentException("Please provide a path to a valid SCL file.");
 
-        var runner = await GetSCLRunner(null, cancellationToken);
+        var text = await _fileSystem.File.ReadAllTextAsync(pathToSCLFile, cancellationToken);
 
-        if (runner.IsFailure)
+        var meta = new Dictionary<string, object>
         {
-            SCLRunner.LogError(_logger, runner.Error.WithLocation(ErrorLocation.EmptyLocation));
+            { SCLRunner.SequenceIdName, Guid.NewGuid() },
+            { SCLRunner.SCLPathName, pathToSCLFile }
+        };
 
-            return Failure;
-        }
-
-        var r = await runner.Value.RunSequenceFromPathAsync(
-            pathToSCLFile,
-            new Dictionary<string, object>()
-            {
-                { SCLRunner.SequenceIdName, Guid.NewGuid() },
-                { SCLRunner.SCLPathName, pathToSCLFile }
-            },
-            cancellationToken
-        );
-
-        if (r.IsSuccess)
-            return Success;
-
-        SCLRunner.LogError(_logger, r.Error);
-        return Failure;
+        return await RunSCLFromTextAsync(text, meta, null, cancellationToken);
     }
 
     /// <summary>
@@ -122,7 +107,7 @@ public class RunCommand
     /// </summary>
     [Command(
         Name        = "scl",
-        Description = "Execute an in-line SCL string"
+        Description = "Execute a Sequence from an in-line SCL string"
     )]
     public async Task<int> RunSCL(
         CancellationToken cancellationToken,
@@ -131,41 +116,36 @@ public class RunCommand
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
-        var runner = await GetSCLRunner(null, cancellationToken);
+        var meta = new Dictionary<string, object> { { SCLRunner.SequenceIdName, Guid.NewGuid() } };
 
-        if (runner.IsFailure)
-        {
-            SCLRunner.LogError(_logger, runner.Error.WithLocation(ErrorLocation.EmptyLocation));
-
-            return Failure;
-        }
-
-        var r = await runner.Value.RunSequenceFromTextAsync(
-            scl,
-            new Dictionary<string, object>() { { SCLRunner.SequenceIdName, Guid.NewGuid() } },
-            cancellationToken
-        );
-
-        if (r.IsSuccess)
-            return Success;
-
-        SCLRunner.LogError(_logger, r.Error);
-        return Failure;
+        return await RunSCLFromTextAsync(scl, meta, null, cancellationToken);
     }
 
-    private async Task<Result<SCLRunner, IErrorBuilder>> GetSCLRunner(
+    internal virtual Result<(string, object)[], IErrorBuilder> GetInjectedContexts(
+        StepFactoryStore sfs,
+        SCLSettings settings) => sfs.TryGetInjectedContexts(settings);
+
+    private async Task<int> RunSCLFromTextAsync(
+        string scl,
+        Dictionary<string, object> metadata,
         SCLSettings? sclSettings,
-        CancellationToken ct = default)
+        CancellationToken cancellationToken = default)
     {
         var settings = sclSettings ?? SCLSettings.EmptySettings;
 
-        var stepFactoryStore = await _connectorManager.GetStepFactoryStoreAsync(ct);
+        var stepFactoryStore = await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
 
-        var injectedContextsResult =
-            stepFactoryStore.TryGetInjectedContexts(settings);
+        var injectedContextsResult = GetInjectedContexts(stepFactoryStore, settings);
 
         if (injectedContextsResult.IsFailure)
-            return injectedContextsResult.ConvertFailure<SCLRunner>();
+        {
+            SCLRunner.LogError(
+                _logger,
+                injectedContextsResult.Error.WithLocation(ErrorLocation.EmptyLocation)
+            );
+
+            return Failure;
+        }
 
         var externalContext = new ExternalContext(
             _baseExternalContext.ExternalProcessRunner,
@@ -175,7 +155,14 @@ public class RunCommand
 
         var runner = new SCLRunner(settings, _logger, stepFactoryStore, externalContext);
 
-        return runner;
+        var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
+
+        if (r.IsSuccess)
+            return Success;
+
+        SCLRunner.LogError(_logger, r.Error);
+
+        return Failure;
     }
 }
 

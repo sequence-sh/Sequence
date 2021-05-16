@@ -1,3 +1,29 @@
+# v0.9.0 (2021-05-15)
+
+## Summary of Changes
+
+- The command line options have been reworked. There are now four commands:
+
+| Command     | Description                         |
+| :---------- | :---------------------------------- |
+| `connector` | Add/update/remove/find Connectors   |
+| `run`       | Run SCL from path or from string    |
+| `steps`     | List all available steps            |
+| `validate`  | Check that SCL file or string works |
+
+For more information on how to use EDR, see the [readme](https://gitlab.com/reductech/edr/edr/-/blob/v0.9.0/README.md).
+
+- Connectors are now packaged as plugins
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add doc generation to example tests #67
+- Add a way of managing connector packages #66
+- Add command to list steps and descriptions #68
+- Use plugins instead of packages for connectors #65
+
 # v0.8.0 (2021-04-08)
 
 ## Summary of Changes

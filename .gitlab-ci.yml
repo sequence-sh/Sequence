@@ -31,6 +31,7 @@ stages:
 
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
+  NUGET_XMLDOC_MODE: none
 
 .exe_artifacts_default:
   artifacts:

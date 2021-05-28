@@ -30,11 +30,11 @@
   "Reductech.EDR.Connectors.Sql": {
     "id": "Reductech.EDR.Connectors.Sql",
     "enable": true,
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   "Reductech.EDR.Connectors.Pwsh": {
     "id": "Reductech.EDR.Connectors.Pwsh",
     "enable": true,
-    "version": "0.9.0"
+    "version": "0.9.1"
   }
 }

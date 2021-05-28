@@ -122,7 +122,7 @@ test package exe dev sql:
   extends:
     - test package exe dev
   script:
-    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
     - .\edr.exe run .\Examples\sql-sequence.scl
 
 test package exe release sql:

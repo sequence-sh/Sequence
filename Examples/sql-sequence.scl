@@ -31,5 +31,5 @@
 	]
 
 # Tests
-#- <ActualCount> = (SqlQuery Query: "SELECT COUNT(*) FROM MyTable4")[0]["Count(*)"]
-# - AssertEqual <ActualCount> 3
+- <ActualCount> = SqlQuery Query: $"SELECT COUNT(*) as Count FROM {<DbTable>}"
+- AssertEqual <ActualCount>[0]['Count'] 3

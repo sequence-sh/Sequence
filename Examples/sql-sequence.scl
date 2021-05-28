@@ -1,16 +1,15 @@
-- <ConnectionString> = (CreateMySQLConnectionString
-		Server: "mariadb"
-		Port: 3306
-		Database: "test"
-		Username: "root"
-		Password: "test"
-		
+- <ConnectionString> = (CreateMsSQLConnectionString
+		Server: 'sqlserver'
+		Database: 'TestDb'
+		Username: 'sa'
+		Password: 'T35tDbPa5s'
 	)
+- <DbTable> = 'MyTable'
 
-- SqlCommand Command: "Drop table if exists MyTable4;" Connection: <ConnectionString>
+- SqlCommand Command: $"Drop table if exists {<DbTable>}" Connection: <ConnectionString>
 
 - <TableSchema> = (
-		Name: "MyTable4"
+		Name: <DbTable>
 		Properties: (
 			Id: (Type: SCLType.Integer Multiplicity: Multiplicity.ExactlyOne)
 			Name: (Type: SCLType.String Multiplicity: Multiplicity.UpToOne)
@@ -32,5 +31,5 @@
 	]
 
 # Tests
-- <ActualCount> = (SqlQuery Query: "SELECT COUNT(*) FROM MyTable4")[0]["Count(*)"]
-- AssertEqual <ActualCount> 3
+#- <ActualCount> = (SqlQuery Query: "SELECT COUNT(*) FROM MyTable4")[0]["Count(*)"]
+# - AssertEqual <ActualCount> 3

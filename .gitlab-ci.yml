@@ -113,11 +113,12 @@ test package exe release:
 test package exe dev sql:
   tags:
     - rt-windows
-  services:
-    - mariadb:latest
   variables:
-    MARIADB_DATABASE: test
-    MYSQL_ROOT_PASSWORD: test
+    INIT_DATABASE: TestDb
+    SA_PASSWORD: T35tDbPa5s
+  services:
+    - name: registry.gitlab.com/reductech/containers/sqlserver:latest
+      alias: sqlserver
   extends:
     - test package exe dev
   script:

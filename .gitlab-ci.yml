@@ -31,6 +31,7 @@ stages:
 
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
+  NUGET_XMLDOC_MODE: none
 
 .exe_artifacts_default:
   artifacts:
@@ -85,10 +86,8 @@ package exe release:
     expire_in: 2 hours
 
 # Test the package
-test package exe dev:
+test package dev:
   stage: package-test
-  tags:
-    - nuix
   cache: {}
   extends:
     - .rules_dev_manual
@@ -97,13 +96,50 @@ test package exe dev:
   script:
     - cp .\Examples\connectors.json .\lib\
     - .\edr.exe run .\Examples\core-sequence.scl
-    - .\edr.exe run .\Examples\nuix-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
     - .\edr.exe run .\Examples\doc-generation.scl
 
-test package exe release:
+test package release:
   extends:
-    - test package exe dev
+    - test package dev
+    - .rules_release
+  needs:
+    - package exe release
+
+# Test the Nuix connector
+test package dev nuix:
+  tags:
+    - nuix
+  extends:
+    - test package dev
+  script:
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe run .\Examples\nuix-sequence.scl
+
+test package release nuix:
+  extends:
+    - test package dev nuix
+    - .rules_release
+  needs:
+    - package exe release
+
+# Test SQL Connector
+test package dev sql:
+  variables:
+    INIT_DATABASE: TestDb
+    SA_PASSWORD: T35tDbPa5s
+  services:
+    - name: registry.gitlab.com/reductech/containers/sqlserver:latest
+      alias: sqlserver
+  extends:
+    - test package dev
+  script:
+    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
+    - .\edr.exe run .\Examples\sql-sequence.scl
+
+test package release sql:
+  extends:
+    - test package dev sql
     - .rules_release
   needs:
     - package exe release
@@ -118,7 +154,7 @@ sign exe release:
   needs:
     - version check release
     - package exe release
-    - test package exe release
+    - test package release
   variables:
     TIMESTAMP_SERVER: http://timestamp.sectigo.com
     ALGO_FILE_DIGEST: SHA256

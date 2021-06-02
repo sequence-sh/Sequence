@@ -1,0 +1,35 @@
+- <ConnectionString> = (CreateMsSQLConnectionString
+		Server: 'sqlserver'
+		Database: 'TestDb'
+		Username: 'sa'
+		Password: 'T35tDbPa5s'
+	)
+- <DbTable> = 'MyTable'
+
+- SqlCommand Command: $"Drop table if exists {<DbTable>}" Connection: <ConnectionString>
+
+- <TableSchema> = (
+		Name: <DbTable>
+		Properties: (
+			Id: (Type: SCLType.Integer Multiplicity: Multiplicity.ExactlyOne)
+			Name: (Type: SCLType.String Multiplicity: Multiplicity.UpToOne)
+			TestDouble: (Type: SCLType.Double Multiplicity: Multiplicity.UpToOne)
+			TestDate: (Type: SCLType.Date Multiplicity: Multiplicity.UpToOne)
+			TestBool: (Type: SCLType.Bool Multiplicity: Multiplicity.UpToOne)
+			TestEnum: (Type: SCLType.Enum EnumType: "MyEnum" Multiplicity: Multiplicity.UpToOne Values: ["EnumValue", "EnumValue2"])
+		)
+		ExtraProperties: ExtraPropertyBehavior.Fail
+		DefaultErrorBehavior: ErrorBehavior.Fail
+	)
+
+- SqlCreateTable Schema: <TableSchema>
+
+- SqlInsert Schema: <TableSchema> Entities: [
+		(Id: 0 Name: "Mark0" TestDouble: 3.142 TestDate: 1970-01-06T00:00:00.0000000 TestBool: True TestEnum: "EnumValue")
+		(Id: 1 Name: "Mark1" TestDouble: 4.1419999999999995 TestDate: 1970-02-06T00:00:00.0000000 TestBool: False TestEnum: "EnumValue2")
+		(Id: 2 Name: "Mark2" TestDouble: 5.1419999999999995 TestDate: 1970-03-06T00:00:00.0000000 TestBool: True TestEnum: "EnumValue")
+	]
+
+# Tests
+- <ActualCount> = SqlQuery Query: $"SELECT COUNT(*) as Count FROM {<DbTable>}"
+- AssertEqual <ActualCount>[0]['Count'] 3

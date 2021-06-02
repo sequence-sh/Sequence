@@ -88,8 +88,6 @@ package exe release:
 # Test the package
 test package exe dev:
   stage: package-test
-  tags:
-    - nuix
   cache: {}
   extends:
     - .rules_dev_manual
@@ -98,7 +96,6 @@ test package exe dev:
   script:
     - cp .\Examples\connectors.json .\lib\
     - .\edr.exe run .\Examples\core-sequence.scl
-    - .\edr.exe run .\Examples\nuix-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
     - .\edr.exe run .\Examples\doc-generation.scl
 
@@ -109,10 +106,25 @@ test package exe release:
   needs:
     - package exe release
 
-# Test SQL Connector with package
-test package exe dev sql:
+# Test the Nuix connector
+test package exe dev nuix:
   tags:
-    - rt-windows
+    - nuix
+  extends:
+    - test package exe dev
+  script:
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe run .\Examples\nuix-sequence.scl
+
+test package exe release nuix:
+  extends:
+    - test package exe dev nuix
+    - .rules_release
+  needs:
+    - package exe release
+
+# Test SQL Connector
+test package exe dev sql:
   variables:
     INIT_DATABASE: TestDb
     SA_PASSWORD: T35tDbPa5s

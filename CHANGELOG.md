@@ -1,3 +1,12 @@
+# v0.9.1 (2021-06-08)
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add package tests for tesseract connector #72
+- Add EDR package tests for SQL connector #61
+
 # v0.9.0 (2021-05-15)
 
 ## Summary of Changes

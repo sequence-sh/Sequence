@@ -1,5 +1,10 @@
 # v0.9.1 (2021-06-08)
 
+Bug fixes and dependency updates:
+
+- Fixed missing core docs when building in CI
+- Connector Manager updated to v0.2.1
+
 ## Issues Closed in this Release
 
 ### New Features

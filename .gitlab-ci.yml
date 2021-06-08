@@ -144,6 +144,22 @@ test package release sql:
   needs:
     - package exe release
 
+# Test Tesseract Connector
+test package dev tesseract:
+  image: registry.gitlab.com/reductech/containers/msvc
+  extends:
+    - test package dev
+  script:
+    - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
+    - .\edr.exe run .\Examples\tesseract-sequence.scl
+
+test package release tesseract:
+  extends:
+    - test package dev tesseract
+    - .rules_release
+  needs:
+    - package exe release
+
 sign exe release:
   stage: sign
   image: registry.gitlab.com/reductech/containers/codesigning

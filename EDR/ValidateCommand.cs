@@ -86,7 +86,7 @@ public class ValidateCommand
             await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
 
         var stepResult = SCLParsing.TryParseStep(scl)
-            .Bind(x => x.TryFreeze(TypeReference.Any.Instance, stepFactoryStore))
+            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, stepFactoryStore))
             .Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsSuccess)
@@ -96,7 +96,7 @@ public class ValidateCommand
             return Success;
         }
 
-        SCLRunner.LogError(_logger, stepResult.Error);
+        ErrorLogger.LogError(_logger, stepResult.Error);
 
         return Failure;
     }

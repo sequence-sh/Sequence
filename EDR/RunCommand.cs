@@ -77,7 +77,7 @@ public class RunCommand
         string sclPath) => await RunPath(cancellationToken, sclPath);
 
     /// <summary>
-    /// Run a Sequence from a file
+    /// Execute a Sequence from an SCL file
     /// </summary>
     [Command(
         Name        = "path",
@@ -103,7 +103,7 @@ public class RunCommand
     }
 
     /// <summary>
-    /// Execute an in-line SCL string
+    /// Execute a Sequence from SCL in standard input
     /// </summary>
     [Command(
         Name        = "scl",
@@ -139,7 +139,7 @@ public class RunCommand
 
         if (injectedContextsResult.IsFailure)
         {
-            SCLRunner.LogError(
+            ErrorLogger.LogError(
                 _logger,
                 injectedContextsResult.Error.WithLocation(ErrorLocation.EmptyLocation)
             );
@@ -160,7 +160,7 @@ public class RunCommand
         if (r.IsSuccess)
             return Success;
 
-        SCLRunner.LogError(_logger, r.Error);
+        ErrorLogger.LogError(_logger, r.Error);
 
         return Failure;
     }

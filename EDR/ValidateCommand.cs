@@ -5,7 +5,7 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
 using static Reductech.EDR.Result;

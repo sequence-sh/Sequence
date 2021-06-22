@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Serialization;

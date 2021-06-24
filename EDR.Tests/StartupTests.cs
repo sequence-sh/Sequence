@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
+using System.Threading.Tasks;
+using CommandDotNet;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NLog;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement;
 using Xunit;
@@ -127,6 +130,63 @@ public class StartupTests
 
         Assert.NotNull(config);
         Assert.Contains(config!.Providers, p => p is JsonConfigurationProvider);
+    }
+
+    class TestRunner
+    {
+        [Command(Name = "success")]
+        public void Success() { }
+
+        [Command(Name = "argException")]
+        public void ArgException() => throw new CommandLineArgumentException("CLAE");
+
+        [Command(Name = "connectorException")]
+        public void ConnectorException() => throw new ConnectorConfigurationException("CCE");
+
+        [Command(Name = "generalException")]
+        public void GeneralException() => throw new Exception();
+    }
+
+    [Fact]
+    public async Task Run_OnSuccess_Returns()
+    {
+        var logMock = new Mock<NLog.ILogger>();
+        var runner  = new AppRunner<TestRunner>();
+        var actual  = await Program.Run(runner, logMock.Object, new[] { "success" });
+        Assert.Equal(0, actual);
+    }
+
+    [Fact]
+    public async Task Run_OnCommandLineArgumentException_Returns1AndLogsMessage()
+    {
+        var logMock = new Mock<NLog.ILogger>();
+        logMock.Setup(l => l.Info(It.IsAny<string>())).Verifiable();
+        var runner = new AppRunner<TestRunner>();
+        var actual = await Program.Run(runner, logMock.Object, new[] { "argException" });
+        Assert.Equal(1, actual);
+        logMock.Verify();
+    }
+
+    [Fact]
+    public async Task Run_OnConnectorConfigurationException_Returns1AndLogsError()
+    {
+        var logMock = new Mock<NLog.ILogger>();
+        logMock.Setup(l => l.Error(It.IsAny<ConnectorConfigurationException>())).Verifiable();
+        var runner = new AppRunner<TestRunner>();
+        var actual = await Program.Run(runner, logMock.Object, new[] { "connectorException" });
+        Assert.Equal(1, actual);
+        logMock.Verify();
+    }
+
+    [Fact]
+    public async Task Run_OnException_Returns1AndLogsError()
+    {
+        var logMock = new Mock<NLog.ILogger>();
+        logMock.Setup(l => l.Error(It.IsAny<Exception>())).Verifiable();
+        var runner = new AppRunner<TestRunner>();
+        var actual = await Program.Run(runner, logMock.Object, new[] { "generalException" });
+        Assert.Equal(1, actual);
+        logMock.Verify();
     }
 }
 

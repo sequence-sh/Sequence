@@ -20,20 +20,26 @@ internal class Program
 {
     public static async Task<int> Main(string[] args)
     {
+        var logger = LogManager.GetCurrentClassLogger();
+
         var host = CreateHostBuilder().Build();
 
-        var logger = LogManager.GetCurrentClassLogger();
+        var appRunner = new AppRunner<EDRMethods>()
+            .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
+            .UseDefaultMiddleware()
+            .UseMicrosoftDependencyInjection(host.Services);
+
+        return await Run(appRunner, logger, args);
+    }
+
+    internal static async Task<int> Run(AppRunner appRunner, NLog.ILogger logger, string[] args)
+    {
         int result;
 
         Console.WriteLine();
 
         try
         {
-            var appRunner = new AppRunner<EDRMethods>()
-                .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
-                .UseDefaultMiddleware()
-                .UseMicrosoftDependencyInjection(host.Services);
-
             result = await appRunner.RunAsync(args);
         }
         catch (CommandLineArgumentException ae)
@@ -49,13 +55,11 @@ internal class Program
             ce.GetCommandContext()?.PrintHelp();
             result = 1;
         }
-        #pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception e)
         {
             logger.Error(e);
             result = 1;
         }
-        #pragma warning restore CA1031 // Do not catch general exception types
         finally
         {
             LogManager.Shutdown();

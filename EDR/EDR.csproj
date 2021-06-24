@@ -43,11 +43,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.10" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
-    <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.5.0" />
-    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.2.1" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.10.0-a.master.2106110957" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.33" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.3" />
+    <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.6.0" />
+    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.3.0-a.master.2106231105" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.10.0-a.master.2106240918" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.38" />
   </ItemGroup>
 
   <ItemGroup>

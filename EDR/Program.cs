@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core;
 
 namespace Reductech.EDR
 {
@@ -20,20 +19,26 @@ internal class Program
 {
     public static async Task<int> Main(string[] args)
     {
+        var logger = LogManager.GetCurrentClassLogger();
+
         var host = CreateHostBuilder().Build();
 
-        var logger = LogManager.GetCurrentClassLogger();
+        var appRunner = new AppRunner<EDRMethods>()
+            .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
+            .UseDefaultMiddleware()
+            .UseMicrosoftDependencyInjection(host.Services);
+
+        return await Run(appRunner, logger, args);
+    }
+
+    internal static async Task<int> Run(AppRunner appRunner, NLog.ILogger logger, string[] args)
+    {
         int result;
 
         Console.WriteLine();
 
         try
         {
-            var appRunner = new AppRunner<EDRMethods>()
-                .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
-                .UseDefaultMiddleware()
-                .UseMicrosoftDependencyInjection(host.Services);
-
             result = await appRunner.RunAsync(args);
         }
         catch (CommandLineArgumentException ae)
@@ -49,13 +54,11 @@ internal class Program
             ce.GetCommandContext()?.PrintHelp();
             result = 1;
         }
-        #pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception e)
         {
             logger.Error(e);
             result = 1;
         }
-        #pragma warning restore CA1031 // Do not catch general exception types
         finally
         {
             LogManager.Shutdown();
@@ -64,11 +67,36 @@ internal class Program
         return result;
     }
 
-    private static IHostBuilder CreateHostBuilder() => new HostBuilder()
+    internal static void SetConnectorsConfigPath(
+        IConfiguration config,
+        IHostEnvironment env,
+        IFileSystem fs)
+    {
+        var managerSettings = config.GetSection(ConnectorManagerSettings.Key);
+
+        var configPath = managerSettings[nameof(ConnectorManagerSettings.ConfigurationPath)];
+
+        if (!string.IsNullOrEmpty(configPath))
+            return;
+
+        var envPath = fs.Path.Combine(
+            AppContext.BaseDirectory,
+            $"connectors.{env.EnvironmentName}.json"
+        );
+
+        if (fs.File.Exists(envPath))
+            managerSettings[nameof(ConnectorManagerSettings.ConfigurationPath)] = envPath;
+    }
+
+    internal static IHostBuilder CreateHostBuilder() => new HostBuilder()
         .ConfigureAppConfiguration(
-            (_, config) =>
+            (context, config) =>
             {
-                config.AddJsonFile("appsettings.json", false, false);
+                var env = context.HostingEnvironment;
+
+                config.AddJsonFile("appsettings.json", false, false)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, false);
+
                 config.AddEnvironmentVariables(prefix: "EDR_");
             }
         )
@@ -79,6 +107,8 @@ internal class Program
 
                 services.AddSingleton<IFileSystem>(fs);
 
+                SetConnectorsConfigPath(context.Configuration, context.HostingEnvironment, fs);
+
                 services.AddConnectorManager(context.Configuration);
 
                 services.AddSingleton<ConnectorCommand>();
@@ -86,10 +116,6 @@ internal class Program
                 services.AddSingleton<StepsCommand>();
                 services.AddSingleton<ValidateCommand>();
                 services.AddSingleton<EDRMethods>();
-
-                var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);
-
-                services.AddSingleton(sclSettings);
             }
         )
         .ConfigureLogging(

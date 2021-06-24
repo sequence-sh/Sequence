@@ -7,7 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
 using ConsoleTables;
-using Reductech.EDR.ConnectorManagement;
+using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Documentation;
 
 namespace Reductech.EDR

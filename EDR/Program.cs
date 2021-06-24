@@ -64,11 +64,36 @@ internal class Program
         return result;
     }
 
-    private static IHostBuilder CreateHostBuilder() => new HostBuilder()
+    internal static void SetConnectorsConfigPath(
+        IConfiguration config,
+        IHostEnvironment env,
+        IFileSystem fs)
+    {
+        var managerSettings = config.GetSection(ConnectorManagerSettings.Key);
+
+        var configPath = managerSettings[nameof(ConnectorManagerSettings.ConfigurationPath)];
+
+        if (!string.IsNullOrEmpty(configPath))
+            return;
+
+        var envPath = fs.Path.Combine(
+            AppContext.BaseDirectory,
+            $"connectors.{env.EnvironmentName}.json"
+        );
+
+        if (fs.File.Exists(envPath))
+            managerSettings[nameof(ConnectorManagerSettings.ConfigurationPath)] = envPath;
+    }
+
+    internal static IHostBuilder CreateHostBuilder() => new HostBuilder()
         .ConfigureAppConfiguration(
-            (_, config) =>
+            (context, config) =>
             {
-                config.AddJsonFile("appsettings.json", false, false);
+                var env = context.HostingEnvironment;
+
+                config.AddJsonFile("appsettings.json", false, false)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, false);
+
                 config.AddEnvironmentVariables(prefix: "EDR_");
             }
         )
@@ -78,6 +103,8 @@ internal class Program
                 var fs = new FileSystem();
 
                 services.AddSingleton<IFileSystem>(fs);
+
+                SetConnectorsConfigPath(context.Configuration, context.HostingEnvironment, fs);
 
                 services.AddConnectorManager(context.Configuration);
 

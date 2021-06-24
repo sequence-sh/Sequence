@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Xunit;
@@ -88,7 +87,7 @@ public class RunCommandTests
 
         var run = new Mock<RunCommand>(factory.CreateLogger<RunCommand>(), fs, connMan);
 
-        run.Setup(r => r.GetInjectedContexts(It.IsAny<StepFactoryStore>(), It.IsAny<SCLSettings>()))
+        run.Setup(r => r.GetInjectedContexts(It.IsAny<StepFactoryStore>()))
             .Returns(() => new ErrorBuilder(ErrorCode.Unknown, "Just Testing"));
 
         var sp = new ServiceCollection()

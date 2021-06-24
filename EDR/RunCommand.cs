@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core;
+using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal;
@@ -100,7 +99,7 @@ public class RunCommand
             { SCLRunner.SCLPathName, pathToSCLFile }
         };
 
-        return await RunSCLFromTextAsync(text, meta, null, cancellationToken);
+        return await RunSCLFromTextAsync(text, meta, cancellationToken);
     }
 
     /// <summary>
@@ -119,24 +118,20 @@ public class RunCommand
 
         var meta = new Dictionary<string, object> { { SCLRunner.SequenceIdName, Guid.NewGuid() } };
 
-        return await RunSCLFromTextAsync(scl, meta, null, cancellationToken);
+        return await RunSCLFromTextAsync(scl, meta, cancellationToken);
     }
 
     internal virtual Result<(string, object)[], IErrorBuilder> GetInjectedContexts(
-        StepFactoryStore sfs,
-        SCLSettings settings) => sfs.TryGetInjectedContexts(settings);
+        StepFactoryStore sfs) => sfs.TryGetInjectedContexts();
 
     private async Task<int> RunSCLFromTextAsync(
         string scl,
         Dictionary<string, object> metadata,
-        SCLSettings? sclSettings,
         CancellationToken cancellationToken = default)
     {
-        var settings = sclSettings ?? SCLSettings.EmptySettings;
-
         var stepFactoryStore = await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
 
-        var injectedContextsResult = GetInjectedContexts(stepFactoryStore, settings);
+        var injectedContextsResult = GetInjectedContexts(stepFactoryStore);
 
         if (injectedContextsResult.IsFailure)
         {
@@ -154,7 +149,7 @@ public class RunCommand
             injectedContextsResult.Value
         );
 
-        var runner = new SCLRunner(settings, _logger, stepFactoryStore, externalContext);
+        var runner = new SCLRunner(_logger, stepFactoryStore, externalContext);
 
         var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
 

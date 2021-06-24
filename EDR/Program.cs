@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core;
 
 namespace Reductech.EDR
 {
@@ -117,10 +116,6 @@ internal class Program
                 services.AddSingleton<StepsCommand>();
                 services.AddSingleton<ValidateCommand>();
                 services.AddSingleton<EDRMethods>();
-
-                var sclSettings = SCLSettings.CreateFromIConfiguration(context.Configuration);
-
-                services.AddSingleton(sclSettings);
             }
         )
         .ConfigureLogging(

@@ -6,8 +6,7 @@ using CommandDotNet.TestTools;
 using FluentAssertions;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 using static EDR.Tests.Helpers;
 

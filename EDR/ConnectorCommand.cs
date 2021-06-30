@@ -128,6 +128,30 @@ public class ConnectorCommand
     );
 
     /// <summary>
+    /// Update a Connector configuration to the specified or latest version
+    /// </summary>
+    [Command(
+        Name        = "update",
+        Description = "Update a Connector configuration to the specified or latest version"
+    )]
+    public async Task Update(
+        CancellationToken ct,
+        [Operand(
+            Name        = "configuration",
+            Description = "Name of the configuration to update."
+        )]
+        string configuration,
+        [Option(
+            ShortName = "v",
+            Description =
+                "Update to the specified version. By default the latest version will be used."
+        )]
+        string? version = null,
+        [Option(Description = "Include prerelease versions of connectors.")]
+        bool prerelease = false) =>
+        await _connectorManager.Update(configuration, version, prerelease, ct);
+
+    /// <summary>
     /// Remove a Connector configuration
     /// </summary>
     [Command(

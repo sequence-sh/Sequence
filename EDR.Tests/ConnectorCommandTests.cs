@@ -109,6 +109,33 @@ public class ConnectorCommandTests
     }
 
     [Fact]
+    public void Update_ByDefault_ReturnsSuccess()
+    {
+        var mock = new Mock<IConnectorManager>();
+
+        mock.Setup(
+                m => m.Update(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
+            .Verifiable();
+
+        var sp = GetDefaultServiceProvider(mock.Object);
+
+        var result = new AppRunner<EDRMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem("connector update -v 0.9.0 --prerelease EDR.Connector");
+
+        result.ExitCode.Should().Be(0);
+
+        mock.Verify();
+    }
+
+    [Fact]
     public void Remove_ByDefault_CallsManagerRemove()
     {
         var mock = new Mock<IConnectorManager>();

@@ -149,9 +149,9 @@ test package dev sql:
       alias: sqlserver
   extends:
     - test package dev
-  before_script: {}
+  before_script:
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Sql
   script:
-    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
     - .\edr.exe run .\Examples\sql-sequence.scl
 
 test package release sql:
@@ -160,15 +160,17 @@ test package release sql:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
 
 # Test Tesseract Connector
 test package dev tesseract:
   image: registry.gitlab.com/reductech/containers/msvc
   extends:
     - test package dev
-  before_script: {}
-  script:
+  before_script:
     - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
+  script:
     - .\edr.exe run .\Examples\tesseract-sequence.scl
 
 test package release tesseract:

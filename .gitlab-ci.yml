@@ -93,8 +93,11 @@ test package dev:
     - .rules_dev_manual
   needs:
     - package exe dev
+  before_script:
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Pwsh
   script:
-    - cp .\Examples\connectors.json .\lib\
     - .\edr.exe run .\Examples\core-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
     - .\edr.exe run .\Examples\doc-generation.scl
@@ -105,6 +108,10 @@ test package release:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add Reductech.EDR.Connectors.Pwsh
 
 # Test the Nuix connector
 test package dev nuix:
@@ -112,8 +119,12 @@ test package dev nuix:
     - nuix
   extends:
     - test package dev
-  script:
+  before_script:
     - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.Nuix
+  script:
     - .\edr.exe run .\Examples\nuix-sequence.scl
 
 test package release nuix:
@@ -122,6 +133,11 @@ test package release nuix:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe connector update Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update Reductech.EDR.Connectors.Nuix
 
 # Test SQL Connector
 test package dev sql:
@@ -133,8 +149,9 @@ test package dev sql:
       alias: sqlserver
   extends:
     - test package dev
+  before_script:
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Sql
   script:
-    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
     - .\edr.exe run .\Examples\sql-sequence.scl
 
 test package release sql:
@@ -143,14 +160,17 @@ test package release sql:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
 
 # Test Tesseract Connector
 test package dev tesseract:
   image: registry.gitlab.com/reductech/containers/msvc
   extends:
     - test package dev
-  script:
+  before_script:
     - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
+  script:
     - .\edr.exe run .\Examples\tesseract-sequence.scl
 
 test package release tesseract:
@@ -186,10 +206,6 @@ sign exe release:
 code_quality:
   tags:
     - rt-dind
-
-mutation testing:
-  rules:
-    - when: never
 
 code coverage dev:
   image: mcr.microsoft.com/dotnet/sdk:5.0

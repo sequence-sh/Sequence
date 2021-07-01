@@ -93,8 +93,11 @@ test package dev:
     - .rules_dev_manual
   needs:
     - package exe dev
+  before_script:
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Pwsh
   script:
-    - cp .\Examples\connectors.json .\lib\
     - .\edr.exe run .\Examples\core-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
     - .\edr.exe run .\Examples\doc-generation.scl
@@ -105,6 +108,10 @@ test package release:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - .\edr.exe connector add Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add Reductech.EDR.Connectors.Pwsh
 
 # Test the Nuix connector
 test package dev nuix:
@@ -112,8 +119,12 @@ test package dev nuix:
     - nuix
   extends:
     - test package dev
-  script:
+  before_script:
     - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.Nuix
+  script:
     - .\edr.exe run .\Examples\nuix-sequence.scl
 
 test package release nuix:
@@ -122,6 +133,11 @@ test package release nuix:
     - .rules_release
   needs:
     - package exe release
+  before_script:
+    - cp .\Examples\connectors.json .\lib\
+    - .\edr.exe connector update Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update Reductech.EDR.Connectors.Nuix
 
 # Test SQL Connector
 test package dev sql:

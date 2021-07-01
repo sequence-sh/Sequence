@@ -94,8 +94,8 @@ test package dev:
   needs:
     - package exe dev
   before_script:
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Pwsh
   script:
     - .\edr.exe run .\Examples\core-sequence.scl
@@ -109,8 +109,8 @@ test package release:
   needs:
     - package exe release
   before_script:
-    - .\edr.exe connector add Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector add Reductech.EDR.Connectors.Pwsh
 
 # Test the Nuix connector
@@ -149,6 +149,7 @@ test package dev sql:
       alias: sqlserver
   extends:
     - test package dev
+  before_script: {}
   script:
     - .\edr.exe connector add Reductech.EDR.Connectors.Sql
     - .\edr.exe run .\Examples\sql-sequence.scl
@@ -165,6 +166,7 @@ test package dev tesseract:
   image: registry.gitlab.com/reductech/containers/msvc
   extends:
     - test package dev
+  before_script: {}
   script:
     - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
     - .\edr.exe run .\Examples\tesseract-sequence.scl

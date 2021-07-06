@@ -150,6 +150,8 @@ test package dev sql:
   extends:
     - test package dev
   before_script:
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Sql
   script:
     - .\edr.exe run .\Examples\sql-sequence.scl
@@ -161,6 +163,8 @@ test package release sql:
   needs:
     - package exe release
   before_script:
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector add Reductech.EDR.Connectors.Sql
 
 # Test Tesseract Connector
@@ -169,6 +173,8 @@ test package dev tesseract:
   extends:
     - test package dev
   before_script:
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
   script:
     - .\edr.exe run .\Examples\tesseract-sequence.scl

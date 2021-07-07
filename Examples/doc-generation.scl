@@ -13,7 +13,7 @@
     - <data> = <Entity>['FileText'] + "\n"
     - If (<Entity>['PageType'] == 'Enums') (
       # Fix for https://gitlab.com/reductech/edr/core/-/issues/292
-      - <path> = PathCombine [<root>, 'Enums', (From <Entity> 'FileName')]
+      <path> = PathCombine [<root>, 'Enums', (From <Entity> 'FileName')]
     )
     - If ((<Entity>['PageType'] == 'Contents') && (<Entity>['Directory'] == '')) (
       - <path> = PathCombine [<root>, "All.md"]

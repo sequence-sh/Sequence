@@ -1,17 +1,32 @@
 # v0.10.0 (2021-07-02)
 
+## Summary of Changes
+
+### Steps
+
+- Added `ArrayGroupBy` step
+
+### Sequence Configuration Language
+
+- Added the automatic variable `<>` which can be used instead of `Entity`
+
+### Connector Management
+
+- Added `edr connector update` command
+
 ## Issues Closed in this Release
 
 ### New Features
 
-- Automatically update connectors in test package jobs #80
-- Update Stryker version to allow mutation testing #29
 - Add update subcommand to connector command #79
 - Add environment-specific settings and connector configuration support #73
 
 ### Maintenance
 
-- Update the version of Core  to support CallerMetadata #76
+- Update the documentation generation SCL #77
+- Automatically update connectors in test package jobs #80
+- Update Stryker version to allow mutation testing #29
+- Update the version of Core to support CallerMetadata #76
 
 # v0.9.1 (2021-06-08)
 

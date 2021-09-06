@@ -17,3 +17,4 @@
 # Tests
 - AssertTrue (DoesFileExist (PathCombine [<OutputDir>, 'artist_data.csv']))
 - Delete Folder: <OutputDir>
+- log 'Sequence Completed Successfully'

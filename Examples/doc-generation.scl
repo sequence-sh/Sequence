@@ -24,3 +24,4 @@
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'StructuredData.md']))
 - AssertTrue (StringContains (FileRead (PathCombine [<root>, 'All.md'])) '# EDR Steps')
 - Delete Folder: <root>
+- log 'Sequence Completed Successfully'

@@ -14,5 +14,9 @@
   "Reductech.EDR.Connectors.Pwsh": {
     "Id": "Reductech.EDR.Connectors.Pwsh",
     "Version": "0.11.0"
+  },
+  "Reductech.EDR.Connectors.Tesseract": {
+    "Id": "Reductech.EDR.Connectors.Tesseract",
+    "Version": "0.11.0-alpha.1"
   }
 }

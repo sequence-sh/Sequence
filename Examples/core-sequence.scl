@@ -32,3 +32,4 @@
 - AssertTrue (DoesFileExist <SchemaJSON>)
 - Delete File: <ArtworkCSV>
 - Delete File: <SchemaJSON>
+- log 'Sequence Completed Successfully'

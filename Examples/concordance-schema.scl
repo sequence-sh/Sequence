@@ -1,0 +1,213 @@
+# Read a concordance file and check it conforms to a schema
+
+- <schema> = (
+	'Name': "United States Securities and Exchange Commission Data Delivery Standards"
+	'Properties': (
+		'ATTACHRANGE': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'AUTHOR': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'BCC': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.Any
+		)
+		'BEGATTACH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'CC': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.Any
+		)
+		'CHILD_BATES': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.Any
+		)
+		'CUSTODIAN': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'DATE_ACCESSD': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "MM/dd/yyyy"
+		)
+		'DATE_CREATED': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "MM/dd/yyyy"
+		)
+		'DATE_MOD': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "MM/dd/yyyy"
+		)
+		'DATE_SENT': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "MM/dd/yyyy"
+		)
+		'ENDATTACH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'FILE_EXTEN': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'FILE_NAME': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'FILE_SIZE': (
+			'Type': SCLType.Integer
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'FIRSTBATES': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'FROM': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.Any
+		)
+		'HEADER': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'INTFILEPATH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'INTMSGID': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'LAST_AUTHOR': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'LASTBATES': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'LINK': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'MD5HASH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+			'Regex': "[0-9a-f]+"
+		)
+		'MIME_TYPE': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'OCRPATH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'PARENT_BATES': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'PATH': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'PGCOUNT': (
+			'Type': SCLType.Integer
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'PRINTED_DATE': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "MM/dd/yyyy"
+		)
+		'SUBJECT': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.ExactlyOne
+		)
+		'TIME_ACCESSD/TIME_ZONE': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "hh:mm tt zzz"
+		)
+		'TIME_CREATED/TIME_ZONE': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "hh:mm tt zzz"
+		)
+		'TIME_MOD/TIME_ZONE': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "hh:mm tt zzz"
+		)
+		'TIME_SENT/TIME_ZONE': (
+			'Type': SCLType.Date
+			'Multiplicity': Multiplicity.UpToOne
+			'DateOutputFormat': "hh:mm tt zzz"
+		)
+		'TIME_ZONE': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.UpToOne
+		)
+		'TO': (
+			'Type': SCLType.String
+			'Multiplicity': Multiplicity.Any
+		)
+	)
+	'ExtraProperties': ExtraPropertyBehavior.Remove
+	'DefaultErrorBehavior': ErrorBehavior.Error
+)
+
+- <mappings> = (
+  'BEGINBATES': "FIRSTBATES" 
+  'ENDBATES': "LASTBATES" 
+  'ATTACH_DOCID': "ATTACHRANGE" 
+  'BEGINGROUP': "BEGATTACH" 
+  'ENDGROUP': "ENDATTACH" 
+  'PARENT_DOCID': "PARENT_BATES" 
+  'Custodian': "CUSTODIAN" 
+  'From': "FROM" 
+  'To': "TO" 
+  'Cc': "CC" 
+  'Bcc': "BCC" 
+  'Subject': "SUBJECT" 
+  'Name': "FILE_NAME" 
+  'ITEMPATH': "LINK" 
+  'File Type': "MIME_TYPE" 
+  'File Extension (Original)': "FILE_EXTEN" 
+  'Author': "AUTHOR" 
+  'Last Author': "LAST_AUTHOR" 
+  'File Created': ('value': "TIME_CREATED/TIME_ZONE") 
+  'File Modified': ('value': "TIME_MOD/TIME_ZONE") 
+  'File Accessed': ('value': "TIME_ACCESSD/TIME_ZONE") 
+  'Last Printed': "PRINTED_DATE" 
+  'File Size': "FILE_SIZE" 
+  'PAGECOUNT': "PGCOUNT" 
+  'Path Name': "PATH" 
+  'GUID': "INTMSGID" 
+  'MD5 Digest': "MD5HASH" 
+  'TEXTPATH': "OCRPATH")
+
+- <path> = "c:/Concordance.dat"
+- <data> = FileRead <path>
+
+
+
+- FromConcordance <data> 
+| EntityMap (<> => EntitySetValue Entity: (<>) 
+                                  Property: "File Size" 
+                                  Value: (ValueIf 
+                                                  Condition: (Not Boolean: (StringIsEmpty String: (<item>)["File Size"])) 
+                                                  Then: (StringToInt Integer: ($"{(StringToDouble Double: (RegexReplace String: (<item>)["File Size"] Pattern: "\\s*kb\\s*" Replace: "" IgnoreCase: True)) * 1000}")) 
+                                                  Else: 0))
+| EntityMapProperties <mappings>
+| EnforceSchema <schema> ErrorBehavior: ErrorBehavior.Error
+| ForEach (<> => Log Value: <>)

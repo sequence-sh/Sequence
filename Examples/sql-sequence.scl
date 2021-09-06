@@ -32,4 +32,5 @@
 
 # Tests
 - <ActualCount> = SqlQuery Query: $"SELECT COUNT(*) as Count FROM {<DbTable>}"
-- AssertEqual <ActualCount>[0]['Count'] 3
+- <FirstActualCount> = ElementAtIndex <ActualCount> 0
+- AssertEqual <FirstActualCount>['Count'] 3

@@ -25,7 +25,7 @@
 - FileRead <ArtworkCSV>
 | FromCSV
 | EnforceSchema <SchemaIn> ErrorBehavior: 'Warning'
-| ForEach (Print <Entity>)
+| ForEach (Print <>)
 
 # Tests
 - AssertTrue (DoesFileExist <ArtworkCSV>)

@@ -25,10 +25,11 @@
 - FileRead <ArtworkCSV>
 | FromCSV
 | EnforceSchema <SchemaIn> ErrorBehavior: 'Warning'
-| ForEach (Print <Entity>)
+| ForEach (Print <>)
 
 # Tests
 - AssertTrue (DoesFileExist <ArtworkCSV>)
 - AssertTrue (DoesFileExist <SchemaJSON>)
 - Delete File: <ArtworkCSV>
 - Delete File: <SchemaJSON>
+- log 'Sequence Completed Successfully'

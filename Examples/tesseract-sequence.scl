@@ -2,3 +2,4 @@
 - <imageData> = FileRead <path>
 - <imageText> = TesseractOCR <imageData> (GetImageFormat <path>)
 - AssertEqual <imageText> 'this is a test'
+- log 'Sequence Completed Successfully'

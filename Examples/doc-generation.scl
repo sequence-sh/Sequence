@@ -2,31 +2,14 @@
 # Temprorary fix for https://gitlab.com/reductech/edr/core/-/issues/290
 - <docs> = (GenerateDocumentation)['AllPages'] | ToJsonArray | FromJsonArray
 - <docs>
-| ArrayDistinct (From <Entity> 'Directory')
+| ArrayDistinct (From <> 'Directory')
 | ForEach (
-    CreateDirectory (PathCombine [<root>, (From <Entity> 'Directory')])
+    CreateDirectory (PathCombine [<root>, (From <> 'Directory')])
   )
-- CreateDirectory (PathCombine [<root>, 'Enums'])
 - <docs>
 | ForEach (
-    - <path> = ''
-    - <data> = <Entity>['FileText'] + "\n"
-    - If (<Entity>['PageType'] == 'Enums') (
-      # Fix for https://gitlab.com/reductech/edr/core/-/issues/292
-      <path> = PathCombine [<root>, 'Enums', (From <Entity> 'FileName')]
-    )
-    - If ((<Entity>['PageType'] == 'Contents') && (<Entity>['Directory'] == '')) (
-      - <path> = PathCombine [<root>, "All.md"]
-      - <data> = RegexReplace <data> '# Contents' ('# EDR Steps')
-    )
-    - If ((<Entity>['PageType'] == 'Contents') && (<Entity>['Directory'] != '')) (
-      - <path> = PathCombine [<root>, $"{<Entity>['Directory']}.md"]
-      - <data> = RegexReplace <data> '# Contents' ($"# {<Entity>['Category']} Steps")
-    )
-    - If (<Entity>['PageType'] == 'Step') (
-      <path> = PathCombine [<root>, (From <Entity> 'Directory'), (From <Entity> 'FileName')]
-    )
-    - FileWrite Data: <data> Path: <path>
+    - <path> = PathCombine [<root>, (<>['Directory'] ), (<>['FileName'] )]
+    - FileWrite Data: <>['FileText'] Path: <path>
   )
 
 # Tests

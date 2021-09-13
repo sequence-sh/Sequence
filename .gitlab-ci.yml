@@ -187,6 +187,31 @@ test package release tesseract:
   needs:
     - package exe release
 
+# Test the Relativity connector
+test package dev relativity:
+  tags:
+    - nuix
+  extends:
+    - test package dev
+    - .rules_dev_allowfailure
+  before_script:
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Relativity
+  script:
+    - .\edr.exe run .\Examples\relativity-sequence.scl
+
+test package release relativity:
+  extends:
+    - test package dev relativity
+    - .rules_release_allowfailure
+  needs:
+    - package exe release
+  before_script:
+    - .\edr.exe connector update Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add Reductech.EDR.Connectors.Relativity
+
 sign exe release:
   stage: sign
   image: registry.gitlab.com/reductech/containers/codesigning

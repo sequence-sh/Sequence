@@ -2,17 +2,17 @@
   "Reductech.EDR.Connectors.FileSystem": {
     "id": "Reductech.EDR.Connectors.FileSystem",
     "enable": true,
-    "version": "0.9.0"
+    "version": "0.11.0"
   },
   "Reductech.EDR.Connectors.StructuredData": {
     "id": "Reductech.EDR.Connectors.StructuredData",
     "enable": true,
-    "version": "0.9.0"
+    "version": "0.11.0"
   },
   "Reductech.EDR.Connectors.Nuix": {
     "id": "Reductech.EDR.Connectors.Nuix",
     "enable": true,
-    "version": "0.9.0",
+    "version": "0.11.0",
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
       "licencesourcetype": "dongle",

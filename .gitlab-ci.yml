@@ -119,7 +119,6 @@ test package dev nuix:
     - nuix
   extends:
     - test package dev
-    - .rules_dev_allowfailure
   before_script:
     - cp .\Examples\connectors.json .\lib\
     - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.FileSystem
@@ -131,7 +130,7 @@ test package dev nuix:
 test package release nuix:
   extends:
     - test package dev nuix
-    - .rules_release_allowfailure
+    - .rules_release
   needs:
     - package exe release
   before_script:

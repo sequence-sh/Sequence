@@ -9,6 +9,16 @@
     "enable": true,
     "version": "0.11.0"
   },
+  "Reductech.EDR.Connectors.Relativity": {
+    "id": "Reductech.EDR.Connectors.Relativity",
+    "version": "0.11.0",
+    "enable": true,
+    "settings": {
+      "RelativityUsername": "",
+      "RelativityPassword": "",
+      "Url": "http://relativitydevvm/"
+    }
+  },
   "Reductech.EDR.Connectors.Nuix": {
     "id": "Reductech.EDR.Connectors.Nuix",
     "enable": true,

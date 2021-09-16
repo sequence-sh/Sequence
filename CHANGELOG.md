@@ -1,6 +1,12 @@
-# v0.11.0 (2021-09-03)
+# v0.11.0 (2021-09-16)
 
-Dependency updates only
+Bug fixes and dependency updates.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- EDR Smoke Tests are failing with Core 0.11 #85
 
 # v0.10.0 (2021-07-02)
 

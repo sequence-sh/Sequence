@@ -142,7 +142,8 @@ test package dev nuix:
             )
           }
       } ;
-      $config | ConvertTo-Json -Depth 100 | Out-File $env:CONNECTORS_JSON -Encoding utf8NoBOM ;
+      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
+        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Nuix
@@ -226,7 +227,8 @@ test package dev relativity:
             Url = $env:RELATIVITY_TEST_URL
           }
       } ;
-      $config | ConvertTo-Json -Depth 100 | Out-File $env:CONNECTORS_JSON -Encoding utf8NoBOM ;
+      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
+        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
     - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Relativity

@@ -32,6 +32,7 @@ stages:
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
   NUGET_XMLDOC_MODE: none
+  CONNECTORS_JSON: ./lib/connectors.json
 
 .exe_artifacts_default:
   artifacts:
@@ -119,26 +120,45 @@ test package dev nuix:
     - nuix
   extends:
     - test package dev
-    - .rules_dev_allowfailure
+  variables:
+    PRERELEASE_FLAG: --prerelease
   before_script:
-    - cp .\Examples\connectors.json .\lib\
-    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector update --prerelease Reductech.EDR.Connectors.Nuix
+    - |
+      $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
+      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Nuix" -NotePropertyValue @{
+          id      = "Reductech.EDR.Connectors.Nuix"
+          version = "0.11.0"
+          settings = @{
+            exeConsolePath = "C:\Program Files\Nuix\Nuix 9.0\nuix_console.exe"
+            licencesourcetype = "dongle"
+            version = "9.0"
+            features = @(
+              "ANALYSIS"
+              "CASE_CREATION"
+              "EXPORT_ITEMS"
+              "METADATA_IMPORT"
+              "OCR_PROCESSING"
+              "PRODUCTION_SET"
+            )
+          }
+      } ;
+      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
+        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Nuix
+    - .\edr.exe connector list
   script:
     - .\edr.exe run .\Examples\nuix-sequence.scl
 
 test package release nuix:
   extends:
     - test package dev nuix
-    - .rules_release_allowfailure
+    - .rules_release
   needs:
     - package exe release
-  before_script:
-    - cp .\Examples\connectors.json .\lib\
-    - .\edr.exe connector update Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector update Reductech.EDR.Connectors.Nuix
+  variables:
+    PRERELEASE_FLAG: ''
 
 # Test SQL Connector
 test package dev sql:
@@ -186,6 +206,44 @@ test package release tesseract:
     - .rules_release
   needs:
     - package exe release
+
+# Test the Relativity connector
+test package dev relativity:
+  tags:
+    - nuix
+  extends:
+    - test package dev
+  variables:
+    PRERELEASE_FLAG: --prerelease
+  before_script:
+    - |
+      $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
+      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Relativity" -NotePropertyValue @{
+          id      = "Reductech.EDR.Connectors.Relativity"
+          version = "0.11.0"
+          settings = @{
+            RelativityUsername = $env:RELATIVITY_TEST_USER
+            RelativityPassword = $env:RELATIVITY_TEST_PASS
+            Url = $env:RELATIVITY_TEST_URL
+          }
+      } ;
+      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
+        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Relativity
+    - .\edr.exe connector list
+  script:
+    - .\edr.exe run .\Examples\relativity-sequence.scl
+
+test package release relativity:
+  extends:
+    - test package dev relativity
+    - .rules_release_allowfailure
+  needs:
+    - package exe release
+  variables:
+    PRERELEASE_FLAG: ''
 
 sign exe release:
   stage: sign

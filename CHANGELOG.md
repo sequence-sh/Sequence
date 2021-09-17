@@ -1,6 +1,29 @@
-# v0.11.0 (2021-09-03)
+# v0.11.0 (2021-09-16)
 
-Dependency updates only
+## Summary of Changes
+
+### Sequence Configuration Language
+
+- Added new lambda syntax for steps which take a function as a parameter.
+
+  Instead of writing `Foreach [1,2,3] (Log <x>) <x>` you now write `Foreach [1,2,3] (<x> => Log <x>) ` or `Foreach [1,2,3] (Log <>) `
+
+- Allowed Step Parameters to be Discriminated Unions. This allows a parameter to be e.g. either a name or an Id.
+
+- When accessing entity properties you can now use a dot to indicate a nested property
+
+  Instead of `(a:(b: 1))['a']['b']` you can now write `(a:(b: 1))['a.b']`
+
+### Connectors
+
+- The [EDR Connector for Relativity®](https://gitlab.com/reductech/edr/connectors/relativity)
+  has now been release and can be downloaded from the [Connector Registry](https://gitlab.com/reductech/edr/connector-registry)
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- EDR Smoke Tests are failing with Core 0.11 #85
 
 # v0.10.0 (2021-07-02)
 

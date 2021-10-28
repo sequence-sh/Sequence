@@ -7,6 +7,7 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal;
@@ -21,7 +22,7 @@ namespace Reductech.EDR
 /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
 /// </summary>
 [Command(
-    Name        = "run",
+    Name = "run",
     Description = "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
 )]
 public class RunCommand
@@ -80,7 +81,7 @@ public class RunCommand
     /// Execute a Sequence from an SCL file
     /// </summary>
     [Command(
-        Name        = "path",
+        Name = "path",
         Description = "Execute a Sequence from an SCL file"
     )]
     public async Task<int> RunPath(
@@ -95,8 +96,7 @@ public class RunCommand
 
         var meta = new Dictionary<string, object>
         {
-            { SCLRunner.SequenceIdName, Guid.NewGuid() },
-            { SCLRunner.SCLPathName, pathToSCLFile }
+            { SCLRunner.RunIdName, Guid.NewGuid() }, { SCLRunner.SCLPathName, pathToSCLFile }
         };
 
         return await RunSCLFromTextAsync(text, meta, cancellationToken);
@@ -106,7 +106,7 @@ public class RunCommand
     /// Execute a Sequence from SCL in standard input
     /// </summary>
     [Command(
-        Name        = "scl",
+        Name = "scl",
         Description = "Execute a Sequence from an in-line SCL string"
     )]
     public async Task<int> RunSCL(
@@ -116,7 +116,7 @@ public class RunCommand
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
-        var meta = new Dictionary<string, object> { { SCLRunner.SequenceIdName, Guid.NewGuid() } };
+        var meta = new Dictionary<string, object> { { SCLRunner.RunIdName, Guid.NewGuid() } };
 
         return await RunSCLFromTextAsync(scl, meta, cancellationToken);
     }
@@ -149,7 +149,9 @@ public class RunCommand
             injectedContextsResult.Value
         );
 
-        var runner = new SCLRunner(_logger, stepFactoryStore, externalContext);
+        var restClientFactory = DefaultRestClientFactory.Instance;
+
+        var runner = new SCLRunner(_logger, stepFactoryStore, externalContext, restClientFactory);
 
         var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
 

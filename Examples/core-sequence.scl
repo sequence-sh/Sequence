@@ -1,5 +1,4 @@
 - <ArtworkCSV> = 'artwork_data.csv'
-- <SchemaJSON> = 'ArtistSchema.json'
 
 - [
     (Artist: "Blake, Robert" ArtistId: "38" Name: "Six Drawings of Figures with Outstretched Arms" Date: "date not known"),
@@ -9,22 +8,10 @@
 | ToCSV
 | FileWrite <ArtworkCSV>
 
-- <SchemaOut> = (
-    Name: 'Default Artist Schema'
-    AllowExtraProperties: true
-    Properties: (
-      Artist: (Type: 'String' Multiplicity: 'ExactlyOne')
-      ArtistId: (Type: 'Integer' Multiplicity: 'ExactlyOne')
-      Date: (Type: 'Date' Multiplicity: 'ExactlyOne' DateFormat: 'yyyy')
-    )
-  )
-- FileWrite (ToJson <SchemaOut>) <SchemaJSON>
 
-- <SchemaIn> = FileRead <SchemaJSON> | FromJson
 
 - FileRead <ArtworkCSV>
 | FromCSV
-| EnforceSchema <SchemaIn> ErrorBehavior: 'Warning'
 | ForEach (Print <>)
 
 # Tests

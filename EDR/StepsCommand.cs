@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CommandDotNet;
 using ConsoleTables;
 using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Documentation;
 
@@ -18,7 +19,7 @@ namespace Reductech.EDR
 /// Provides commands to list and search available steps
 /// </summary>
 [Command(
-    Name        = "steps",
+    Name = "steps",
     Description = "List and search available steps"
 )]
 public class StepsCommand
@@ -40,19 +41,41 @@ public class StepsCommand
         [Operand(Description = "Filter step name and connectors using a regular expression")]
         string? filter = null,
         [Option(
-            ShortName   = "n",
+            ShortName = "n",
             Description = "Filter step names using a regular expression"
         )]
         string? name = null,
         [Option(
-            ShortName   = "c",
+            ShortName = "c",
             Description = "Filter connector names using a regular expression"
         )]
         string? connector = null)
     {
-        var stepFactoryStore = await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
+        var externalContextResult = await _connectorManager.GetExternalContextAsync(
+            ExternalContext.Default.ExternalProcessRunner,
+            ExternalContext.Default.RestClientFactory,
+            ExternalContext.Default.Console,
+            cancellationToken
+        );
 
-        var allSteps = stepFactoryStore
+        if (externalContextResult.IsFailure)
+        {
+            Console.WriteLine(externalContextResult.Error.AsString);
+            return;
+        }
+
+        var stepFactoryStoreResult = await _connectorManager.GetStepFactoryStoreAsync(
+            externalContextResult.Value,
+            cancellationToken
+        );
+
+        if (stepFactoryStoreResult.IsFailure)
+        {
+            Console.WriteLine(stepFactoryStoreResult.Error.AsString);
+            return;
+        }
+
+        var allSteps = stepFactoryStoreResult.Value
             .Dictionary
             .GroupBy(x => x.Value, x => x.Key)
             .Select(x => new StepWrapper(x));

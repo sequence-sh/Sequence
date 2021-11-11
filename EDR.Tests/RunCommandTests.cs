@@ -1,5 +1,6 @@
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Threading;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
@@ -9,8 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 using static EDR.Tests.Helpers;
 
@@ -83,18 +83,32 @@ public class RunCommandTests
     {
         var factory = TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
         var fs      = new MockFileSystem();
-        var connMan = new FakeConnectorManager();
 
-        var run = new Mock<RunCommand>(factory.CreateLogger<RunCommand>(), fs, connMan);
+        var mockRepository       = new MockRepository(MockBehavior.Strict);
+        var connectorManagerMock = mockRepository.Create<IConnectorManager>();
 
-        run.Setup(r => r.GetInjectedContexts(It.IsAny<StepFactoryStore>()))
-            .Returns(() => new ErrorBuilder(ErrorCode.Unknown, "Just Testing"));
+        connectorManagerMock
+            .Setup(x => x.Verify(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var run = new Mock<RunCommand>(
+            factory.CreateLogger<RunCommand>(),
+            fs,
+            connectorManagerMock.Object,
+            new NullAnalyticsWriter()
+        );
 
         var sp = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connMan))
+            .AddSingleton(new ConnectorCommand(connectorManagerMock.Object))
             .AddSingleton(run.Object)
-            .AddSingleton(new StepsCommand(connMan))
-            .AddSingleton(new ValidateCommand(factory.CreateLogger<ValidateCommand>(), fs, connMan))
+            .AddSingleton(new StepsCommand(connectorManagerMock.Object))
+            .AddSingleton(
+                new ValidateCommand(
+                    factory.CreateLogger<ValidateCommand>(),
+                    fs,
+                    connectorManagerMock.Object
+                )
+            )
             .AddSingleton<EDRMethods>()
             .BuildServiceProvider();
 
@@ -108,7 +122,7 @@ public class RunCommandTests
         Assert.Contains(
             factory.Sink.LogEntries,
             l => l.LogLevel == LogLevel.Error
-              && l.Message!.Contains("Unknown Error: 'Just Testing'")
+              && l.Message!.Contains("Could not validate installed connectors")
         );
     }
 

@@ -111,6 +111,8 @@ internal class Program
 
                 services.AddConnectorManager(context.Configuration);
 
+                services.AddSingleton<IAnalyticsWriter, AnalyticsWriter>();
+
                 services.AddSingleton<ConnectorCommand>();
                 services.AddSingleton<RunCommand>();
                 services.AddSingleton<StepsCommand>();

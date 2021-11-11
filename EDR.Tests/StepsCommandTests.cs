@@ -35,7 +35,14 @@ public class StepsCommandTests
 
         _sp = new ServiceCollection()
             .AddSingleton(new ConnectorCommand(connMan))
-            .AddSingleton(new RunCommand(factory.CreateLogger<RunCommand>(), fs, connMan))
+            .AddSingleton(
+                new RunCommand(
+                    factory.CreateLogger<RunCommand>(),
+                    fs,
+                    connMan,
+                    new NullAnalyticsWriter()
+                )
+            )
             .AddSingleton(stepsMock.Object)
             .AddSingleton(new ValidateCommand(factory.CreateLogger<ValidateCommand>(), fs, connMan))
             .AddSingleton<EDRMethods>()

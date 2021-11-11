@@ -35,7 +35,15 @@ public static class Helpers
 
         var serviceProvider = new ServiceCollection()
             .AddSingleton(new ConnectorCommand(connMan))
-            .AddSingleton(new RunCommand(lf.CreateLogger<RunCommand>(), fs, connMan))
+            .AddSingleton<IAnalyticsWriter>(new NullAnalyticsWriter())
+            .AddSingleton(
+                new RunCommand(
+                    lf.CreateLogger<RunCommand>(),
+                    fs,
+                    connMan,
+                    new NullAnalyticsWriter()
+                )
+            )
             .AddSingleton(new StepsCommand(connMan))
             .AddSingleton(new ValidateCommand(lf.CreateLogger<ValidateCommand>(), fs, connMan))
             .AddSingleton<EDRMethods>()

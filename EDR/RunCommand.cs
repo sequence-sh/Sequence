@@ -28,6 +28,7 @@ public class RunCommand
     private readonly ILogger<RunCommand> _logger;
     private readonly IFileSystem _fileSystem;
     private readonly IConnectorManager _connectorManager;
+    private readonly IAnalyticsWriter _analyticsWriter;
 
     /// <summary>
     /// External context without injected contexts
@@ -40,7 +41,8 @@ public class RunCommand
     public RunCommand(
         ILogger<RunCommand> logger,
         IFileSystem fileSystem,
-        IConnectorManager connectorManager)
+        IConnectorManager connectorManager,
+        IAnalyticsWriter analyticsWriter)
         : this(
             logger,
             fileSystem,
@@ -49,7 +51,8 @@ public class RunCommand
                 ExternalContext.Default.ExternalProcessRunner,
                 ExternalContext.Default.RestClientFactory,
                 ExternalContext.Default.Console
-            )
+            ),
+            analyticsWriter
         ) { }
 
     /// <summary>
@@ -59,10 +62,12 @@ public class RunCommand
         ILogger<RunCommand> logger,
         IFileSystem fileSystem,
         IConnectorManager connectorManager,
-        IExternalContext baseExternalContext)
+        IExternalContext baseExternalContext,
+        IAnalyticsWriter analyticsWriter)
     {
         _logger              = logger;
         _baseExternalContext = baseExternalContext;
+        _analyticsWriter     = analyticsWriter;
         _fileSystem          = fileSystem;
         _connectorManager    = connectorManager;
     }
@@ -125,7 +130,7 @@ public class RunCommand
         Dictionary<string, object> metadata,
         CancellationToken cancellationToken = default)
     {
-        var externalContext = await
+        var externalContextResult = await
             _connectorManager.GetExternalContextAsync(
                 _baseExternalContext.ExternalProcessRunner,
                 _baseExternalContext.RestClientFactory,
@@ -133,14 +138,11 @@ public class RunCommand
                 cancellationToken
             );
 
-        var injectedContextsResult = GetInjectedContexts(stepFactoryStore);
-
-        if (injectedContextsResult.IsFailure)
+        if (externalContextResult.IsFailure)
         {
             ErrorLogger.LogError(
                 _logger,
-                stepFactoryStoreResult.Error.WithLocation(ErrorLocation.EmptyLocation)
-                externalContext.Error.WithLocation(ErrorLocation.EmptyLocation)
+                externalContextResult.Error.WithLocation(ErrorLocation.EmptyLocation)
             );
 
             return Failure;
@@ -148,7 +150,7 @@ public class RunCommand
 
         var stepFactoryStoreResult =
             await _connectorManager.GetStepFactoryStoreAsync(
-                externalContext.Value,
+                externalContextResult.Value,
                 cancellationToken
             );
 
@@ -162,10 +164,18 @@ public class RunCommand
             return Failure;
         }
 
-        var synthesizedAnalysis = analyticsLogger.SequenceAnalytics.Synthesize();
-        var runner = new SCLRunner(_logger, stepFactoryStoreResult.Value, externalContext.Value);
+        var analyticsLogger = new AnalyticsLogger();
+        var multiLogger     = new MultiLogger(analyticsLogger, _logger);
 
-        _logger.LogInformation(synthesizedAnalysis.ToString());
+        var runner = new SCLRunner(
+            multiLogger,
+            stepFactoryStoreResult.Value,
+            externalContextResult.Value
+        );
+
+        var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
+
+        _analyticsWriter.LogAnalytics(analyticsLogger.SequenceAnalytics);
 
         if (r.IsSuccess)
             return Success;

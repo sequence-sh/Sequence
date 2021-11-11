@@ -4,13 +4,11 @@ using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandDotNet;
-using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Analytics;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Serialization;
 using static Reductech.EDR.Result;
@@ -49,6 +47,7 @@ public class RunCommand
             connectorManager,
             new ExternalContext(
                 ExternalContext.Default.ExternalProcessRunner,
+                ExternalContext.Default.RestClientFactory,
                 ExternalContext.Default.Console
             )
         ) { }
@@ -121,39 +120,59 @@ public class RunCommand
         return await RunSCLFromTextAsync(scl, meta, cancellationToken);
     }
 
-    internal virtual Result<(string, object)[], IErrorBuilder> GetInjectedContexts(
-        StepFactoryStore sfs) => sfs.TryGetInjectedContexts();
-
     private async Task<int> RunSCLFromTextAsync(
         string scl,
         Dictionary<string, object> metadata,
         CancellationToken cancellationToken = default)
     {
-        var stepFactoryStore = await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
+        var externalContext = await
+            _connectorManager.GetExternalContextAsync(
+                _baseExternalContext.ExternalProcessRunner,
+                _baseExternalContext.RestClientFactory,
+                _baseExternalContext.Console,
+                cancellationToken
+            );
 
-        var injectedContextsResult = GetInjectedContexts(stepFactoryStore);
-
-        if (injectedContextsResult.IsFailure)
+        if (externalContext.IsFailure)
         {
             ErrorLogger.LogError(
                 _logger,
-                injectedContextsResult.Error.WithLocation(ErrorLocation.EmptyLocation)
+                externalContext.Error.WithLocation(ErrorLocation.EmptyLocation)
             );
 
             return Failure;
         }
 
-        var externalContext = new ExternalContext(
-            _baseExternalContext.ExternalProcessRunner,
-            _baseExternalContext.Console,
-            injectedContextsResult.Value
+        var stepFactoryStoreResult =
+            await _connectorManager.GetStepFactoryStoreAsync(
+                externalContext.Value,
+                cancellationToken
+            );
+
+        if (stepFactoryStoreResult.IsFailure)
+        {
+            ErrorLogger.LogError(
+                _logger,
+                stepFactoryStoreResult.Error.WithLocation(ErrorLocation.EmptyLocation)
+            );
+
+            return Failure;
+        }
+
+        var analyticsLogger = new AnalyticsLogger();
+        var multiLogger     = new MultiLogger(analyticsLogger, _logger);
+
+        var runner = new SCLRunner(
+            multiLogger,
+            stepFactoryStoreResult.Value,
+            externalContext.Value
         );
 
-        var restClientFactory = DefaultRestClientFactory.Instance;
-
-        var runner = new SCLRunner(_logger, stepFactoryStore, externalContext, restClientFactory);
-
         var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
+
+        var synthesizedAnalysis = analyticsLogger.SequenceAnalytics.Synthesize();
+
+        _logger.LogInformation(synthesizedAnalysis.ToString());
 
         if (r.IsSuccess)
             return Success;

@@ -2,7 +2,7 @@
   "profiles": {
     "EDR": {
       "commandName": "Project",
-      "commandLineArgs": "steps"
+      "commandLineArgs": "run scl \"- log 1 + 1\r\n- log 2 + 2\""
     }
   }
 }

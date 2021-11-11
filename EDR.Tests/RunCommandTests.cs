@@ -11,8 +11,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
 using Xunit;
 using static EDR.Tests.Helpers;
 
@@ -85,7 +83,7 @@ public class RunCommandTests
     {
         var factory = TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
         var fs      = new MockFileSystem();
-        //var connMan = new FakeConnectorManager();
+
         var mockRepository       = new MockRepository(MockBehavior.Strict);
         var connectorManagerMock = mockRepository.Create<IConnectorManager>();
 
@@ -96,11 +94,9 @@ public class RunCommandTests
         var run = new Mock<RunCommand>(
             factory.CreateLogger<RunCommand>(),
             fs,
-            connectorManagerMock.Object
+            connectorManagerMock.Object,
+            new NullAnalyticsWriter()
         );
-
-        //run.Setup(r => r.GetInjectedContexts(It.IsAny<StepFactoryStore>()))
-        //    .Returns(() => new ErrorBuilder(ErrorCode.Unknown, "Just Testing"));
 
         var sp = new ServiceCollection()
             .AddSingleton(new ConnectorCommand(connectorManagerMock.Object))

@@ -5,6 +5,7 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
@@ -17,7 +18,7 @@ namespace Reductech.EDR
 /// Check if a Sequence Configuration Language file or string is valid
 /// </summary>
 [Command(
-    Name        = "validate",
+    Name = "validate",
     Description = "Check if a Sequence Configuration Language file or string is valid"
 )]
 public class ValidateCommand
@@ -52,7 +53,7 @@ public class ValidateCommand
     /// Validate a Sequence in a file
     /// </summary>
     [Command(
-        Name        = "path",
+        Name = "path",
         Description = "Validate a Sequence in a file"
     )]
     public async Task<int> ValidatePath(
@@ -72,7 +73,7 @@ public class ValidateCommand
     /// Validate an in-line SCL string
     /// </summary>
     [Command(
-        Name        = "scl",
+        Name = "scl",
         Description = "Validate an in-line SCL string"
     )]
     public async Task<int> ValidateSCL(
@@ -82,11 +83,33 @@ public class ValidateCommand
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
-        var stepFactoryStore =
-            await _connectorManager.GetStepFactoryStoreAsync(cancellationToken);
+        var externalContextResult = await _connectorManager.GetExternalContextAsync(
+            ExternalContext.Default.ExternalProcessRunner,
+            ExternalContext.Default.RestClientFactory,
+            ExternalContext.Default.Console,
+            cancellationToken
+        );
+
+        if (externalContextResult.IsFailure)
+        {
+            _logger.LogError(externalContextResult.Error.AsString);
+            return Failure;
+        }
+
+        var stepFactoryStoreResult =
+            await _connectorManager.GetStepFactoryStoreAsync(
+                externalContextResult.Value,
+                cancellationToken
+            );
+
+        if (stepFactoryStoreResult.IsFailure)
+        {
+            _logger.LogError(stepFactoryStoreResult.Error.AsString);
+            return Failure;
+        }
 
         var stepResult = SCLParsing.TryParseStep(scl)
-            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, stepFactoryStore))
+            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, stepFactoryStoreResult.Value))
             .Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsSuccess)

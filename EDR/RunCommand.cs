@@ -133,10 +133,13 @@ public class RunCommand
                 cancellationToken
             );
 
-        if (externalContext.IsFailure)
+        var injectedContextsResult = GetInjectedContexts(stepFactoryStore);
+
+        if (injectedContextsResult.IsFailure)
         {
             ErrorLogger.LogError(
                 _logger,
+                stepFactoryStoreResult.Error.WithLocation(ErrorLocation.EmptyLocation)
                 externalContext.Error.WithLocation(ErrorLocation.EmptyLocation)
             );
 
@@ -159,18 +162,8 @@ public class RunCommand
             return Failure;
         }
 
-        var analyticsLogger = new AnalyticsLogger();
-        var multiLogger     = new MultiLogger(analyticsLogger, _logger);
-
-        var runner = new SCLRunner(
-            multiLogger,
-            stepFactoryStoreResult.Value,
-            externalContext.Value
-        );
-
-        var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
-
         var synthesizedAnalysis = analyticsLogger.SequenceAnalytics.Synthesize();
+        var runner = new SCLRunner(_logger, stepFactoryStoreResult.Value, externalContext.Value);
 
         _logger.LogInformation(synthesizedAnalysis.ToString());
 

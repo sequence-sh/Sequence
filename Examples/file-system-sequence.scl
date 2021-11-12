@@ -1,0 +1,22 @@
+- <ArtworkCSV> = 'artwork_data.csv'
+
+- [
+    (Artist: "Blake, Robert" ArtistId: "38" Name: "Six Drawings of Figures with Outstretched Arms" Date: "date not known"),
+    (Artist: "Calvert, Edward" ArtistId: "81" Name: "Ideal Pastoral Life" Date: "1829"),
+    (Artist: "Sterne, Hedda" ArtistId: "16798" Name: "NY, NY No. X" Date: 1948)
+  ]
+| ToCSV
+| FileWrite <ArtworkCSV>
+
+
+
+- FileRead <ArtworkCSV>
+| FromCSV
+| ForEach (Print <>)
+
+# Tests
+- AssertTrue (DoesFileExist <ArtworkCSV>)
+- AssertTrue (DoesFileExist <SchemaJSON>)
+- Delete File: <ArtworkCSV>
+- Delete File: <SchemaJSON>
+- log 'Sequence Completed Successfully'

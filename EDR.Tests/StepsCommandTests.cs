@@ -75,8 +75,8 @@ public class StepsCommandTests
 
         Assert.NotEmpty(_steps);
         var stepNames = _steps.Select(s => s.Name).ToList();
-        Assert.Contains("ReadStandardIn",   stepNames);
-        Assert.Contains("WriteStandardOut", stepNames);
+        Assert.Contains("StandardInRead",   stepNames);
+        Assert.Contains("StandardOutWrite", stepNames);
         Assert.DoesNotContain("And", stepNames);
     }
 

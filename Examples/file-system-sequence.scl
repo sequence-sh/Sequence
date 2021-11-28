@@ -8,8 +8,6 @@
 | ToCSV
 | FileWrite <ArtworkCSV>
 
-
-
 - FileRead <ArtworkCSV>
 | FromCSV
 | ForEach (Print <>)
@@ -19,4 +17,4 @@
 - AssertTrue (DoesFileExist <SchemaJSON>)
 - Delete File: <ArtworkCSV>
 - Delete File: <SchemaJSON>
-- log 'Sequence Completed Successfully'
+- Log 'Sequence Completed Successfully'

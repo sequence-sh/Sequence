@@ -1,1 +1,2 @@
-log 'hello world'
+- Log 'hello world'
+- ForEachItem In: 1, 2, 3 Do: (Print <item>)

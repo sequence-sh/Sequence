@@ -17,6 +17,9 @@ public interface IAnalyticsWriter
     void LogAnalytics(SequenceAnalytics sequenceAnalytics);
 }
 
+/// <summary>
+/// Analytics writer that does nothing
+/// </summary>
 public class NullAnalyticsWriter : IAnalyticsWriter
 {
     /// <inheritdoc />

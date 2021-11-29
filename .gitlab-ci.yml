@@ -111,12 +111,14 @@ test package connectors dev:
     - .rules_dev_manual
   needs:
     - package exe dev
+  variables:
+    PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Pwsh
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Pwsh
   script:
-    - .\edr.exe run .\Examples\core-sequence.scl
+    - .\edr.exe run .\Examples\file-system-sequence.scl
     - .\edr.exe run .\Examples\pwsh-sequence.scl
     - .\edr.exe run .\Examples\doc-generation.scl
 
@@ -126,10 +128,8 @@ test package connectors release:
     - .rules_release
   needs:
     - package exe release
-  before_script:
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Pwsh
+  variables:
+    PRERELEASE_FLAG: ''
 
 # Test the Nuix connector
 test package dev nuix:
@@ -180,6 +180,7 @@ test package release nuix:
 # Test SQL Connector
 test package dev sql:
   variables:
+    PRERELEASE_FLAG: --prerelease
     INIT_DATABASE: TestDb
     SA_PASSWORD: T35tDbPa5s
   services:
@@ -188,9 +189,9 @@ test package dev sql:
   extends:
     - test package dev
   before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Sql
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Sql
   script:
     - .\edr.exe run .\Examples\sql-sequence.scl
 
@@ -200,20 +201,20 @@ test package release sql:
     - .rules_release
   needs:
     - package exe release
-  before_script:
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
+  variables:
+    PRERELEASE_FLAG: ''
 
 # Test Tesseract Connector
 test package dev tesseract:
   image: registry.gitlab.com/reductech/containers/msvc
   extends:
     - test package dev
+  variables:
+    PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Tesseract
   script:
     - .\edr.exe run .\Examples\tesseract-sequence.scl
 
@@ -223,6 +224,8 @@ test package release tesseract:
     - .rules_release
   needs:
     - package exe release
+  variables:
+    PRERELEASE_FLAG: ''
 
 # Test the Relativity connector
 test package dev relativity:
@@ -273,6 +276,7 @@ sign exe release:
     - version check release
     - package exe release
     - test package release
+    - test package connectors release
   variables:
     TIMESTAMP_SERVER: http://timestamp.sectigo.com
     ALGO_FILE_DIGEST: SHA256

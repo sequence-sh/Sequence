@@ -8,11 +8,12 @@
 | ToCSV
 | FileWrite <ArtworkCSV>
 
-- FileRead <ArtworkCSV>
-| FromCSV
-| ForEach (Print <>)
+- <csv> = FileRead <ArtworkCSV> | FromCSV
+- <csv> | ForEach (Print <>)
 
 # Tests
 - AssertTrue (DoesFileExist <ArtworkCSV>)
+- <first> = FromArray <csv> GetElement: 0
+- AssertTrue (<first>['ArtistId'] == '38')
 - Delete File: <ArtworkCSV>
 - Log 'Sequence Completed Successfully'

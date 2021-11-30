@@ -91,7 +91,7 @@ test package dev:
   stage: package-test
   cache: {}
   extends:
-    - .rules_dev_manual
+    - .rules_dev
   needs:
     - package exe dev
   script:

@@ -111,8 +111,7 @@ sign exe release:
   needs:
     - version check release
     - package exe release
-    - test package release
-    - test package connectors release
+    - test examples release
   variables:
     TIMESTAMP_SERVER: http://timestamp.sectigo.com
     ALGO_FILE_DIGEST: SHA256

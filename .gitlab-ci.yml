@@ -86,7 +86,7 @@ package exe release:
   artifacts:
     expire_in: 2 hours
 
-test examples:
+test examples dev:
   stage: package-test
   extends:
     - .rules_dev_manual
@@ -98,7 +98,7 @@ test examples:
 
 test examples release:
   extends:
-    - test package dev
+    - test examples dev
     - .rules_release
 
 sign exe release:

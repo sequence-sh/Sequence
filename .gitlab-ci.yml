@@ -58,7 +58,7 @@ test dev:
 package exe dev:
   stage: package
   extends:
-    - .rules_dev_manual
+    - .rules_dev
     - .exe_artifacts_default
   needs:
     - build dev
@@ -89,7 +89,9 @@ package exe release:
 test examples dev:
   stage: package-test
   extends:
-    - .rules_dev_manual
+    - .rules_dev
+  needs:
+    - package exe dev
   variables:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
   trigger:
@@ -100,6 +102,8 @@ test examples release:
   extends:
     - test examples dev
     - .rules_release
+  needs:
+    - package exe release
 
 sign exe release:
   stage: sign

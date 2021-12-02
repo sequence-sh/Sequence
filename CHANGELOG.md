@@ -1,17 +1,27 @@
 # v0.12.0 (2021-12-02)
 
+This release updates Core to v0.12.0 which includes many changes to the
+Sequence Configuration Language, including new step and parameter aliases,
+and support for JSON schemas to convert and validate entities between
+various data sources. For more information please see the release notes for Core:
+
+https://gitlab.com/reductech/edr/core/-/tags/v0.12.0
+
 ## Summary of Changes
 
 ### Logging and Monitoring
 
-- EDR now log analytics after each run. This is controlled by the `LogAnalytics` setting
+- EDR now logs analytics after each run. This can be controlled by the `LogAnalytics` setting.
 
 ## Issues Closed in this Release
 
 ### New Features
 
-- Add smoke test for core only #87
 - EDR should print analytics after every run #88
+
+### Maintenance
+
+- Add smoke test for core only #87
 
 # v0.11.0 (2021-09-16)
 
@@ -339,4 +349,3 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
-

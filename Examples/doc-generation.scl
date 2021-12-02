@@ -1,27 +1,25 @@
 - <root> = 'steps'
-# Temprorary fix for https://gitlab.com/reductech/edr/core/-/issues/290
-- <docs> = (GenerateDocumentation)['AllPages'] | ToJsonArray | FromJsonArray
-- <docs>
-| ArrayDistinct (From <> 'Directory')
+- (GenerateDocumentation)['AllPages'] | ArrayDistinct (From <> 'Directory')
 | ForEach (
-    CreateDirectory (PathCombine [<root>, (From <> 'Directory')])
+    If (<>['Directory'] != 'null') CreateDirectory (PathCombine [<root>, (From <> 'Directory')])
   )
-- <docs>
-| ForEach (
-    - <path> = PathCombine [<root>, (<>['Directory'] ), (<>['FileName'] )]
-    - FileWrite Data: <>['FileText'] Path: <path>
+- (GenerateDocumentation)['AllPages'] | ForEach (
+    - <dir> = If (<>['Directory'] == 'null') Then: ('') Else: (From <> 'Directory')
+    - FileWrite
+        Data: <>['FileText']
+        Path: (PathCombine [<root>, <dir>, (From <> 'FileName')])
   )
 
-# Tests
+# # Tests
 - AssertTrue (DoesDirectoryExist <root>)
 - AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'Core']))
 - AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'Enums']))
 - AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'FileSystem']))
 - AssertTrue (DoesDirectoryExist (PathCombine [<root>, 'StructuredData']))
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'Core.md']))
-- AssertTrue (DoesFileExist (PathCombine [<root>, 'All.md']))
+- AssertTrue (DoesFileExist (PathCombine [<root>, 'all.md']))
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'FileSystem.md']))
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'StructuredData.md']))
-- AssertTrue (StringContains (FileRead (PathCombine [<root>, 'All.md'])) '# EDR Steps')
+- AssertTrue (StringContains (FileRead (PathCombine [<root>, 'all.md'])) '# EDR Steps')
 - Delete Folder: <root>
-- log 'Sequence Completed Successfully'
+- Log 'Sequence Completed Successfully'

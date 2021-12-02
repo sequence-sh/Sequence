@@ -1,3 +1,18 @@
+# v0.12.0 (2021-12-02)
+
+## Summary of Changes
+
+### Logging and Monitoring
+
+- EDR now log analytics after each run. This is controlled by the `LogAnalytics` setting
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add smoke test for core only #87
+- EDR should print analytics after every run #88
+
 # v0.11.0 (2021-09-16)
 
 ## Summary of Changes
@@ -324,3 +339,4 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
+

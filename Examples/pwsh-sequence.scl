@@ -1,20 +1,14 @@
-- <OutputDir> = '.\output'
-- <DataUri>   = 'https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv'
+- <Text> = 'hello!'
 
-- If (Not (DoesDirectoryExist <OutputDir>))
-    (CreateDirectory <OutputDir>)
-
-- PwshRunScript '
-    Set-Location $OutPath
-    $fileName = Split-Path $DataUri -Leaf
-    Invoke-WebRequest -Uri $DataUri -OutFile $fileName
+- <out> = PwshRunScriptAsync Script: '
+    $out = [pscustomobject]@{ Prop1 = 1; Prop2 = $Text }
+    Write-Output $out
   '
-  Variables: (
-    DataUri: <DataUri>
-    OutPath: <OutputDir>
-  )
+  Variables: ( Text: <Text> )
+
+- <entity> = FromArray <out> GetElement: 0
 
 # Tests
-- AssertTrue (DoesFileExist (PathCombine [<OutputDir>, 'artist_data.csv']))
-- Delete Folder: <OutputDir>
-- log 'Sequence Completed Successfully'
+- AssertTrue (<entity>['Prop1'] == 1)
+- AssertTrue (<entity>['Prop2'] == <Text>)
+- Log 'Sequence Completed Successfully'

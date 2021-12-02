@@ -1,15 +1,10 @@
 {
-  "Reductech.EDR.Connectors.REST": {
-    "Id": "Reductech.EDR.Connectors.REST",
-    "Version": "0.12.0-a.main.2111091337",
-    "Settings": {
-      "Specifications": [
-        {
-          "Name": "Reveal",
-          "BaseURL": "https://salient-eu.revealdata.com/rest",
-          "SpecificationURL": "https://salient-eu.revealdata.com/rest/swagger/docs/V2"
-        }
-      ]
-    }
+  "Reductech.EDR.Connectors.FileSystem": {
+    "Id": "Reductech.EDR.Connectors.FileSystem",
+    "Version": "0.12.0"
+  },
+  "Reductech.EDR.Connectors.StructuredData": {
+    "Id": "Reductech.EDR.Connectors.StructuredData",
+    "Version": "0.12.0"
   }
 }

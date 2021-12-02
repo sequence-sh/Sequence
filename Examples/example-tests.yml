@@ -1,0 +1,152 @@
+include:
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.default.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.rules.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab/ci/default.workflow.yml
+
+default:
+  image: mcr.microsoft.com/dotnet/sdk:5.0-windowsservercore-ltsc2019
+  tags:
+    - rt-windows
+
+stages:
+  - package-test
+
+variables:
+  CONNECTORS_JSON: ./lib/connectors.json
+
+test package dev:
+  stage: package-test
+  cache: {}
+  extends:
+    - .rules_dev
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe dev
+  script:
+    - .\edr.exe run .\Examples\core-sequence.scl
+
+test package release:
+  extends:
+    - test package dev
+    - .rules_release
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe release
+
+test package connectors dev:
+  extends:
+    - test package dev
+  variables:
+    PRERELEASE_FLAG: --prerelease
+  before_script:
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Pwsh
+  script:
+    - .\edr.exe run .\Examples\file-system-sequence.scl
+    - .\edr.exe run .\Examples\pwsh-sequence.scl
+    - .\edr.exe run .\Examples\doc-generation.scl
+
+test package connectors release:
+  extends:
+    - test package connectors dev
+    - .rules_release
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe release
+  variables:
+    PRERELEASE_FLAG: ''
+
+# Test SQL Connector
+test package dev sql:
+  extends:
+    - test package dev
+  variables:
+    PRERELEASE_FLAG: --prerelease
+    INIT_DATABASE: TestDb
+    SA_PASSWORD: T35tDbPa5s
+  services:
+    - name: registry.gitlab.com/reductech/containers/sqlserver:latest
+      alias: sqlserver
+  before_script:
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Sql
+  script:
+    - .\edr.exe run .\Examples\sql-sequence.scl
+
+test package release sql:
+  extends:
+    - test package dev sql
+    - .rules_release
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe release
+  variables:
+    PRERELEASE_FLAG: ''
+
+# Test Tesseract Connector
+test package dev tesseract:
+  extends:
+    - test package dev
+  image: registry.gitlab.com/reductech/containers/msvc
+  variables:
+    PRERELEASE_FLAG: --prerelease
+  before_script:
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Tesseract
+  script:
+    - .\edr.exe run .\Examples\tesseract-sequence.scl
+
+test package release tesseract:
+  extends:
+    - test package dev tesseract
+    - .rules_release
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe release
+  variables:
+    PRERELEASE_FLAG: ''
+
+# Test the Relativity connector
+test package dev relativity:
+  extends:
+    - test package dev
+  tags:
+    - nuix
+  variables:
+    PRERELEASE_FLAG: --prerelease
+  before_script:
+    - |
+      $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
+      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Relativity" -NotePropertyValue @{
+          id      = "Reductech.EDR.Connectors.Relativity"
+          version = "0.11.0"
+          settings = @{
+            RelativityUsername = $env:RELATIVITY_TEST_USER
+            RelativityPassword = $env:RELATIVITY_TEST_PASS
+            Url = $env:RELATIVITY_TEST_URL
+          }
+      } ;
+      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
+        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
+    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Relativity
+    - .\edr.exe connector list
+  script:
+    - .\edr.exe run .\Examples\relativity-sequence.scl
+
+test package release relativity:
+  extends:
+    - test package dev relativity
+    - .rules_release_allowfailure
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: package exe release
+  variables:
+    PRERELEASE_FLAG: ''

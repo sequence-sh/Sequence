@@ -32,7 +32,6 @@ stages:
 variables:
   PACKAGE_NAME_EXE: Reductech.EDR
   NUGET_XMLDOC_MODE: none
-  CONNECTORS_JSON: ./lib/connectors.json
 
 .exe_artifacts_default:
   artifacts:
@@ -58,7 +57,7 @@ test dev:
 package exe dev:
   stage: package
   extends:
-    - .rules_dev_manual
+    - .rules_dev
     - .exe_artifacts_default
   needs:
     - build dev
@@ -86,164 +85,24 @@ package exe release:
   artifacts:
     expire_in: 2 hours
 
-# Test the package
-test package dev:
+test examples dev:
   stage: package-test
-  cache: {}
   extends:
-    - .rules_dev_manual
+    - .rules_dev
   needs:
     - package exe dev
-  before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Pwsh
-  script:
-    - .\edr.exe run .\Examples\core-sequence.scl
-    - .\edr.exe run .\Examples\pwsh-sequence.scl
-    - .\edr.exe run .\Examples\doc-generation.scl
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    include: Examples/example-tests.yml
+    strategy: depend
 
-test package release:
+test examples release:
   extends:
-    - test package dev
+    - test examples dev
     - .rules_release
   needs:
     - package exe release
-  before_script:
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Pwsh
-
-# Test the Nuix connector
-test package dev nuix:
-  tags:
-    - nuix
-  extends:
-    - test package dev
-  variables:
-    PRERELEASE_FLAG: --prerelease
-  before_script:
-    - |
-      $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
-      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Nuix" -NotePropertyValue @{
-          id      = "Reductech.EDR.Connectors.Nuix"
-          version = "0.11.0"
-          settings = @{
-            exeConsolePath = "C:\Program Files\Nuix\Nuix 9.0\nuix_console.exe"
-            licencesourcetype = "dongle"
-            version = "9.0"
-            features = @(
-              "ANALYSIS"
-              "CASE_CREATION"
-              "EXPORT_ITEMS"
-              "METADATA_IMPORT"
-              "OCR_PROCESSING"
-              "PRODUCTION_SET"
-            )
-          }
-      } ;
-      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
-        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Nuix
-    - .\edr.exe connector list
-  script:
-    - .\edr.exe run .\Examples\nuix-sequence.scl
-
-test package release nuix:
-  extends:
-    - test package dev nuix
-    - .rules_release
-  needs:
-    - package exe release
-  variables:
-    PRERELEASE_FLAG: ''
-
-# Test SQL Connector
-test package dev sql:
-  variables:
-    INIT_DATABASE: TestDb
-    SA_PASSWORD: T35tDbPa5s
-  services:
-    - name: registry.gitlab.com/reductech/containers/sqlserver:latest
-      alias: sqlserver
-  extends:
-    - test package dev
-  before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Sql
-  script:
-    - .\edr.exe run .\Examples\sql-sequence.scl
-
-test package release sql:
-  extends:
-    - test package dev sql
-    - .rules_release
-  needs:
-    - package exe release
-  before_script:
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Sql
-
-# Test Tesseract Connector
-test package dev tesseract:
-  image: registry.gitlab.com/reductech/containers/msvc
-  extends:
-    - test package dev
-  before_script:
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector add --force --prerelease Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add Reductech.EDR.Connectors.Tesseract --prerelease
-  script:
-    - .\edr.exe run .\Examples\tesseract-sequence.scl
-
-test package release tesseract:
-  extends:
-    - test package dev tesseract
-    - .rules_release
-  needs:
-    - package exe release
-
-# Test the Relativity connector
-test package dev relativity:
-  tags:
-    - nuix
-  extends:
-    - test package dev
-  variables:
-    PRERELEASE_FLAG: --prerelease
-  before_script:
-    - |
-      $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
-      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Relativity" -NotePropertyValue @{
-          id      = "Reductech.EDR.Connectors.Relativity"
-          version = "0.11.0"
-          settings = @{
-            RelativityUsername = $env:RELATIVITY_TEST_USER
-            RelativityPassword = $env:RELATIVITY_TEST_PASS
-            Url = $env:RELATIVITY_TEST_URL
-          }
-      } ;
-      [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
-        ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Relativity
-    - .\edr.exe connector list
-  script:
-    - .\edr.exe run .\Examples\relativity-sequence.scl
-
-test package release relativity:
-  extends:
-    - test package dev relativity
-    - .rules_release_allowfailure
-  needs:
-    - package exe release
-  variables:
-    PRERELEASE_FLAG: ''
 
 sign exe release:
   stage: sign
@@ -255,7 +114,7 @@ sign exe release:
   needs:
     - version check release
     - package exe release
-    - test package release
+    - test examples release
   variables:
     TIMESTAMP_SERVER: http://timestamp.sectigo.com
     ALGO_FILE_DIGEST: SHA256

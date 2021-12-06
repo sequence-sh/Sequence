@@ -12,7 +12,7 @@
     <RootNamespace>Reductech.EDR</RootNamespace>
     <AssemblyName>edr</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.12.0$(VersionSuffix)</Version>
+    <Version>0.13.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -45,8 +45,8 @@
     <PackageReference Include="NLog" Version="4.7.11" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.6.0" />
-    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.5.1" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.12.0" />
+    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.6.0-a.main.2112021741" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112061216" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
   </ItemGroup>
 

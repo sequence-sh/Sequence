@@ -7,7 +7,7 @@ include:
     file: .gitlab/ci/default.workflow.yml
 
 default:
-  image: mcr.microsoft.com/dotnet/sdk:5.0-windowsservercore-ltsc2019
+  image: mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2019
   tags:
     - rt-windows
 

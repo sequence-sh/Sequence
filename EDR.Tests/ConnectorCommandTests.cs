@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
@@ -10,8 +9,7 @@ using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 using static EDR.Tests.Helpers;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class ConnectorCommandTests
 {
@@ -156,6 +154,4 @@ public class ConnectorCommandTests
 
         mock.Verify();
     }
-}
-
 }

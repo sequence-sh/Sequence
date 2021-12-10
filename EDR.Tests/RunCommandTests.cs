@@ -14,8 +14,7 @@ using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 using static EDR.Tests.Helpers;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class RunCommandTests
 {
@@ -167,6 +166,4 @@ public class RunCommandTests
                 "EDR Sequence Completed"
             );
     }
-}
-
 }

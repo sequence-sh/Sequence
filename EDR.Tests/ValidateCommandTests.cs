@@ -10,8 +10,7 @@ using Reductech.EDR;
 using Xunit;
 using static EDR.Tests.Helpers;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class ValidateCommandTests
 {
@@ -107,6 +106,4 @@ public class ValidateCommandTests
             .Should()
             .BeEquivalentTo("Successfully validated SCL");
     }
-}
-
 }

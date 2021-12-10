@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Abstractions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.IO.Abstractions;
 using CommandDotNet;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
@@ -13,8 +9,7 @@ using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Serialization;
 using static Reductech.EDR.Result;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
@@ -75,7 +70,7 @@ public class RunCommand
     /// <summary>
     /// Shorthand for the path command.
     /// </summary>
-    [DefaultMethod]
+    [DefaultCommand]
     public async Task<int> RunDefault(
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
@@ -184,6 +179,4 @@ public class RunCommand
 
         return Failure;
     }
-}
-
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO.Abstractions;
-using System.Threading.Tasks;
+﻿using System.IO.Abstractions;
 using CommandDotNet;
 using CommandDotNet.Diagnostics;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
@@ -12,8 +10,7 @@ using NLog;
 using NLog.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 internal class Program
 {
@@ -133,6 +130,4 @@ internal class Program
                 logging.AddNLog(nlogConfig);
             }
         );
-}
-
 }

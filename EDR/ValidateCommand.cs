@@ -1,8 +1,5 @@
 ﻿using System.IO.Abstractions;
-using System.Threading;
-using System.Threading.Tasks;
 using CommandDotNet;
-using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Core.Abstractions;
@@ -11,14 +8,13 @@ using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Internal.Serialization;
 using static Reductech.EDR.Result;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Check if a Sequence Configuration Language file or string is valid
 /// </summary>
 [Command(
-    Name = "validate",
+    "validate",
     Description = "Check if a Sequence Configuration Language file or string is valid"
 )]
 public class ValidateCommand
@@ -43,7 +39,7 @@ public class ValidateCommand
     /// <summary>
     /// Shorthand for the path command.
     /// </summary>
-    [DefaultMethod]
+    [DefaultCommand]
     public async Task<int> ValidateDefault(
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
@@ -53,7 +49,7 @@ public class ValidateCommand
     /// Validate a Sequence in a file
     /// </summary>
     [Command(
-        Name = "path",
+        "path",
         Description = "Validate a Sequence in a file"
     )]
     public async Task<int> ValidatePath(
@@ -73,7 +69,7 @@ public class ValidateCommand
     /// Validate an in-line SCL string
     /// </summary>
     [Command(
-        Name = "scl",
+        "scl",
         Description = "Validate an in-line SCL string"
     )]
     public async Task<int> ValidateSCL(
@@ -123,6 +119,4 @@ public class ValidateCommand
 
         return Failure;
     }
-}
-
 }

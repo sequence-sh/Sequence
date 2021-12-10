@@ -1,7 +1,6 @@
 ﻿using CommandDotNet;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// EDR methods to be run in the console.
@@ -35,6 +34,4 @@ public class EDRMethods
     /// </summary>
     [SubCommand]
     public ValidateCommand Validate { get; set; } = null!;
-}
-
 }

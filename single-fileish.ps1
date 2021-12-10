@@ -4,10 +4,14 @@ $dnSpyVersion = 'v6.1.8'
 $dnSpyUrl     = 'https://github.com/dnSpy/dnSpy.git'
 $LibPath      = 'lib'
 $ExePath      = './edr.exe'
+$GitUri       = 'https://github.com/git-for-windows/git/releases/download/v2.31.1.windows.1/MinGit-2.31.1-64-bit.zip'
 
-git clone --single-branch --branch $dnSpyVersion --sparse $dnSpyUrl
-git -C dnspy sparse-checkout init --cone
-git -C dnspy sparse-checkout set Build/AppHostPatcher
+Invoke-WebRequest -Uri $GitUri -OutFile mingit.zip -UseBasicParsing
+Expand-Archive -Path mingit.zip -DestinationPath mingit
+
+./mingit/cmd/git.exe clone --single-branch --branch $dnSpyVersion --sparse $dnSpyUrl
+./mingit/cmd/git.exe -C dnspy sparse-checkout init --cone
+./mingit/cmd/git.exe -C dnspy sparse-checkout set Build/AppHostPatcher
 
 # Hack until .net6 is added to dnSpy
 $csproj = Get-Content .\dnSpy\DnSpyCommon.props -Raw

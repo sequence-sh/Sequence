@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class FakeConnectorManager : IConnectorManager
 {
@@ -37,6 +34,4 @@ public class FakeConnectorManager : IConnectorManager
         CancellationToken ct = default) => throw new NotImplementedException();
 
     public Task<bool> Verify(CancellationToken ct = default) => Task.FromResult(true);
-}
-
 }

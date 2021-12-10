@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
     <DebugType>embedded</DebugType>
@@ -36,18 +36,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandDotNet" Version="4.1.13" />
-    <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="3.0.0" />
+    <PackageReference Include="CommandDotNet" Version="6.0.1" />
+    <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="4.0.1" />
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="NLog" Version="4.7.11" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.6.0" />
-    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.6.0-a.main.2112021741" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112081402" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
+    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.6.0-a.main.2112101947" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112102017" />
+    <PackageReference Include="System.IO.Abstractions" Version="14.0.3" />
   </ItemGroup>
 
   <ItemGroup>

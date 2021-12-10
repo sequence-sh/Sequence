@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,8 +6,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public static class Helpers
 {
@@ -51,6 +49,4 @@ public static class Helpers
 
         return serviceProvider;
     }
-}
-
 }

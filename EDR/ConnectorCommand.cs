@@ -1,18 +1,15 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using CommandDotNet;
 using ConsoleTables;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Provides commands to manage Connectors configurations
 /// </summary>
 [Command(
-    Name        = "connector",
+    "connector",
     Description = "Provides commands to manage Connectors configurations"
 )]
 public class ConnectorCommand
@@ -30,7 +27,7 @@ public class ConnectorCommand
     /// List the Connector configurations currently installed
     /// </summary>
     [Command(
-        Name        = "list",
+        "list",
         Description = "List the Connector configurations currently installed"
     )]
     public async Task List(
@@ -65,14 +62,14 @@ public class ConnectorCommand
     /// List EDR Connectors available in the configured registry
     /// </summary>
     [Command(
-        Name        = "find",
+        "find",
         Description = "List EDR Connectors available in the configured registry"
     )]
     public async Task Find(
         CancellationToken ct,
         [Option(
-            LongName    = "filter",
-            ShortName   = "f",
+            'f',
+            "filter",
             Description = "Filter connector Ids using a regular expression"
         )]
         string? search = null,
@@ -89,31 +86,31 @@ public class ConnectorCommand
     /// Add a Connector configuration, installing the specified connector
     /// </summary>
     [Command(
-        Name        = "add",
+        "add",
         Description = "Add a Connector configuration, installing the specified connector"
     )]
     public async Task Add(
         CancellationToken ct,
         [Operand(
-            Name = "connectorId",
+            "connectorId",
             Description =
                 "The id of the connector to add. e.g. Reductech.EDR.Connectors.StructuredData"
         )]
         string connectorId,
         [Option(
-            ShortName = "c",
+            'c',
             Description =
                 "Name of the configuration. By default this is the same as the connector id."
         )]
         string? configuration = null,
         [Option(
-            ShortName = "v",
+            'v',
             Description =
                 "Add the specified version of the connector. By default the latest version will be added."
         )]
         string? version = null,
         [Option(
-            ShortName   = "f",
+            'f',
             Description = "If a configuration already exists, overwrite."
         )]
         bool force = false,
@@ -131,18 +128,18 @@ public class ConnectorCommand
     /// Update a Connector configuration to the specified or latest version
     /// </summary>
     [Command(
-        Name        = "update",
+        "update",
         Description = "Update a Connector configuration to the specified or latest version"
     )]
     public async Task Update(
         CancellationToken ct,
         [Operand(
-            Name        = "configuration",
+            "configuration",
             Description = "Name of the configuration to update."
         )]
         string configuration,
         [Option(
-            ShortName = "v",
+            'v',
             Description =
                 "Update to the specified version. By default the latest version will be used."
         )]
@@ -155,13 +152,13 @@ public class ConnectorCommand
     /// Remove a Connector configuration
     /// </summary>
     [Command(
-        Name        = "remove",
+        "remove",
         Description = "Remove a Connector configuration"
     )]
     public async Task RemoveConnector(
         CancellationToken ct,
         [Operand(
-            Name = "name",
+            "name",
             Description =
                 "The name of the configuration to remove."
         )]
@@ -169,6 +166,4 @@ public class ConnectorCommand
         [Option(Description = "Do not remove the installation directory.")]
         bool configurationOnly = false) =>
         await _connectorManager.Remove(name, configurationOnly, ct);
-}
-
 }

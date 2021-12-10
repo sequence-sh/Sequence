@@ -3,8 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core.Internal.Analytics;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Logs analytics
@@ -83,6 +82,4 @@ public class AnalyticsWriter : IAnalyticsWriter
 
         _logger.LogInformation(ts);
     }
-}
-
 }

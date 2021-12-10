@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO.Abstractions.TestingHelpers;
+﻿using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
@@ -12,8 +11,7 @@ using Moq;
 using Reductech.EDR;
 using Xunit;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class StepsCommandTests
 {
@@ -107,6 +105,4 @@ public class StepsCommandTests
         Assert.NotEmpty(_steps);
         Assert.Contains("And", _steps.Select(s => s.Name).ToList());
     }
-}
-
 }

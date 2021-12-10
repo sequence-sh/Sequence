@@ -1,5 +1,4 @@
-﻿namespace Reductech.EDR
-{
+﻿namespace Reductech.EDR;
 
 /// <summary>
 /// 
@@ -15,6 +14,4 @@ public static class Result
     /// 
     /// </summary>
     public const int Failure = 1;
-}
-
 }

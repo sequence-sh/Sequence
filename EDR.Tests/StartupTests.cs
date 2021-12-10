@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
@@ -15,8 +13,7 @@ using Reductech.EDR.ConnectorManagement;
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
-namespace EDR.Tests
-{
+namespace EDR.Tests;
 
 public class StartupTests
 {
@@ -188,6 +185,4 @@ public class StartupTests
         Assert.Equal(1, actual);
         logMock.Verify();
     }
-}
-
 }

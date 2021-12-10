@@ -1,7 +1,6 @@
 ﻿using CommandDotNet;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// EDR methods to be run in the console.
@@ -15,26 +14,24 @@ public class EDRMethods
     /// <summary>
     /// The connector command
     /// </summary>
-    [SubCommand]
+    [Subcommand]
     public ConnectorCommand Connector { get; set; } = null!;
 
     /// <summary>
     /// The run command
     /// </summary>
-    [SubCommand]
+    [Subcommand]
     public RunCommand Run { get; set; } = null!;
 
     /// <summary>
     /// The steps command
     /// </summary>
-    [SubCommand]
+    [Subcommand]
     public StepsCommand Steps { get; set; } = null!;
 
     /// <summary>
     /// The validate command
     /// </summary>
-    [SubCommand]
+    [Subcommand]
     public ValidateCommand Validate { get; set; } = null!;
-}
-
 }

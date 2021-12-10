@@ -1,7 +1,4 @@
-﻿using System;
-
-namespace Reductech.EDR
-{
+﻿namespace Reductech.EDR;
 
 /// <summary>
 /// Represents errors that occur when configuring or validating connectors.
@@ -19,6 +16,4 @@ public class CommandLineArgumentException : Exception
 {
     /// <inheritdoc />
     public CommandLineArgumentException(string message) : base(message) { }
-}
-
 }

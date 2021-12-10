@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core.Internal.Errors;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Logs SCL errors
@@ -33,6 +32,4 @@ public static class ErrorLogger
                 );
         }
     }
-}
-
 }

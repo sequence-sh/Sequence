@@ -17,7 +17,7 @@ include:
     file: .gitlab/ci/quality.yml
 
 default:
-  image: mcr.microsoft.com/dotnet/sdk:5.0-windowsservercore-ltsc2019
+  image: mcr.microsoft.com/dotnet/sdk:6.0-windowsservercore-ltsc2019
   tags:
     - rt-windows
 
@@ -126,17 +126,21 @@ sign exe release:
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\edr.exe
   artifacts:
     expire_in: never
-
+    
 code_quality:
-  tags:
-    - rt-dind
+  tags: []
+
+security-code-scan-sast:
+  tags: []
+
+secret_detection:
+  tags: []
 
 code coverage dev:
-  image: mcr.microsoft.com/dotnet/sdk:5.0
-  tags:
-    - rt-linux
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  tags: []
 
 code coverage release:
-  image: mcr.microsoft.com/dotnet/sdk:5.0
-  tags:
-    - rt-linux
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  tags: []
+

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using CommandDotNet;
 using ConsoleTables;
 using Reductech.EDR.ConnectorManagement.Base;
@@ -12,14 +8,13 @@ using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Documentation;
 
-namespace Reductech.EDR
-{
+namespace Reductech.EDR;
 
 /// <summary>
 /// Provides commands to list and search available steps
 /// </summary>
 [Command(
-    Name = "steps",
+    "steps",
     Description = "List and search available steps"
 )]
 public class StepsCommand
@@ -35,18 +30,18 @@ public class StepsCommand
     /// <summary>
     /// List the available steps
     /// </summary>
-    [DefaultMethod]
+    [DefaultCommand]
     public async Task List(
         CancellationToken cancellationToken,
         [Operand(Description = "Filter step name and connectors using a regular expression")]
         string? filter = null,
         [Option(
-            ShortName = "n",
+            'n',
             Description = "Filter step names using a regular expression"
         )]
         string? name = null,
         [Option(
-            ShortName = "c",
+            'c',
             Description = "Filter connector names using a regular expression"
         )]
         string? connector = null)
@@ -141,6 +136,4 @@ public class StepsCommand
 
     internal virtual void WriteTable(IEnumerable<ConnectorRow> steps) =>
         ConsoleTable.From(steps).Write(Format.Minimal);
-}
-
 }

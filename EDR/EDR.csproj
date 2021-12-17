@@ -46,7 +46,7 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.6.0" />
     <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.6.0-a.main.2112101947" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112160004" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112161035" />
     <PackageReference Include="System.IO.Abstractions" Version="14.0.13" />
   </ItemGroup>
 

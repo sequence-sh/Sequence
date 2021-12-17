@@ -7,6 +7,7 @@ using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Reductech.EDR;
 using Xunit;
@@ -32,7 +33,7 @@ public class StepsCommandTests
             .Callback<IEnumerable<StepsCommand.ConnectorRow>>(steps => _steps = steps.ToList());
 
         _sp = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connMan))
+            .AddSingleton(new ConnectorCommand(connMan, new NullLogger<ConnectorCommand>()))
             .AddSingleton(
                 new RunCommand(
                     factory.CreateLogger<RunCommand>(),

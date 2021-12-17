@@ -3,6 +3,7 @@ using System.IO.Abstractions.TestingHelpers;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement.Base;
 
@@ -32,7 +33,7 @@ public static class Helpers
         var connMan = connectorManager ?? new FakeConnectorManager();
 
         var serviceProvider = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connMan))
+            .AddSingleton(new ConnectorCommand(connMan, new NullLogger<ConnectorCommand>()))
             .AddSingleton<IAnalyticsWriter>(new NullAnalyticsWriter())
             .AddSingleton(
                 new RunCommand(

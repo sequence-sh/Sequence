@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using CommandDotNet;
 using ConsoleTables;
+using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR;
@@ -16,12 +17,17 @@ public class ConnectorCommand
 {
     private readonly IConnectorManager _connectorManager;
 
+    private readonly ILogger<ConnectorCommand> _logger;
+
     /// <summary>
     /// Instantiate this command with the specified connector manager.
     /// </summary>
     /// <param name="connectorManager"></param>
-    public ConnectorCommand(IConnectorManager connectorManager) =>
+    public ConnectorCommand(IConnectorManager connectorManager, ILogger<ConnectorCommand> logger)
+    {
         _connectorManager = connectorManager;
+        _logger           = logger;
+    }
 
     /// <summary>
     /// List the Connector configurations currently installed
@@ -115,14 +121,42 @@ public class ConnectorCommand
         )]
         bool force = false,
         [Option(Description = "Include prerelease versions of connectors.")]
-        bool prerelease = false) => await _connectorManager.Add(
-        connectorId,
-        configuration,
-        version,
-        prerelease,
-        force,
-        ct
-    );
+        bool prerelease = false)
+    {
+        var options = await _connectorManager.Find(connectorId, prerelease, ct);
+
+        if (options is null || options.Count == 0) //Try add anyway
+        {
+            await _connectorManager.Add(
+                connectorId,
+                configuration,
+                version,
+                prerelease,
+                force,
+                ct
+            );
+        }
+        else if (options.Count == 1)
+        {
+            await _connectorManager.Add(
+                options.Single().Id,
+                configuration,
+                version,
+                prerelease,
+                force,
+                ct
+            );
+        }
+        else
+        {
+            _logger.LogError($"Several Connector names match '{connectorId}':");
+
+            foreach (var connectorMetadata in options)
+            {
+                _logger.LogInformation(connectorMetadata.Id);
+            }
+        }
+    }
 
     /// <summary>
     /// Update a Connector configuration to the specified or latest version

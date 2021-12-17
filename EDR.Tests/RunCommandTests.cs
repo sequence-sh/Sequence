@@ -8,6 +8,7 @@ using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Reductech.EDR;
 using Reductech.EDR.ConnectorManagement.Base;
@@ -98,7 +99,12 @@ public class RunCommandTests
         );
 
         var sp = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connectorManagerMock.Object))
+            .AddSingleton(
+                new ConnectorCommand(
+                    connectorManagerMock.Object,
+                    new NullLogger<ConnectorCommand>()
+                )
+            )
             .AddSingleton(run.Object)
             .AddSingleton(new StepsCommand(connectorManagerMock.Object))
             .AddSingleton(

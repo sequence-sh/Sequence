@@ -7,9 +7,9 @@ namespace Reductech.Sequence;
 /// </summary>
 [Command(
     Description =
-        "E-Discovery Reduct\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://docs.reductech.io"
+        "Sequence®\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://docs.reductech.io"
 )]
-public class EDRMethods
+public class ConsoleMethods
 {
     /// <summary>
     /// The connector command

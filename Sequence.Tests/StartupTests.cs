@@ -120,7 +120,7 @@ public class StartupTests
         Assert.NotNull(host.Services.GetService(typeof(RunCommand)));
         Assert.NotNull(host.Services.GetService(typeof(StepsCommand)));
         Assert.NotNull(host.Services.GetService(typeof(ValidateCommand)));
-        Assert.NotNull(host.Services.GetService(typeof(EDRMethods)));
+        Assert.NotNull(host.Services.GetService(typeof(ConsoleMethods)));
         Assert.NotNull(host.Services.GetService(typeof(ILogger<ValidateCommand>)));
 
         var config = host.Services.GetService(typeof(IConfiguration)) as IConfigurationRoot;

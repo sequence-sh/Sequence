@@ -21,7 +21,7 @@ public class ValidateCommandTests
 
         var sp = GetDefaultServiceProvider(factory);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"validate scl \"Log '{TheUltimateTestString}'\"");
@@ -40,7 +40,7 @@ public class ValidateCommandTests
 
         var sp = GetDefaultServiceProvider(factory);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"validate scl \"Loog '{TheUltimateTestString}'\"");
@@ -60,7 +60,7 @@ public class ValidateCommandTests
         var sp = GetDefaultServiceProvider();
 
         var error = Assert.Throws<CommandLineArgumentException>(
-            () => new AppRunner<EDRMethods>()
+            () => new AppRunner<ConsoleMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("validate scl \"\"")
@@ -75,7 +75,7 @@ public class ValidateCommandTests
         var sp = GetDefaultServiceProvider();
 
         var error = Assert.Throws<CommandLineArgumentException>(
-            () => new AppRunner<EDRMethods>()
+            () => new AppRunner<ConsoleMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("validate \"\"")
@@ -95,7 +95,7 @@ public class ValidateCommandTests
 
         var sp = GetDefaultServiceProvider(factory, fs, null);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"validate {path}");

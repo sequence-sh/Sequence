@@ -20,7 +20,7 @@ internal class Program
 
         var host = CreateHostBuilder().Build();
 
-        var appRunner = new AppRunner<EDRMethods>()
+        var appRunner = new AppRunner<ConsoleMethods>()
             .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
             .UseDefaultMiddleware()
             .UseMicrosoftDependencyInjection(host.Services);
@@ -114,7 +114,7 @@ internal class Program
                 services.AddSingleton<RunCommand>();
                 services.AddSingleton<StepsCommand>();
                 services.AddSingleton<ValidateCommand>();
-                services.AddSingleton<EDRMethods>();
+                services.AddSingleton<ConsoleMethods>();
             }
         )
         .ConfigureLogging(

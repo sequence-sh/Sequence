@@ -26,7 +26,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"run scl \"Log '{TheUltimateTestString}'\"");
@@ -49,7 +49,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"run scl \"Loog '{TheUltimateTestString}'\"");
@@ -69,7 +69,7 @@ public class RunCommandTests
         var sp = GetDefaultServiceProvider();
 
         var error = Assert.Throws<CommandLineArgumentException>(
-            () => new AppRunner<EDRMethods>()
+            () => new AppRunner<ConsoleMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("run scl \"\"")
@@ -114,10 +114,10 @@ public class RunCommandTests
                     connectorManagerMock.Object
                 )
             )
-            .AddSingleton<EDRMethods>()
+            .AddSingleton<ConsoleMethods>()
             .BuildServiceProvider();
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"run scl \"Log '{TheUltimateTestString}'\"");
@@ -137,7 +137,7 @@ public class RunCommandTests
         var sp = GetDefaultServiceProvider();
 
         var error = Assert.Throws<CommandLineArgumentException>(
-            () => new AppRunner<EDRMethods>()
+            () => new AppRunner<ConsoleMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("run \"\"")
@@ -157,7 +157,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory, fs, null);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem($"run {path}");

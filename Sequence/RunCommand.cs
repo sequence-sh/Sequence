@@ -31,7 +31,7 @@ public class RunCommand
     private readonly IExternalContext _baseExternalContext;
 
     /// <summary>
-    /// Instantiate EDRMethods using the default IExternalContext provider.
+    /// Instantiate ConsoleMethods using the default IExternalContext provider.
     /// </summary>
     public RunCommand(
         ILogger<RunCommand> logger,
@@ -51,7 +51,7 @@ public class RunCommand
         ) { }
 
     /// <summary>
-    /// Instantiate EDRMethods using the specified IExternalContext provider.
+    /// Instantiate ConsoleMethods using the specified IExternalContext provider.
     /// </summary>
     public RunCommand(
         ILogger<RunCommand> logger,

@@ -45,7 +45,7 @@ public static class Helpers
             )
             .AddSingleton(new StepsCommand(connMan))
             .AddSingleton(new ValidateCommand(lf.CreateLogger<ValidateCommand>(), fs, connMan))
-            .AddSingleton<EDRMethods>()
+            .AddSingleton<ConsoleMethods>()
             .BuildServiceProvider();
 
         return serviceProvider;

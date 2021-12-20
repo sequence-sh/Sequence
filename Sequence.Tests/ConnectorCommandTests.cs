@@ -24,7 +24,7 @@ public class ConnectorCommandTests
         var sp = GetDefaultServiceProvider(mock.Object);
 
         var error = Assert.Throws<ConnectorConfigurationException>(
-            () => new AppRunner<EDRMethods>()
+            () => new AppRunner<ConsoleMethods>()
                 .UseMicrosoftDependencyInjection(sp)
                 .UseDefaultMiddleware()
                 .RunInMem("connector list")
@@ -51,7 +51,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem("connector list filter");
@@ -69,7 +69,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem("connector find -f search --prerelease");
@@ -96,7 +96,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem("connector add -c config -v 0.9.0 -f --prerelease Sequence.Connector");
@@ -123,7 +123,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem("connector update -v 0.9.0 --prerelease Sequence.Connector");
@@ -145,7 +145,7 @@ public class ConnectorCommandTests
 
         var sp = GetDefaultServiceProvider(mock.Object);
 
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
             .RunInMem("connector remove --configurationOnly Sequence.Connector");

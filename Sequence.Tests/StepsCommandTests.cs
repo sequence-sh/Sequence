@@ -44,14 +44,14 @@ public class StepsCommandTests
             )
             .AddSingleton(stepsMock.Object)
             .AddSingleton(new ValidateCommand(factory.CreateLogger<ValidateCommand>(), fs, connMan))
-            .AddSingleton<EDRMethods>()
+            .AddSingleton<ConsoleMethods>()
             .BuildServiceProvider();
     }
 
     [Fact]
     public void StepsList_ByDefault_ReturnsListOfSteps()
     {
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(_sp)
             .UseDefaultMiddleware()
             .RunInMem("steps");
@@ -65,7 +65,7 @@ public class StepsCommandTests
     [Fact]
     public void StepsList_WhenFilterIsUsed_ReturnsFilteredList()
     {
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(_sp)
             .UseDefaultMiddleware()
             .RunInMem("steps standard");
@@ -82,7 +82,7 @@ public class StepsCommandTests
     [Fact]
     public void StepsList_WhenNameFilterIsUsed_ReturnsFilteredList()
     {
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(_sp)
             .UseDefaultMiddleware()
             .RunInMem("steps -n ^modulo$");
@@ -96,7 +96,7 @@ public class StepsCommandTests
     [Fact]
     public void StepsList_WhenConnectorFilterIsUsed_ReturnsFilteredList()
     {
-        var result = new AppRunner<EDRMethods>()
+        var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(_sp)
             .UseDefaultMiddleware()
             .RunInMem("steps -c ^Core$");

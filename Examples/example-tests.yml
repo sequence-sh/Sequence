@@ -26,6 +26,7 @@ test package dev:
     - pipeline: $PARENT_PIPELINE_ID
       job: package exe dev
   script:
+    - rm $env:CONNECTORS_JSON
     - .\sequence.exe run .\Examples\core-sequence.scl
 
 test package release:

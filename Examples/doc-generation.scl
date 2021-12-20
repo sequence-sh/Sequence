@@ -20,6 +20,6 @@
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'all.md']))
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'FileSystem.md']))
 - AssertTrue (DoesFileExist (PathCombine [<root>, 'StructuredData.md']))
-- AssertTrue (StringContains (FileRead (PathCombine [<root>, 'all.md'])) '# Sequence Steps')
+- AssertTrue (StringContains (FileRead (PathCombine [<root>, 'all.md'])) '# Sequence® Steps')
 - Delete Folder: <root>
 - Log 'Sequence Completed Successfully'

@@ -1,4 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("EDR.Tests")]
+[assembly: InternalsVisibleTo("Sequence.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

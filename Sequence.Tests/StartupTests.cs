@@ -8,12 +8,12 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence;
+using Reductech.Sequence.ConnectorManagement;
+using Reductech.Sequence.ConnectorManagement.Base;
 using Xunit;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class StartupTests
 {
@@ -120,7 +120,7 @@ public class StartupTests
         Assert.NotNull(host.Services.GetService(typeof(RunCommand)));
         Assert.NotNull(host.Services.GetService(typeof(StepsCommand)));
         Assert.NotNull(host.Services.GetService(typeof(ValidateCommand)));
-        Assert.NotNull(host.Services.GetService(typeof(EDRMethods)));
+        Assert.NotNull(host.Services.GetService(typeof(ConsoleMethods)));
         Assert.NotNull(host.Services.GetService(typeof(ILogger<ValidateCommand>)));
 
         var config = host.Services.GetService(typeof(IConfiguration)) as IConfigurationRoot;

@@ -1,14 +1,14 @@
 ﻿using System.IO.Abstractions;
 using CommandDotNet;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal.Parser;
-using Reductech.EDR.Core.Internal.Serialization;
-using static Reductech.EDR.Result;
+using Reductech.Sequence.ConnectorManagement.Base;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal.Parser;
+using Reductech.Sequence.Core.Internal.Serialization;
+using static Reductech.Sequence.Result;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
 /// Check if a Sequence Configuration Language file or string is valid

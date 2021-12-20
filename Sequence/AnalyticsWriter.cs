@@ -1,9 +1,9 @@
 ﻿using ConsoleTables;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Core.Internal.Analytics;
+using Reductech.Sequence.Core.Internal.Analytics;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
 /// Logs analytics

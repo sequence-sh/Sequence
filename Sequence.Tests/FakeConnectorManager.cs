@@ -1,8 +1,8 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class FakeConnectorManager : IConnectorManager
 {

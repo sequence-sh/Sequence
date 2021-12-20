@@ -1,15 +1,15 @@
 ﻿using CommandDotNet;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
-/// EDR methods to be run in the console.
+/// Sequence methods to be run in the console.
 /// </summary>
 [Command(
     Description =
-        "E-Discovery Reduct\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://docs.reductech.io"
+        "Sequence®\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://docs.reductech.io"
 )]
-public class EDRMethods
+public class ConsoleMethods
 {
     /// <summary>
     /// The connector command

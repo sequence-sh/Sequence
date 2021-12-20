@@ -26,7 +26,8 @@ test package dev:
     - pipeline: $PARENT_PIPELINE_ID
       job: package exe dev
   script:
-    - .\edr.exe run .\Examples\core-sequence.scl
+    - rm $env:CONNECTORS_JSON
+    - .\sequence.exe run .\Examples\core-sequence.scl
 
 test package release:
   extends:
@@ -42,13 +43,13 @@ test package connectors dev:
   variables:
     PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Pwsh
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add $PRERELEASE_FLAG Reductech.Sequence.Connectors.Pwsh
   script:
-    - .\edr.exe run .\Examples\file-system-sequence.scl
-    - .\edr.exe run .\Examples\pwsh-sequence.scl
-    - .\edr.exe run .\Examples\doc-generation.scl
+    - .\sequence.exe run .\Examples\file-system-sequence.scl
+    - .\sequence.exe run .\Examples\pwsh-sequence.scl
+    - .\sequence.exe run .\Examples\doc-generation.scl
 
 test package connectors release:
   extends:
@@ -72,11 +73,11 @@ test package dev sql:
     - name: registry.gitlab.com/reductech/containers/sqlserver:latest
       alias: sqlserver
   before_script:
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add $PRERELEASE_FLAG Reductech.EDR.Connectors.Sql
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add $PRERELEASE_FLAG Reductech.Sequence.Connectors.Sql
   script:
-    - .\edr.exe run .\Examples\sql-sequence.scl
+    - .\sequence.exe run .\Examples\sql-sequence.scl
 
 test package release sql:
   extends:
@@ -96,11 +97,11 @@ test package dev tesseract:
   variables:
     PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector add --prerelease Reductech.EDR.Connectors.Tesseract
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add --prerelease Reductech.Sequence.Connectors.Tesseract
   script:
-    - .\edr.exe run .\Examples\tesseract-sequence.scl
+    - .\sequence.exe run .\Examples\tesseract-sequence.scl
 
 test package release tesseract:
   extends:
@@ -123,8 +124,8 @@ test package dev relativity:
   before_script:
     - |
       $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
-      $config | Add-Member -NotePropertyName "Reductech.EDR.Connectors.Relativity" -NotePropertyValue @{
-          id      = "Reductech.EDR.Connectors.Relativity"
+      $config | Add-Member -NotePropertyName "Reductech.Sequence.Connectors.Relativity" -NotePropertyValue @{
+          id      = "Reductech.Sequence.Connectors.Relativity"
           version = "0.11.0"
           settings = @{
             RelativityUsername = $env:RELATIVITY_TEST_USER
@@ -134,12 +135,12 @@ test package dev relativity:
       } ;
       [System.IO.File]::WriteAllText((Join-Path (Get-Location) $env:CONNECTORS_JSON),
         ($config | ConvertTo-Json -Depth 100), [System.Text.UTF8Encoding]::new($false)) ;
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.FileSystem
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.StructuredData
-    - .\edr.exe connector update $PRERELEASE_FLAG Reductech.EDR.Connectors.Relativity
-    - .\edr.exe connector list
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
+    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.Relativity
+    - .\sequence.exe connector list
   script:
-    - .\edr.exe run .\Examples\relativity-sequence.scl
+    - .\sequence.exe run .\Examples\relativity-sequence.scl
 
 test package release relativity:
   extends:

@@ -1,15 +1,15 @@
 ﻿using System.IO.Abstractions;
 using CommandDotNet;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal.Analytics;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Serialization;
-using static Reductech.EDR.Result;
+using Reductech.Sequence.ConnectorManagement.Base;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal.Analytics;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Serialization;
+using static Reductech.Sequence.Result;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
 /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
@@ -31,7 +31,7 @@ public class RunCommand
     private readonly IExternalContext _baseExternalContext;
 
     /// <summary>
-    /// Instantiate EDRMethods using the default IExternalContext provider.
+    /// Instantiate ConsoleMethods using the default IExternalContext provider.
     /// </summary>
     public RunCommand(
         ILogger<RunCommand> logger,
@@ -51,7 +51,7 @@ public class RunCommand
         ) { }
 
     /// <summary>
-    /// Instantiate EDRMethods using the specified IExternalContext provider.
+    /// Instantiate ConsoleMethods using the specified IExternalContext provider.
     /// </summary>
     public RunCommand(
         ILogger<RunCommand> logger,

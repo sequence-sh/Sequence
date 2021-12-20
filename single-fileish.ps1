@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $dnSpyVersion = 'v6.1.8'
 $dnSpyUrl     = 'https://github.com/dnSpy/dnSpy.git'
 $LibPath      = 'lib'
-$ExePath      = './edr.exe'
+$ExePath      = './sequence.exe'
 $GitUri       = 'https://github.com/git-for-windows/git/releases/download/v2.31.1.windows.1/MinGit-2.31.1-64-bit.zip'
 
 Invoke-WebRequest -Uri $GitUri -OutFile mingit.zip -UseBasicParsing

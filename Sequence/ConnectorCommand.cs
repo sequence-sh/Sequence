@@ -2,9 +2,9 @@
 using CommandDotNet;
 using ConsoleTables;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
 /// Provides commands to manage Connectors configurations
@@ -65,11 +65,11 @@ public class ConnectorCommand
     private record ListRow(string Configuration, string ConnectorId, string Version, bool Enabled);
 
     /// <summary>
-    /// List EDR Connectors available in the configured registry
+    /// List Sequence® Connectors available in the configured registry
     /// </summary>
     [Command(
         "find",
-        Description = "List EDR Connectors available in the configured registry"
+        Description = "List Sequence® Connectors available in the configured registry"
     )]
     public async Task Find(
         CancellationToken ct,
@@ -100,7 +100,7 @@ public class ConnectorCommand
         [Operand(
             "connectorId",
             Description =
-                "The id of the connector to add. e.g. Reductech.EDR.Connectors.StructuredData"
+                "The id of the connector to add. e.g. Reductech.Sequence.Connectors.StructuredData"
         )]
         string connectorId,
         [Option(

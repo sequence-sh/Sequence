@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR;
+﻿namespace Reductech.Sequence;
 
 /// <summary>
 /// Represents errors that occur when configuring or validating connectors.
@@ -10,7 +10,7 @@ public class ConnectorConfigurationException : Exception
 }
 
 /// <summary>
-/// Thrown when an argument provided to EDR is not valid.
+/// Thrown when an argument provided to Sequence is not valid.
 /// </summary>
 public class CommandLineArgumentException : Exception
 {

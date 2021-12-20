@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/console</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EDR\EDR.csproj" />
+    <ProjectReference Include="..\Sequence\Sequence.csproj" />
   </ItemGroup>
 
 </Project>

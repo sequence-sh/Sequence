@@ -9,25 +9,25 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <RootNamespace>Reductech.EDR</RootNamespace>
-    <AssemblyName>edr</AssemblyName>
+    <RootNamespace>Reductech.Sequence</RootNamespace>
+    <AssemblyName>sequence</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.13.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.EDR</PackageId>
-    <Title>E-discovery Reduct</Title>
+    <PackageId>Reductech.Sequence</PackageId>
+    <Title>Sequence® Console</Title>
     <Description>
-      Console application for automating e-discovery and forensic applications
-      using Steps and Sequences created with Reductech's EDR.Core library.
+      Console application for automating e-discovery and forensic workflows
+      using the connector ecosystem and the Sequence.Core SDK.
     </Description>
-    <Product>EDR</Product>
-    <PackageTags>ediscovery;forensics;automation;orchestration;edrm</PackageTags>
+    <Product>Sequence®</Product>
+    <PackageTags>ediscovery;forensics;automation;orchestration;edrm;sequence</PackageTags>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/edr/edr</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/edr</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/edr/edr/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageProjectUrl>https://gitlab.com/reductech/sequence/console</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/console</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/console/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <Authors>Reductech</Authors>
@@ -45,8 +45,8 @@
     <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.6.0" />
-    <PackageReference Include="Reductech.EDR.ConnectorManager" Version="0.6.0-a.main.2112101947" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112200210" />
+    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.6.0-a.main.2112101947" />
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.13.0-a.main.2112201532" />
     <PackageReference Include="System.IO.Abstractions" Version="14.0.13" />
   </ItemGroup>
 

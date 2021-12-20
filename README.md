@@ -45,7 +45,7 @@ PS > ./sequence run scl "- <version> = GetApplicationVersion `n- Print <version>
 
 ### Help
 
-To display the available commands and parameters when running edr, use the
+To display the available commands and parameters when running Sequence, use the
 `--help` or `-h` argument:
 
 ```powershell

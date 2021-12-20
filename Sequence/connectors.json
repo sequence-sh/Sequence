@@ -1,10 +1,10 @@
 {
- "Reductech.EDR.Connectors.FileSystem": {
-      "Id": "Reductech.EDR.Connectors.FileSystem",
-      "Version": "0.13.0-a.main.2112161204"
-    },
-    "Reductech.EDR.Connectors.StructuredData": {
-      "Id": "Reductech.EDR.Connectors.StructuredData",
-      "Version": "0.13.0-a.main.2112170512"
-    }
+  "Reductech.Sequence.Connectors.FileSystem": {
+    "Id": "Reductech.Sequence.Connectors.FileSystem",
+    "Version": "0.13.0"
+  },
+  "Reductech.Sequence.Connectors.StructuredData": {
+    "Id": "Reductech.Sequence.Connectors.StructuredData",
+    "Version": "0.13.0"
+  }
 }

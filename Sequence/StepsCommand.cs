@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CommandDotNet;
 using ConsoleTables;
-using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal.Documentation;
+using Reductech.Sequence.ConnectorManagement.Base;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal.Documentation;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
 /// Provides commands to list and search available steps

@@ -1,4 +1,4 @@
-using System.IO.Abstractions.TestingHelpers;
+﻿using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Threading;
 using CommandDotNet;
@@ -10,12 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence;
+using Reductech.Sequence.ConnectorManagement.Base;
 using Xunit;
-using static EDR.Tests.Helpers;
+using static Sequence.Tests.Helpers;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class RunCommandTests
 {
@@ -36,9 +36,9 @@ public class RunCommandTests
         factory.Sink.LogEntries.Select(x => x.Message)
             .Should()
             .BeEquivalentTo(
-                "EDR Sequence Started",
+                "Sequence Started",
                 TheUltimateTestString,
-                "EDR Sequence Completed"
+                "Sequence Completed"
             );
     }
 
@@ -167,9 +167,9 @@ public class RunCommandTests
         factory.Sink.LogEntries.Select(x => x.Message)
             .Should()
             .BeEquivalentTo(
-                "EDR Sequence Started",
+                "Sequence Started",
                 TheUltimateTestString,
-                "EDR Sequence Completed"
+                "Sequence Completed"
             );
     }
 }

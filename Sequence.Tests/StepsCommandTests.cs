@@ -9,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Reductech.EDR;
+using Reductech.Sequence;
 using Xunit;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class StepsCommandTests
 {

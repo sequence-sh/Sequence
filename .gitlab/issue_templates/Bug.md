@@ -3,7 +3,7 @@
 /label ~"priority::3"
 /label ~"wf::backlog"
 /label ~"area::tooling"
-/label ~"edr"
+/label ~sequence
 
 ## Summary
 
@@ -27,7 +27,7 @@ What is the correct behaviour.
 Any relevant logs and/or screenshots, attached as files, or
 inserted directly as a code (```) block.
 
-Here's a screenshot: `![image](https://gitlab.com/reductech/edr/edr/uploads/f58bcd6503bb71111306108ad4314d3b/image.png)`
+Here's a screenshot: `![image](https://gitlab.com/reductech/sequence/console/uploads/f58bcd6503bb71111306108ad4314d3b/image.png)`
 
 ## Suggested Fix(es)
 

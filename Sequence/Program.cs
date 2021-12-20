@@ -8,9 +8,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement;
+using Reductech.Sequence.ConnectorManagement;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 internal class Program
 {
@@ -94,7 +94,7 @@ internal class Program
                 config.AddJsonFile("appsettings.json", false, false)
                     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, false);
 
-                config.AddEnvironmentVariables(prefix: "EDR_");
+                config.AddEnvironmentVariables(prefix: "SEQUENCE_");
             }
         )
         .ConfigureServices(

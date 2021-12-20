@@ -4,12 +4,12 @@ using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.TestTools;
 using FluentAssertions;
 using Moq;
-using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence;
+using Reductech.Sequence.ConnectorManagement.Base;
 using Xunit;
-using static EDR.Tests.Helpers;
+using static Sequence.Tests.Helpers;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class ConnectorCommandTests
 {
@@ -99,7 +99,7 @@ public class ConnectorCommandTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem("connector add -c config -v 0.9.0 -f --prerelease EDR.Connector");
+            .RunInMem("connector add -c config -v 0.9.0 -f --prerelease Sequence.Connector");
 
         result.ExitCode.Should().Be(0);
 
@@ -126,7 +126,7 @@ public class ConnectorCommandTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem("connector update -v 0.9.0 --prerelease EDR.Connector");
+            .RunInMem("connector update -v 0.9.0 --prerelease Sequence.Connector");
 
         result.ExitCode.Should().Be(0);
 
@@ -148,7 +148,7 @@ public class ConnectorCommandTests
         var result = new AppRunner<EDRMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem("connector remove --configurationOnly EDR.Connector");
+            .RunInMem("connector remove --configurationOnly Sequence.Connector");
 
         result.ExitCode.Should().Be(0);
 

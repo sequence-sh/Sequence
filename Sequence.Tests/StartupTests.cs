@@ -8,12 +8,12 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence;
+using Reductech.Sequence.ConnectorManagement;
+using Reductech.Sequence.ConnectorManagement.Base;
 using Xunit;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class StartupTests
 {

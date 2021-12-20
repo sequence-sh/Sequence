@@ -30,7 +30,7 @@ stages:
   - sign
 
 variables:
-  PACKAGE_NAME_EXE: Reductech.EDR
+  PACKAGE_NAME_EXE: Reductech.Sequence
   NUGET_XMLDOC_MODE: none
 
 .exe_artifacts_default:

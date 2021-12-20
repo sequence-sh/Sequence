@@ -1,9 +1,9 @@
 ﻿using CommandDotNet;
 
-namespace Reductech.EDR;
+namespace Reductech.Sequence;
 
 /// <summary>
-/// EDR methods to be run in the console.
+/// Sequence methods to be run in the console.
 /// </summary>
 [Command(
     Description =

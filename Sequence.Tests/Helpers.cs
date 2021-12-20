@@ -4,10 +4,10 @@ using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.EDR;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public static class Helpers
 {

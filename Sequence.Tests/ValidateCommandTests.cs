@@ -1,4 +1,4 @@
-using System.IO.Abstractions.TestingHelpers;
+﻿using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using CommandDotNet;
 using CommandDotNet.IoC.MicrosoftDependencyInjection;
@@ -6,11 +6,11 @@ using CommandDotNet.TestTools;
 using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR;
+using Reductech.Sequence;
 using Xunit;
-using static EDR.Tests.Helpers;
+using static Sequence.Tests.Helpers;
 
-namespace EDR.Tests;
+namespace Sequence.Tests;
 
 public class ValidateCommandTests
 {

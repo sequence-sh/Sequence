@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EDR\EDR.csproj" />
+    <ProjectReference Include="..\Sequence\Sequence.csproj" />
   </ItemGroup>
 
 </Project>

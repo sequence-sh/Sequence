@@ -39,7 +39,7 @@ variables:
     paths:
       - lib/
       - CHANGELOG.md
-      - edr.exe
+      - sequence.exe
       - LICENSE
       - README.md
 
@@ -121,12 +121,12 @@ sign exe release:
     ALGO_TIME_DIGEST: SHA256
   script:
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
-      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\edr.exe
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\sequence.exe
     - signtool.exe sign /f $RT_CERT_PATH /p $RT_CERT_PASS /fd $ALGO_FILE_DIGEST
-      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\edr.exe
+      /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\sequence.exe
   artifacts:
     expire_in: never
-    
+
 code_quality:
   tags: []
 
@@ -143,4 +143,3 @@ code coverage dev:
 code coverage release:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   tags: []
-

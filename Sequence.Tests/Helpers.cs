@@ -33,7 +33,7 @@ public static class Helpers
         var connMan = connectorManager ?? new FakeConnectorManager();
 
         var serviceProvider = new ServiceCollection()
-            .AddSingleton(new ConnectorCommand(connMan, new NullLogger<ConnectorCommand>()))
+            .AddSingleton(new ConnectorCommand(connMan, lf.CreateLogger<ConnectorCommand>()))
             .AddSingleton<IAnalyticsWriter>(new NullAnalyticsWriter())
             .AddSingleton(
                 new RunCommand(

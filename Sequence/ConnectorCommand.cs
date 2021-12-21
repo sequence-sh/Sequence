@@ -19,6 +19,8 @@ public class ConnectorCommand
 
     private readonly ILogger<ConnectorCommand> _logger;
 
+    private const string ConnectorFilter = "Reductech.EDR";
+
     /// <summary>
     /// Instantiate this command with the specified connector manager.
     /// </summary>
@@ -83,9 +85,10 @@ public class ConnectorCommand
         bool prerelease = false)
     {
         var connectors = await _connectorManager.Find(search, prerelease, ct);
+        var filtered   = connectors.Where(c => !c.Id.Contains(ConnectorFilter)).ToList();
 
-        if (connectors.Count > 0)
-            ConsoleTable.From(connectors).Write(Format.Minimal);
+        if (filtered.Count > 0)
+            ConsoleTable.From(filtered).Write(Format.Minimal);
     }
 
     /// <summary>
@@ -125,7 +128,9 @@ public class ConnectorCommand
     {
         var options = await _connectorManager.Find(connectorId, prerelease, ct);
 
-        if (options is null || options.Count == 0) //Try add anyway
+        var filtered = options?.Where(o => !o.Id.Contains(ConnectorFilter)).ToList();
+
+        if (filtered is null || filtered.Count == 0) //Try add anyway
         {
             await _connectorManager.Add(
                 connectorId,
@@ -136,10 +141,10 @@ public class ConnectorCommand
                 ct
             );
         }
-        else if (options.Count == 1)
+        else if (filtered.Count == 1)
         {
             await _connectorManager.Add(
-                options.Single().Id,
+                filtered.Single().Id,
                 configuration,
                 version,
                 prerelease,
@@ -151,7 +156,7 @@ public class ConnectorCommand
         {
             _logger.LogError($"Several Connector names match '{connectorId}':");
 
-            foreach (var connectorMetadata in options)
+            foreach (var connectorMetadata in filtered)
             {
                 _logger.LogInformation(connectorMetadata.Id);
             }
@@ -179,8 +184,26 @@ public class ConnectorCommand
         )]
         string? version = null,
         [Option(Description = "Include prerelease versions of connectors.")]
-        bool prerelease = false) =>
-        await _connectorManager.Update(configuration, version, prerelease, ct);
+        bool prerelease = false)
+    {
+        var configs = _connectorManager.List(configuration).ToList();
+
+        if (configs.Count > 1)
+        {
+            _logger.LogError($"More than one configuration matches '{configuration}'");
+
+            foreach (var (name, _) in configs)
+                _logger.LogInformation(name);
+        }
+        else if (configs.Count == 1)
+        {
+            await _connectorManager.Update(configs.Single().name, version, prerelease, ct);
+        }
+        else
+        {
+            await _connectorManager.Update(configuration, version, prerelease, ct);
+        }
+    }
 
     /// <summary>
     /// Remove a Connector configuration

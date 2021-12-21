@@ -29,7 +29,7 @@ public class RunCommandTests
         var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
             .UseDefaultMiddleware()
-            .RunInMem($"run scl \"Log '{TheUltimateTestString}'\"");
+            .RunInMem($"run scl \"Print '{TheUltimateTestString}'\"");
 
         result.ExitCode.Should().Be(0);
 
@@ -37,7 +37,6 @@ public class RunCommandTests
             .Should()
             .BeEquivalentTo(
                 "Sequence Started",
-                TheUltimateTestString,
                 "Sequence Completed"
             );
     }

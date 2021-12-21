@@ -49,7 +49,7 @@ test dev:
       -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=true
     - |
       $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-      $fixPaths = $report -replace "filename=`".+?console/|\\)sequence(/|\\)", "filename=`"" ;
+      $fixPaths = $report -replace "filename=`".+?Sequence(/|\\)console(/|\\)", "filename=`"" ;
       $fixPaths = $fixPaths -replace '\\', '/' ;
       $outPath = Join-Path (Get-Location) "coverage.$($env:CI_JOB_NAME -replace "[^\w]+", "-").xml" ;
       [System.IO.File]::WriteAllText($outPath, $fixPaths) ;

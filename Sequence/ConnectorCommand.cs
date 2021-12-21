@@ -184,8 +184,26 @@ public class ConnectorCommand
         )]
         string? version = null,
         [Option(Description = "Include prerelease versions of connectors.")]
-        bool prerelease = false) =>
-        await _connectorManager.Update(configuration, version, prerelease, ct);
+        bool prerelease = false)
+    {
+        var configs = _connectorManager.List(configuration).ToList();
+
+        if (configs.Count > 1)
+        {
+            _logger.LogError($"More than one configuration matches '{configuration}'");
+
+            foreach (var (name, _) in configs)
+                _logger.LogInformation(name);
+        }
+        else if (configs.Count == 1)
+        {
+            await _connectorManager.Update(configs.Single().name, version, prerelease, ct);
+        }
+        else
+        {
+            await _connectorManager.Update(configuration, version, prerelease, ct);
+        }
+    }
 
     /// <summary>
     /// Remove a Connector configuration

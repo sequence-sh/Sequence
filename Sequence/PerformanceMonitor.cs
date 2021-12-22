@@ -33,48 +33,55 @@ public class PerformanceMonitorService : IDisposable
 
         if (enabled)
         {
-            var measureIntervalMs = configSection.GetValue("MeasurementIntervalMs", 100);
-
-            if (measureIntervalMs <= 0)
-                measureIntervalMs = 100;
-
-            var loggingIntervalMs    = configSection.GetValue("LoggingIntervalMs",    10000);
-            var measureAllCategories = configSection.GetValue("MeasureAllCategories", false);
-
-            if (measureAllCategories)
+            try
             {
-                Monitor = PerformanceMonitor.CreateAll(
-                    TimeSpan.FromMilliseconds(measureIntervalMs)
-                );
-            }
-            else
-            {
-                List<(string, string)> categories = new();
+                var measureIntervalMs = configSection.GetValue("MeasurementIntervalMs", 100);
 
-                var section = configSection.GetSection("Categories");
+                if (measureIntervalMs <= 0)
+                    measureIntervalMs = 100;
 
-                foreach (var category in section.GetChildren())
+                var loggingIntervalMs    = configSection.GetValue("LoggingIntervalMs",    10000);
+                var measureAllCategories = configSection.GetValue("MeasureAllCategories", false);
+
+                if (measureAllCategories)
                 {
-                    var data = category.Get<List<string>>();
+                    Monitor = PerformanceMonitor.CreateAll(
+                        TimeSpan.FromMilliseconds(measureIntervalMs)
+                    );
+                }
+                else
+                {
+                    List<(string, string)> categories = new();
 
-                    foreach (var counter in data)
+                    var section = configSection.GetSection("Categories");
+
+                    foreach (var category in section.GetChildren())
                     {
-                        categories.Add((category.Key, counter));
+                        var data = category.Get<List<string>>();
+
+                        foreach (var counter in data)
+                        {
+                            categories.Add((category.Key, counter));
+                        }
                     }
+
+                    Monitor = PerformanceMonitor.Create(
+                        TimeSpan.FromMilliseconds(measureIntervalMs),
+                        categories
+                    );
                 }
 
-                Monitor = PerformanceMonitor.Create(
-                    TimeSpan.FromMilliseconds(measureIntervalMs),
-                    categories
-                );
+                Logger.LogDebug("Performance Monitoring Started");
+
+                Monitor.Start();
+
+                if (loggingIntervalMs > 0)
+                    Monitor.StartLogging(logger, TimeSpan.FromMilliseconds(loggingIntervalMs));
             }
-
-            Logger.LogDebug("Performance Monitoring Started");
-
-            Monitor.Start();
-
-            if (loggingIntervalMs > 0)
-                Monitor.StartLogging(logger, TimeSpan.FromMilliseconds(loggingIntervalMs));
+            catch (Exception e)
+            {
+                Logger.LogWarning("Could not start performance monitoring: {error}", e.Message);
+            }
         }
     }
 

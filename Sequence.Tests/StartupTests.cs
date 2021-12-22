@@ -149,7 +149,7 @@ public class StartupTests
     {
         var logMock = new Mock<NLog.ILogger>();
         var runner  = new AppRunner<TestRunner>();
-        var actual  = await Program.Run(runner, logMock.Object, new[] { "success" });
+        var actual  = await Program.Run(runner, null, logMock.Object, new[] { "success" });
         Assert.Equal(0, actual);
     }
 
@@ -159,7 +159,7 @@ public class StartupTests
         var logMock = new Mock<NLog.ILogger>();
         logMock.Setup(l => l.Info(It.IsAny<string>())).Verifiable();
         var runner = new AppRunner<TestRunner>();
-        var actual = await Program.Run(runner, logMock.Object, new[] { "argException" });
+        var actual = await Program.Run(runner, null, logMock.Object, new[] { "argException" });
         Assert.Equal(1, actual);
         logMock.Verify();
     }
@@ -170,7 +170,14 @@ public class StartupTests
         var logMock = new Mock<NLog.ILogger>();
         logMock.Setup(l => l.Error(It.IsAny<ConnectorConfigurationException>())).Verifiable();
         var runner = new AppRunner<TestRunner>();
-        var actual = await Program.Run(runner, logMock.Object, new[] { "connectorException" });
+
+        var actual = await Program.Run(
+            runner,
+            null,
+            logMock.Object,
+            new[] { "connectorException" }
+        );
+
         Assert.Equal(1, actual);
         logMock.Verify();
     }
@@ -181,7 +188,7 @@ public class StartupTests
         var logMock = new Mock<NLog.ILogger>();
         logMock.Setup(l => l.Error(It.IsAny<Exception>())).Verifiable();
         var runner = new AppRunner<TestRunner>();
-        var actual = await Program.Run(runner, logMock.Object, new[] { "generalException" });
+        var actual = await Program.Run(runner, null, logMock.Object, new[] { "generalException" });
         Assert.Equal(1, actual);
         logMock.Verify();
     }

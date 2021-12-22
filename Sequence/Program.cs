@@ -18,17 +18,27 @@ internal class Program
     {
         var logger = LogManager.GetCurrentClassLogger();
 
-        var host = CreateHostBuilder().Build();
+        var host = CreateHostBuilder()
+            .ConfigureServices(x => x.AddSingleton<PerformanceMonitorService>())
+            .Build();
 
         var appRunner = new AppRunner<ConsoleMethods>()
             .Configure(a => a.AppSettings.Help.PrintHelpOption = true)
             .UseDefaultMiddleware()
             .UseMicrosoftDependencyInjection(host.Services);
 
-        return await Run(appRunner, logger, args);
+        var pms = host.Services.GetRequiredService<PerformanceMonitorService>();
+
+        var result = await Run(appRunner, pms, logger, args);
+
+        return result;
     }
 
-    internal static async Task<int> Run(AppRunner appRunner, NLog.ILogger logger, string[] args)
+    internal static async Task<int> Run(
+        AppRunner appRunner,
+        PerformanceMonitorService? performanceMonitorService,
+        NLog.ILogger logger,
+        string[] args)
     {
         int result;
 
@@ -58,6 +68,8 @@ internal class Program
         }
         finally
         {
+            performanceMonitorService?.ReportResults();
+            performanceMonitorService?.Dispose();
             LogManager.Shutdown();
         }
 

@@ -7,6 +7,7 @@ using Reductech.Sequence.Core.Connectors;
 using Reductech.Sequence.Core.Internal.Analytics;
 using Reductech.Sequence.Core.Internal.Errors;
 using Reductech.Sequence.Core.Internal.Serialization;
+using Reductech.Sequence.Core.Util;
 using static Reductech.Sequence.Result;
 
 namespace Reductech.Sequence;

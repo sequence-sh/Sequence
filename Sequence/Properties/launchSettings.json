@@ -2,7 +2,7 @@
   "profiles": {
     "Sequence": {
       "commandName": "Project",
-      "commandLineArgs": "run scl \"- log 1 + 1\r\n- log 2 + 2\""
+      "commandLineArgs": "run scl \"log 1 + 1\""
     }
   }
 }

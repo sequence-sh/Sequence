@@ -7,6 +7,7 @@ using Reductech.Sequence.Core.Connectors;
 using Reductech.Sequence.Core.Internal.Analytics;
 using Reductech.Sequence.Core.Internal.Errors;
 using Reductech.Sequence.Core.Internal.Serialization;
+using Reductech.Sequence.Core.Util;
 using static Reductech.Sequence.Result;
 
 namespace Reductech.Sequence;
@@ -125,6 +126,12 @@ public class RunCommand
         Dictionary<string, object> metadata,
         CancellationToken cancellationToken = default)
     {
+        var pm = PerformanceMonitor.Start(
+            TimeSpan.FromMilliseconds(10),
+            ("Process", "% Processor Time"),
+            ("Process", "Working Set")
+        );
+
         var externalContextResult = await
             _connectorManager.GetExternalContextAsync(
                 _baseExternalContext.ExternalProcessRunner,
@@ -171,6 +178,15 @@ public class RunCommand
         var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
 
         _analyticsWriter.LogAnalytics(analyticsLogger.SequenceAnalytics);
+
+        pm.Dispose();
+
+        foreach (var result in pm.Results)
+        {
+            _logger.LogInformation(
+                $"{result.CategoryName} {result.CounterName}:  Max: {result.Max} Mean: {result.Mean}"
+            );
+        }
 
         if (r.IsSuccess)
             return Success;

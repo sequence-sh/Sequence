@@ -107,6 +107,7 @@ public class PerformanceMonitorService : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         Monitor?.Dispose();
         Stopwatch.Stop();
     }
@@ -263,6 +264,7 @@ public class PerformanceMonitorService : IDisposable
 
             public static Counter Create(string category, string name, string instanceName)
             {
+                #pragma warning disable CA1416 // Validate platform compatibility
                 if (PerformanceCounterCategory.InstanceExists(instanceName, category))
                     return new(new PerformanceCounter(category, name, instanceName));
 
@@ -271,6 +273,7 @@ public class PerformanceMonitorService : IDisposable
 
             public string CategoryName => PerformanceCounter.CategoryName;
             public string CounterName => PerformanceCounter.CounterName;
+            #pragma warning restore CA1416 // Validate platform compatibility
 
             /// <summary>
             /// The Performance Counter
@@ -283,7 +286,9 @@ public class PerformanceMonitorService : IDisposable
 
             public void Update()
             {
+                #pragma warning disable CA1416 // Validate platform compatibility
                 var nv = PerformanceCounter.NextValue();
+                #pragma warning restore CA1416 // Validate platform compatibility
                 Data.Add(nv);
             }
 

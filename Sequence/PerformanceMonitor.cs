@@ -28,6 +28,9 @@ public class PerformanceMonitorService : IDisposable
 
         var enabled = configSection.GetValue("Enable", true);
 
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            enabled = false;
+
         if (enabled)
         {
             var measureIntervalMs = configSection.GetValue("MeasurementIntervalMs", 100);

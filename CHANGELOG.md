@@ -1,3 +1,24 @@
+# v0.13.0 (2022-01-16)
+
+## Summary of Changes
+
+
+- Added Performance monitoring to Sequence.exe. This can be configured in appsettings.json and only works on Windows.
+- EDR Connector Add allows you to use the short name of the connector instead of the full name.
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add memory use to analytics output #100
+- Filter out EDR connectors #105
+- Allow partial configuration names in connector update command #106
+- Using the Connector Add command should work even with the short name of the connector #102
+
+### Maintenance
+
+- Rename EDR to Sequence #104
+
 # v0.12.0 (2021-12-02)
 
 This release updates Core to v0.12.0 which includes many changes to the
@@ -349,3 +370,4 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
+

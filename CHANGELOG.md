@@ -1,10 +1,23 @@
 # v0.13.0 (2022-01-16)
 
+EDR is now Sequence. The following has changed:
+
+- The `edr` console application is now `sequence`.
+- This project has been renamed to `console`.
+- The GitLab group has moved to https://gitlab.com/reductech/sequence
+- The root namespace is now `Reductech.Sequence`
+- The documentation site has moved to https://sequence.sh
+
+Everything else is still the same - automation, simplified.
+
+The project has now been updated to use .NET 6.
+
 ## Summary of Changes
 
-
-- Added Performance monitoring to Sequence.exe. This can be configured in appsettings.json and only works on Windows.
-- EDR Connector Add allows you to use the short name of the connector instead of the full name.
+- Added Performance monitoring to `sequence.exe`. This can be configured in appsettings.json and is currently only compatible with Windows.
+- `sequence connector add/update` now take a search string as input instead of the full connector name.
+  e.g. `sequence connector add rest` will add the `Reductech.Sequence.Connectors.Rest` connector
+  to the configuration.
 
 ## Issues Closed in this Release
 
@@ -18,6 +31,7 @@
 ### Maintenance
 
 - Rename EDR to Sequence #104
+- Upgrade to use .net 6 #96
 
 # v0.12.0 (2021-12-02)
 

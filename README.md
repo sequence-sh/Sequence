@@ -1,6 +1,7 @@
 # Sequence® Console
 
-Sequence® is a collection of applications and connectors that automate
+[Sequence®](https://gitlab.com/-/ide/project/reductech/sequence)
+is a collection of applications and connectors that automate
 e-discovery and forensic workflows using the
 [Sequence Configuration Language (SCL)](#sequence-configuration-language).
 
@@ -26,8 +27,8 @@ Sequence includes:
 2. Unzip the file and open a shell (cmd, pwsh, powershell) of your choice in that directory
 3. Run `sequence run scl "Print 'Hello world'"`
 4. That's it, now for something a bit more useful:
-   - [Quick Start](https://docs.reductech.io/sequence/how-to/quick-start.html)
-   - [Connector Examples](https://docs.reductech.io/sequence/examples/core/csv-files.html)
+   - [Quick Start](https://sequence.sh/docs/quick-start)
+   - [Connector Examples](https://sequence.sh/docs/examples/connectors/structureddata/csv-files)
 
 ### Running SCL
 
@@ -63,7 +64,7 @@ PS > ./sequence steps file
 
 ## Sequence Configuration Language
 
-Workflows in Sequence® are defined using a custom configuration language.
+Workflows in Sequence are defined using a custom configuration language.
 SCL is designed to be powerful yet easy to pick-up and use.
 A quick introduction to the language and its features can be found in the
 [documentation](https://docs.reductech.io/sequence/how-to/scl/sequence-configuration-language.html).
@@ -106,6 +107,12 @@ PS > ./sequence connector find
 
 # To install a connector, use add
 PS > ./sequence connector add Reductech.Sequence.Connectors.Sql
+
+# It's also possible to use a search string to add or update connectors
+PS > ./sequence connector add Sql
+
+# To update a connector, use update
+PS > ./sequence connector update Reductech.Sequence.Connectors.Sql
 ```
 
 ### VSCode Plugin
@@ -119,15 +126,15 @@ Search for `SCL` or `reductech` in the VS Code extensions window to install.
 
 ## Documentation
 
-Documentation is available at [docs.reductech.io](https://docs.reductech.io)
+Documentation is available at https://sequence.sh
 
 For details on how to setup various logging targets, including
-JSON and Elastic, see the [logging](https://docs.reductech.io/sequence/how-to/logging.html)
+JSON and Elastic, see the [logging](https://sequence.sh/docs/logging)
 section of the documentation.
 
 ## OS Compatibility
 
-Sequence is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).
+Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
 However, we're currently only targeting the `win10-x64` runtime for
 our [releases](https://gitlab.com/reductech/sequence/console/-/releases).

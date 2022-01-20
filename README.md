@@ -132,6 +132,53 @@ For details on how to setup various logging targets, including
 JSON and Elastic, see the [logging](https://sequence.sh/docs/logging)
 section of the documentation.
 
+## Settings
+
+Settings can be controlled in the `appsettings.json` file. 
+
+The following settings can be controlled.
+
+| Setting                 | Type     | Description                                                  |
+| ----------------------- | -------- | ------------------------------------------------------------ |
+| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged. |
+| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information |
+| `nlog`                  | `object` | Controls logging settings. See [documentation](https://5-add-scl-playground.sequence.sh/docs/logging) for more information. |
+
+
+
+### Performance Monitoring
+
+Performance Monitoring is controlled by the `PerformanceMonitoring` configuration section. It is only available when running on Windows.
+
+It has the following properties:
+
+| Setting                 | Type     | Description                                                  |
+| ----------------------- | -------- | ------------------------------------------------------------ |
+| `Enable`                | `bool`   | Whether performance monitoring is enabled.                   |
+| `MeasurementIntervalMs` | `int`    | How frequently the performance is measured.                  |
+| `LoggingIntervalMs`     | `int`    | How frequently the performance is logged.                    |
+| `Categories`            | `object` | Performance categories to log. Information about performance categories can be found [here](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.performancecountercategory?view=dotnet-plat-ext-6.0). |
+| `MeasureAllCategories`  | `bool`   | Whether all performance categories should be logged.         |
+
+The following is an example of the `PerformanceMonitoring` section:
+
+```json
+  "PerformanceMonitoring": {
+    "Enable": true,
+    "MeasurementIntervalMs": 100,
+    "LoggingIntervalMs": 10000,
+    "MeasureAllCategories": false,
+
+    "Categories": {
+      "Process": [
+        "% Processor Time",
+        "Working Set"
+      ]
+    } 
+  },
+```
+
+
 ## OS Compatibility
 
 Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).

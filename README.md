@@ -134,17 +134,15 @@ section of the documentation.
 
 ## Settings
 
-Settings can be controlled in the `appsettings.json` file. 
+Settings can be controlled in the `appsettings.json` file.
 
 The following settings can be controlled.
 
-| Setting                 | Type     | Description                                                  |
-| ----------------------- | -------- | ------------------------------------------------------------ |
-| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged. |
-| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information |
+| Setting                 | Type     | Description                                                                                                                 |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged.                                                    |
+| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information                                  |
 | `nlog`                  | `object` | Controls logging settings. See [documentation](https://5-add-scl-playground.sequence.sh/docs/logging) for more information. |
-
-
 
 ### Performance Monitoring
 
@@ -152,13 +150,13 @@ Performance Monitoring is controlled by the `PerformanceMonitoring` configuratio
 
 It has the following properties:
 
-| Setting                 | Type     | Description                                                  |
-| ----------------------- | -------- | ------------------------------------------------------------ |
-| `Enable`                | `bool`   | Whether performance monitoring is enabled.                   |
-| `MeasurementIntervalMs` | `int`    | How frequently the performance is measured.                  |
-| `LoggingIntervalMs`     | `int`    | How frequently the performance is logged.                    |
+| Setting                 | Type     | Description                                                                                                                                                                                                      |
+| ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enable`                | `bool`   | Whether performance monitoring is enabled.                                                                                                                                                                       |
+| `MeasurementIntervalMs` | `int`    | How frequently the performance is measured.                                                                                                                                                                      |
+| `LoggingIntervalMs`     | `int`    | How frequently the performance is logged.                                                                                                                                                                        |
 | `Categories`            | `object` | Performance categories to log. Information about performance categories can be found [here](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.performancecountercategory?view=dotnet-plat-ext-6.0). |
-| `MeasureAllCategories`  | `bool`   | Whether all performance categories should be logged.         |
+| `MeasureAllCategories`  | `bool`   | Whether all performance categories should be logged.                                                                                                                                                             |
 
 The following is an example of the `PerformanceMonitoring` section:
 
@@ -174,10 +172,9 @@ The following is an example of the `PerformanceMonitoring` section:
         "% Processor Time",
         "Working Set"
       ]
-    } 
+    }
   },
 ```
-
 
 ## OS Compatibility
 

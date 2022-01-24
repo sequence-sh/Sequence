@@ -1,6 +1,7 @@
 # Sequence® Console
 
-Sequence® is a collection of applications and connectors that automate
+[Sequence®](https://gitlab.com/-/ide/project/reductech/sequence)
+is a collection of applications and connectors that automate
 e-discovery and forensic workflows using the
 [Sequence Configuration Language (SCL)](#sequence-configuration-language).
 
@@ -26,8 +27,8 @@ Sequence includes:
 2. Unzip the file and open a shell (cmd, pwsh, powershell) of your choice in that directory
 3. Run `sequence run scl "Print 'Hello world'"`
 4. That's it, now for something a bit more useful:
-   - [Quick Start](https://docs.reductech.io/sequence/how-to/quick-start.html)
-   - [Connector Examples](https://docs.reductech.io/sequence/examples/core/csv-files.html)
+   - [Quick Start](https://sequence.sh/docs/quick-start)
+   - [Connector Examples](https://sequence.sh/docs/examples/connectors/structureddata/csv-files)
 
 ### Running SCL
 
@@ -63,7 +64,7 @@ PS > ./sequence steps file
 
 ## Sequence Configuration Language
 
-Workflows in Sequence® are defined using a custom configuration language.
+Workflows in Sequence are defined using a custom configuration language.
 SCL is designed to be powerful yet easy to pick-up and use.
 A quick introduction to the language and its features can be found in the
 [documentation](https://docs.reductech.io/sequence/how-to/scl/sequence-configuration-language.html).
@@ -106,6 +107,12 @@ PS > ./sequence connector find
 
 # To install a connector, use add
 PS > ./sequence connector add Reductech.Sequence.Connectors.Sql
+
+# It's also possible to use a search string to add or update connectors
+PS > ./sequence connector add Sql
+
+# To update a connector, use update
+PS > ./sequence connector update Reductech.Sequence.Connectors.Sql
 ```
 
 ### VSCode Plugin
@@ -119,15 +126,59 @@ Search for `SCL` or `reductech` in the VS Code extensions window to install.
 
 ## Documentation
 
-Documentation is available at [docs.reductech.io](https://docs.reductech.io)
+Documentation is available at https://sequence.sh
 
 For details on how to setup various logging targets, including
-JSON and Elastic, see the [logging](https://docs.reductech.io/sequence/how-to/logging.html)
+JSON and Elastic, see the [logging](https://sequence.sh/docs/logging)
 section of the documentation.
+
+## Settings
+
+Settings can be controlled in the `appsettings.json` file.
+
+The following settings can be controlled.
+
+| Setting                 | Type     | Description                                                                                                                 |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged.                                                    |
+| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information                                  |
+| `nlog`                  | `object` | Controls logging settings. See [documentation](https://5-add-scl-playground.sequence.sh/docs/logging) for more information. |
+
+### Performance Monitoring
+
+Performance Monitoring is controlled by the `PerformanceMonitoring` configuration section. It is only available when running on Windows.
+
+It has the following properties:
+
+| Setting                 | Type     | Description                                                                                                                                                                                                      |
+| ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Enable`                | `bool`   | Whether performance monitoring is enabled.                                                                                                                                                                       |
+| `MeasurementIntervalMs` | `int`    | How frequently the performance is measured.                                                                                                                                                                      |
+| `LoggingIntervalMs`     | `int`    | How frequently the performance is logged.                                                                                                                                                                        |
+| `Categories`            | `object` | Performance categories to log. Information about performance categories can be found [here](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.performancecountercategory?view=dotnet-plat-ext-6.0). |
+| `MeasureAllCategories`  | `bool`   | Whether all performance categories should be logged.                                                                                                                                                             |
+
+The following is an example of the `PerformanceMonitoring` section:
+
+```json
+  "PerformanceMonitoring": {
+    "Enable": true,
+    "MeasurementIntervalMs": 100,
+    "LoggingIntervalMs": 10000,
+    "MeasureAllCategories": false,
+
+    "Categories": {
+      "Process": [
+        "% Processor Time",
+        "Working Set"
+      ]
+    }
+  },
+```
 
 ## OS Compatibility
 
-Sequence is compatible with any [OS supported by .NET 5](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md).
+Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
 However, we're currently only targeting the `win10-x64` runtime for
 our [releases](https://gitlab.com/reductech/sequence/console/-/releases).

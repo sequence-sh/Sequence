@@ -106,6 +106,8 @@ test examples release:
 
 sign exe release:
   stage: sign
+  tags:
+    - rt-powershell
   image: registry.gitlab.com/reductech/containers/codesigning
   cache: {}
   extends:

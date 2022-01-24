@@ -28,6 +28,10 @@ The project has now been updated to use .NET 6.
 - Allow partial configuration names in connector update command #106
 - Using the Connector Add command should work even with the short name of the connector #102
 
+### Bug Fixes
+
+- sign stage needs powershell to run #114
+
 ### Maintenance
 
 - Rename EDR to Sequence #104
@@ -384,4 +388,3 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
-

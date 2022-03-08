@@ -182,3 +182,11 @@ Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotn
 
 However, we're currently only targeting the `win10-x64` runtime for
 our [releases](https://gitlab.com/reductech/sequence/console/-/releases).
+
+## Injecting Variables
+
+You can inject variables from the CLI into scl sequences.
+
+```powershell
+PS > ./sequence run scl "log <a> + <b>" "<a> = 1" "<b> = 2"
+```

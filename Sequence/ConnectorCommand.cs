@@ -186,6 +186,9 @@ public class ConnectorCommand
         [Option(Description = "Include prerelease versions of connectors.")]
         bool prerelease = false)
     {
+        if (!await _connectorManager.Verify(ct))
+            throw new ConnectorConfigurationException("Could not validate installed connectors.");
+            
         var configs = _connectorManager.List(configuration).ToList();
 
         if (configs.Count > 1)

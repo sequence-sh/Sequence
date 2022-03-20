@@ -197,6 +197,8 @@ public class ConnectorCommandTests
     {
         var mock = new Mock<IConnectorManager>();
 
+        mock.Setup(m => m.Verify(It.IsAny<CancellationToken>())).ReturnsAsync(true).Verifiable();
+
         mock.Setup(
                 m => m.Update(
                     It.IsAny<string>(),
@@ -220,6 +222,25 @@ public class ConnectorCommandTests
     }
 
     [Fact]
+    public void Update_WhenValidationFails_Throws()
+    {
+        var mock = new Mock<IConnectorManager>();
+
+        mock.Setup(m => m.Verify(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+
+        var sp = GetDefaultServiceProvider(mock.Object);
+
+        var error = Assert.Throws<ConnectorConfigurationException>(
+            () => new AppRunner<ConsoleMethods>()
+                .UseMicrosoftDependencyInjection(sp)
+                .UseDefaultMiddleware()
+                .RunInMem("connector update -v 0.9.0 --prerelease Sequence.Connector")
+        );
+
+        Assert.Equal("Could not validate installed connectors.", error.Message);
+    }
+
+    [Fact]
     public void Update_WithPartialNameThatExists_ReturnsSuccess()
     {
         const string id   = "Sequence.Connector";
@@ -231,6 +252,8 @@ public class ConnectorCommandTests
         };
 
         var cm = new Mock<IConnectorManager>();
+
+        cm.Setup(m => m.Verify(It.IsAny<CancellationToken>())).ReturnsAsync(true).Verifiable();
 
         cm.Setup(
                 m => m.Update(
@@ -270,6 +293,8 @@ public class ConnectorCommandTests
         };
 
         var cm = new Mock<IConnectorManager>();
+
+        cm.Setup(m => m.Verify(It.IsAny<CancellationToken>())).ReturnsAsync(true).Verifiable();
 
         cm.Setup(m => m.List(It.Is<string>(s => s.Equals(name))))
             .Returns(connectors)

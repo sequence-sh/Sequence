@@ -161,6 +161,7 @@ public class RunCommandTests
             .UseDefaultMiddleware()
             .RunInMem($"run {path}");
 
+        result.Console.ErrorText().Should().BeNullOrWhiteSpace();
         result.ExitCode.Should().Be(0);
 
         factory.Sink.LogEntries.Select(x => x.Message)
@@ -170,5 +171,94 @@ public class RunCommandTests
                 TheUltimateTestString,
                 "Sequence Completed"
             );
+    }
+
+    [Fact]
+    public void RunPath_WithInjectedVariables_WhenSCLFunctionIsSuccess_ReturnsSuccess()
+    {
+        const string path = @"c:\temp\file.scl";
+
+        var factory = TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var fs      = new MockFileSystem();
+        fs.AddFile(path, $"- Log <myVar>");
+
+        var sp = GetDefaultServiceProvider(factory, fs, null);
+
+        var argsString = $"run path {path} --variable \"<myVar> = Hello World\"";
+
+        var result = new AppRunner<ConsoleMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem(argsString);
+
+        result.Console.ErrorText().Should().BeNullOrWhiteSpace();
+
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "Sequence Started",
+                "Hello World",
+                "Sequence Completed"
+            );
+
+        result.ExitCode.Should().Be(0);
+    }
+
+    [Fact]
+    public void RunSCL_WithInjectedVariables_WhenSCLFunctionIsSuccess_ReturnsSuccess()
+    {
+        var factory = TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+
+        var sp = GetDefaultServiceProvider(factory, new MockFileSystem(), null);
+
+        var argsString = $"run scl \"Log <a> + <b>\" -v \"<a> = 3\" -v \"<b> = 4\"";
+
+        var result = new AppRunner<ConsoleMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem(argsString);
+
+        result.Console.ErrorText().Should().BeNullOrWhiteSpace();
+
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "Sequence Started",
+                "7",
+                "Sequence Completed"
+            );
+
+        result.ExitCode.Should().Be(0);
+    }
+
+    [Fact]
+    public void Run_WithInjectedVariables_WhenSCLFunctionIsSuccess_ReturnsSuccess()
+    {
+        const string path = @"c:\temp\file.scl";
+
+        var factory = TestLoggerFactory.Create(x => x.SetMinimumLevel(LogLevel.Debug));
+        var fs      = new MockFileSystem();
+        fs.AddFile(path, $"- Log <myVar>");
+
+        var sp = GetDefaultServiceProvider(factory, fs, null);
+
+        var argsString = $"run {path} -v \"<myVar> = Hello World\"";
+
+        var result = new AppRunner<ConsoleMethods>()
+            .UseMicrosoftDependencyInjection(sp)
+            .UseDefaultMiddleware()
+            .RunInMem(argsString);
+
+        result.Console.ErrorText().Should().BeNullOrWhiteSpace();
+
+        factory.Sink.LogEntries.Select(x => x.Message)
+            .Should()
+            .BeEquivalentTo(
+                "Sequence Started",
+                "Hello World",
+                "Sequence Completed"
+            );
+
+        result.ExitCode.Should().Be(0);
     }
 }

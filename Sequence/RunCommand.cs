@@ -1,13 +1,16 @@
-﻿using System.IO.Abstractions;
+﻿using System.Collections.Immutable;
+using System.IO.Abstractions;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using CommandDotNet;
 using Microsoft.Extensions.Logging;
 using Reductech.Sequence.ConnectorManagement.Base;
 using Reductech.Sequence.Core.Abstractions;
 using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal;
 using Reductech.Sequence.Core.Internal.Analytics;
 using Reductech.Sequence.Core.Internal.Errors;
 using Reductech.Sequence.Core.Internal.Serialization;
-using Reductech.Sequence.Core.Util;
 using static Reductech.Sequence.Result;
 
 namespace Reductech.Sequence;
@@ -75,7 +78,9 @@ public class RunCommand
     public async Task<int> RunDefault(
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
-        string sclPath) => await RunPath(cancellationToken, sclPath);
+        string sclPath,
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable) => await RunPath(cancellationToken, sclPath, variable);
 
     /// <summary>
     /// Execute a Sequence from an SCL file
@@ -87,7 +92,9 @@ public class RunCommand
     public async Task<int> RunPath(
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file")]
-        string pathToSCLFile)
+        string pathToSCLFile,
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable)
     {
         if (string.IsNullOrWhiteSpace(pathToSCLFile) || !_fileSystem.File.Exists(pathToSCLFile))
             throw new CommandLineArgumentException("Please provide a path to a valid SCL file.");
@@ -99,7 +106,7 @@ public class RunCommand
             { SCLRunner.RunIdName, Guid.NewGuid() }, { SCLRunner.SCLPathName, pathToSCLFile }
         };
 
-        return await RunSCLFromTextAsync(text, meta, cancellationToken);
+        return await RunSCLFromTextAsync(text, meta, variable, cancellationToken);
     }
 
     /// <summary>
@@ -111,19 +118,60 @@ public class RunCommand
     )]
     public async Task<int> RunSCL(
         CancellationToken cancellationToken,
-        [Operand(Description = "SCL string")] string scl)
+        [Operand(Description = "SCL string")] string scl,
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable)
     {
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
         var meta = new Dictionary<string, object> { { SCLRunner.RunIdName, Guid.NewGuid() } };
 
-        return await RunSCLFromTextAsync(scl, meta, cancellationToken);
+        return await RunSCLFromTextAsync(scl, meta, variable, cancellationToken);
+    }
+
+    private IReadOnlyDictionary<VariableName, ISCLObject>? DeserializeInjectedVariables(
+        string[]? injectedVariables)
+    {
+        if (injectedVariables is null)
+            return ImmutableDictionary<VariableName, ISCLObject>.Empty;
+
+        Regex regex = new(@"\A\s*\<(?<name>[\w-_]+)\>\s*=\s*(?<value>.+)\Z");
+
+        var result = new Dictionary<VariableName, ISCLObject>();
+
+        foreach (var injectedVariable in injectedVariables)
+        {
+            var match = regex.Match(injectedVariable);
+
+            if (match.Success)
+            {
+                var val = match.Groups["value"].Value;
+
+                JsonElement jsonElement;
+
+                try
+                {
+                    jsonElement = JsonSerializer.Deserialize<JsonElement>(val);
+                }
+                catch (JsonException)
+                {
+                    jsonElement = JsonSerializer.Deserialize<JsonElement>($"\"{val}\"");
+                }
+
+                var sclObject = jsonElement.ConvertToSCLObject();
+
+                result.Add(new VariableName(match.Groups["name"].Value), sclObject);
+            }
+        }
+
+        return result;
     }
 
     private async Task<int> RunSCLFromTextAsync(
         string scl,
         Dictionary<string, object> metadata,
+        string[]? injectedVariables,
         CancellationToken cancellationToken = default)
     {
         var externalContextResult = await
@@ -169,7 +217,14 @@ public class RunCommand
             externalContextResult.Value
         );
 
-        var r = await runner.RunSequenceFromTextAsync(scl, metadata, cancellationToken);
+        var variablesToInject = DeserializeInjectedVariables(injectedVariables);
+
+        var r = await runner.RunSequenceFromTextAsync(
+            scl,
+            metadata,
+            cancellationToken,
+            variablesToInject
+        );
 
         _analyticsWriter.LogAnalytics(analyticsLogger.SequenceAnalytics);
 

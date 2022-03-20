@@ -79,12 +79,8 @@ public class RunCommand
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file (Shorthand for using the path command)")]
         string sclPath,
-        [Operand("Variables", Description = "AdditionalVariables to inject e.g. <myVar> = \"abc\"")]
-        string[]? injectedVariables) => await RunPath(
-        cancellationToken,
-        sclPath,
-        injectedVariables
-    );
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable) => await RunPath(cancellationToken, sclPath, variable);
 
     /// <summary>
     /// Execute a Sequence from an SCL file
@@ -97,8 +93,8 @@ public class RunCommand
         CancellationToken cancellationToken,
         [Operand(Description = "Path to the SCL file")]
         string pathToSCLFile,
-        [Operand("Variables", Description = "AdditionalVariables to inject e.g. <myVar> = \"abc\"")]
-        string[]? injectedVariables)
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable)
     {
         if (string.IsNullOrWhiteSpace(pathToSCLFile) || !_fileSystem.File.Exists(pathToSCLFile))
             throw new CommandLineArgumentException("Please provide a path to a valid SCL file.");
@@ -110,7 +106,7 @@ public class RunCommand
             { SCLRunner.RunIdName, Guid.NewGuid() }, { SCLRunner.SCLPathName, pathToSCLFile }
         };
 
-        return await RunSCLFromTextAsync(text, meta, injectedVariables, cancellationToken);
+        return await RunSCLFromTextAsync(text, meta, variable, cancellationToken);
     }
 
     /// <summary>
@@ -123,15 +119,15 @@ public class RunCommand
     public async Task<int> RunSCL(
         CancellationToken cancellationToken,
         [Operand(Description = "SCL string")] string scl,
-        [Operand("Variables", Description = "AdditionalVariables to inject e.g. <myVar> = \"abc\"")]
-        string[]? injectedVariables)
+        [Option('v', Description = "Additional variable to inject e.g. <myVar> = \"abc\"")]
+        string[]? variable)
     {
         if (string.IsNullOrWhiteSpace(scl))
             throw new CommandLineArgumentException("Please provide a valid SCL string.");
 
         var meta = new Dictionary<string, object> { { SCLRunner.RunIdName, Guid.NewGuid() } };
 
-        return await RunSCLFromTextAsync(scl, meta, injectedVariables, cancellationToken);
+        return await RunSCLFromTextAsync(scl, meta, variable, cancellationToken);
     }
 
     private IReadOnlyDictionary<VariableName, ISCLObject>? DeserializeInjectedVariables(

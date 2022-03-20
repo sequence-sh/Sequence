@@ -200,7 +200,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory, fs, null);
 
-        var argsString = $"run path {path}  \"<myVar> = Hello World\"";
+        var argsString = $"run path {path} --variable \"<myVar> = Hello World\"";
 
         var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
@@ -227,7 +227,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory, new MockFileSystem(), null);
 
-        var argsString = $"run scl \"Log <a> + <b>\"  \"<a> = 3\" \"<b> = 4\"";
+        var argsString = $"run scl \"Log <a> + <b>\" -v \"<a> = 3\" -v \"<b> = 4\"";
 
         var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)
@@ -258,7 +258,7 @@ public class RunCommandTests
 
         var sp = GetDefaultServiceProvider(factory, fs, null);
 
-        var argsString = $"run {path} \"<myVar> = Hello World\"";
+        var argsString = $"run {path} -v \"<myVar> = Hello World\"";
 
         var result = new AppRunner<ConsoleMethods>()
             .UseMicrosoftDependencyInjection(sp)

@@ -115,6 +115,14 @@ PS > ./sequence connector add Sql
 PS > ./sequence connector update Reductech.Sequence.Connectors.Sql
 ```
 
+### Injecting Variables
+
+You can inject variables from the CLI into SCL.
+
+```powershell
+PS > ./sequence run scl "log <a> + <b>" --variable "<a> = 1" -v "<b> = 2"
+```
+
 ### VSCode Plugin
 
 To make SCL easier to use, a [Visual Studio Code](https://code.visualstudio.com/)
@@ -182,11 +190,3 @@ Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotn
 
 However, we're currently only targeting the `win10-x64` runtime for
 our [releases](https://gitlab.com/reductech/sequence/console/-/releases).
-
-## Injecting Variables
-
-You can inject variables from the CLI into scl sequences.
-
-```powershell
-PS > ./sequence run scl "log <a> + <b>" "<a> = 1" "<b> = 2"
-```

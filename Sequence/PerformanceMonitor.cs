@@ -80,7 +80,20 @@ public class PerformanceMonitorService : IDisposable
             }
             catch (Exception e)
             {
-                Logger.LogWarning("Could not start performance monitoring: {error}", e.Message);
+                if (e.Message.Contains("Access") && e.Message.Contains("denied"))
+                {
+                    Logger.LogWarning(
+                        "Could not start performance monitoring: {error}. Your account is probably not a member of the Performance Monitor Users group.",
+                        e.Message
+                    );
+                }
+                else
+                {
+                    Logger.LogWarning(
+                        "Could not start performance monitoring: {error}",
+                        e.Message
+                    );
+                }
             }
         }
     }

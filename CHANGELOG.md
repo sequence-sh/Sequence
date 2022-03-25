@@ -2,12 +2,14 @@
 
 ## Summary of Changes
 
-
 It's now possible to inject variables into SCL from the command line:
 
 ```powershell
 PS > ./sequence run scl "log <a> + <b>" -v "<a> = 1" -v "<b> = 2"
 ```
+
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.14.0/CHANGELOG.md) for more details on all the new and exciting Sequence Configuration
+Language and Step changes.
 
 ## Issues Closed in this Release
 

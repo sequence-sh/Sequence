@@ -7,7 +7,7 @@ namespace Reductech.Sequence;
 /// </summary>
 [Command(
     Description =
-        "Sequence®\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://docs.reductech.io"
+        "Sequence®\n\nAn application for running workflows defined using the Sequence Configuration Language (SCL).\nFor more information please see the documentation: https://sequence.sh"
 )]
 public class ConsoleMethods
 {

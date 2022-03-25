@@ -15,11 +15,13 @@ Sequence includes:
   - A collection of application-independent steps that:
     - Control flow, e.g. If, ForEach, While
     - Manipulate strings, e.g. Append, Concatenate, ChangeCase
-    - Enforce data standards and convert between various formats through the use of [Schemas](https://docs.reductech.io/sequence/how-to/scl/schemas.html)
-    - Create and manipulate [entities](https://docs.reductech.io/sequence/how-to/scl/entities.html) (structured data)
+    - Enforce data standards and convert between various formats through the use of [Schemas](https://sequence.sh/docs/schemas)
+    - Create and manipulate [entities](https://sequence.sh/docs/entities) (structured data)
 - Connectors that interact with various applications, e.g SQL, PowerShell, Nuix, StructuredData
   - Included with Sequence Console is a [connector manager](#connectors)
-  - For a full list of available connectors, please see the [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages)
+  - For a full list of available connectors
+    - Please see the [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages)
+    - Or check out the [steps documentation](https://sequence.sh/steps/all)
 
 ## Quick Start
 
@@ -67,7 +69,7 @@ PS > ./sequence steps file
 Workflows in Sequence are defined using a custom configuration language.
 SCL is designed to be powerful yet easy to pick-up and use.
 A quick introduction to the language and its features can be found in the
-[documentation](https://docs.reductech.io/sequence/how-to/scl/sequence-configuration-language.html).
+[documentation](https://sequence.sh/docs/sequence-configuration-language).
 
 Here is SCL to remove duplicate rows from a CSV file:
 

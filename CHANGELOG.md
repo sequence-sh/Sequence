@@ -1,3 +1,31 @@
+# v0.14.0 (2022-03-25)
+
+## Summary of Changes
+
+It's now possible to inject variables into SCL from the command line:
+
+```powershell
+PS > ./sequence run scl "log <a> + <b>" -v "<a> = 1" -v "<b> = 2"
+```
+
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.14.0/CHANGELOG.md) for more details on all the new and exciting Sequence Configuration
+Language and Step changes.
+
+## Issues Closed in this Release
+
+### New Features
+
+- Users should be able to inject SCL variables using the CLI #130
+
+### Bug Fixes
+
+- Could not start performance monitoring: Access to the registry key 'Global' is denied error #123
+- Failed to load connector configuration error when updating connectors #136
+
+### Maintenance
+
+- Check if possible to remove the custom test dev job #107
+
 # v0.13.0 (2022-01-16)
 
 EDR is now Sequence. The following has changed:
@@ -388,3 +416,4 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
+

@@ -2,6 +2,9 @@
 
 Maintenance release - dependency updates only.
 
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.15.0/CHANGELOG.md)
+for more details on all the new and exciting Sequence Configuration Language and Step changes.
+
 # v0.14.0 (2022-03-25)
 
 ## Summary of Changes

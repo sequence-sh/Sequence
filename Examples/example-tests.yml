@@ -126,7 +126,7 @@ test package dev relativity:
       $config = Get-Content $env:CONNECTORS_JSON -Raw | ConvertFrom-Json ;
       $config | Add-Member -NotePropertyName "Reductech.Sequence.Connectors.Relativity" -NotePropertyValue @{
           id      = "Reductech.Sequence.Connectors.Relativity"
-          version = "0.13.0"
+          version = "0.15.0"
           settings = @{
             RelativityUsername = $env:RELATIVITY_TEST_USER
             RelativityPassword = $env:RELATIVITY_TEST_PASS

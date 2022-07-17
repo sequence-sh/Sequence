@@ -2,6 +2,9 @@
 
 Maintenance release - dependency updates only.
 
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.16.0/CHANGELOG.md)
+for more details on all the new and exciting Sequence Configuration Language and Step changes.
+
 # v0.15.0 (2022-05-27)
 
 Maintenance release - dependency updates only.
@@ -427,6 +430,3 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
-
-
-

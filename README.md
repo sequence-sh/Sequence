@@ -1,6 +1,6 @@
 # Sequence® Console
 
-[Sequence®](https://gitlab.com/-/ide/project/reductech/sequence)
+[Sequence®](https://sequence.sh)
 is a collection of applications and connectors that automate
 e-discovery and forensic workflows using the
 [Sequence Configuration Language (SCL)](#sequence-configuration-language).
@@ -23,14 +23,22 @@ Sequence includes:
     - Please see the [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages)
     - Or check out the [steps documentation](https://sequence.sh/steps/all)
 
+# Download
+
+https://sequence.sh/download
+
 ## Quick Start
 
-1. Download the latest release [here](https://gitlab.com/reductech/sequence/console/-/releases)
+1. Download the latest release [here](https://sequence.sh/download)
 2. Unzip the file and open a shell (cmd, pwsh, powershell) of your choice in that directory
 3. Run `sequence run scl "Print 'Hello world'"`
 4. That's it, now for something a bit more useful:
    - [Quick Start](https://sequence.sh/docs/quick-start)
    - [Connector Examples](https://sequence.sh/docs/examples/connectors/structureddata/csv-files)
+
+# Try SCL and Core in your browser
+
+https://sequence.sh/playground
 
 ### Running SCL
 
@@ -117,7 +125,7 @@ PS > ./sequence connector add Sql
 PS > ./sequence connector update Reductech.Sequence.Connectors.Sql
 ```
 
-### Injecting Variables
+## Injecting Variables
 
 You can inject variables from the CLI into SCL.
 
@@ -125,7 +133,7 @@ You can inject variables from the CLI into SCL.
 PS > ./sequence run scl "log <a> + <b>" --variable "<a> = 1" -v "<b> = 2"
 ```
 
-### VSCode Plugin
+## VSCode Plugin
 
 To make SCL easier to use, a [Visual Studio Code](https://code.visualstudio.com/)
 [SCL plugin](https://marketplace.visualstudio.com/items?itemName=reductech.reductech-scl)
@@ -146,13 +154,11 @@ section of the documentation.
 
 Settings can be controlled in the `appsettings.json` file.
 
-The following settings can be controlled.
-
-| Setting                 | Type     | Description                                                                                                                 |
-| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged.                                                    |
-| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information                                  |
-| `nlog`                  | `object` | Controls logging settings. See [documentation](https://5-add-scl-playground.sequence.sh/docs/logging) for more information. |
+| Setting                 | Type     | Description                                                                                             |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `LogAnalytics`          | `bool`   | If true, information about steps used and step durations will be logged.                                |
+| `PerformanceMonitoring` | `object` | Controls performance monitoring. Only available on Windows. See below for more information              |
+| `nlog`                  | `object` | Controls logging settings. See [documentation](https://sequence.sh/docs/logging/) for more information. |
 
 ### Performance Monitoring
 
@@ -192,3 +198,5 @@ Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotn
 
 However, we're currently only targeting the `win10-x64` runtime for
 our [releases](https://gitlab.com/reductech/sequence/console/-/releases).
+
+For other OSes, please [build from source](https://sequence.sh/docs/build-from-source).

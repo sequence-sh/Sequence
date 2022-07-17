@@ -23,17 +23,29 @@
       using the connector ecosystem and the Sequence.Core SDK.
     </Description>
     <Product>Sequence®</Product>
-    <PackageTags>ediscovery;forensics;automation;orchestration;edrm;sequence</PackageTags>
+    <PackageTags>ediscovery;forensics;automation;orchestration;edrm;sequence;etl;</PackageTags>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/sequence/console</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/console</RepositoryUrl>
+    <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/console.git</RepositoryUrl>
     <PackageReleaseNotes>https://gitlab.com/reductech/sequence/console/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../CHANGELOG.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../NOTICE" Pack="true" PackagePath="/" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandDotNet" Version="6.0.5" />
@@ -46,8 +58,8 @@
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.5" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.7.0" />
-    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.9.0-a.main.2206200117" />
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.16.0-a.main.2207111038" />
+    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.9.0" />
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.16.0" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
     <PackageReference Include="System.IO.Abstractions" Version="16.1.26" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />

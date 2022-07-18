@@ -43,6 +43,28 @@ variables:
       - LICENSE
       - README.md
 
+test connector versions:
+  stage: test
+  needs: []
+  script:
+    - |
+      [xml]$csproj = Get-Content ./Sequence/Sequence.csproj ;
+      $versionString = $csproj.Project.PropertyGroup[0].Version -replace '\$\(VersionSuffix\)' ;
+      $version = [semver]::new($versionString) ;
+      Write-Host "Sequence version: $version" ;
+      $connectors = Get-Content ./Sequence/connectors.json | ConvertFrom-Json ;
+      $errors = $false ;
+      $connectors.PsObject.Properties.Name | ForEach-Object {
+          $conVer = [semver]::new($connectors.$_.Version) ;
+          if ($conVer.Major -ne $version.Major -or $conVer.Minor -ne $version.Minor) {
+              Write-Host -Fore Red "ERROR: Incorrect version $conVer for $_" ;
+              $errors = $true ;
+          }
+      }
+      if ($errors) { exit 1 }
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /Prepare for release/
+
 package exe dev:
   stage: package
   extends:

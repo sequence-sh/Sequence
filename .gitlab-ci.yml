@@ -28,9 +28,10 @@ stages:
   - package
   - package-test
   - sign
+  - upload
 
 variables:
-  PACKAGE_NAME_EXE: Reductech.Sequence
+  PACKAGE_NAME_EXE: Sequence
   NUGET_XMLDOC_MODE: none
 
 .exe_artifacts_default:
@@ -41,7 +42,35 @@ variables:
       - CHANGELOG.md
       - sequence.exe
       - LICENSE
+      - NOTICE
       - README.md
+
+test connector versions:
+  stage: test
+  needs: []
+  script:
+    - |
+      [xml]$csproj = Get-Content ./Sequence/Sequence.csproj ;
+      $versionString = $csproj.Project.PropertyGroup[0].Version -replace '\$\(VersionSuffix\)' ;
+      $version = [semver]::new($versionString) ;
+      Write-Host "Sequence version: $version" ;
+      $errors = $false ;
+      $dloadJson = Get-Content ./sequence.json | ConvertFrom-Json ;
+      if ($version.ToString() -notin $dloadJson.version) {
+          Write-Host -Fore Red "ERROR: Version $version is not in 'sequence.json'" ;
+          $errors = $true ;
+      }
+      $connectors = Get-Content ./Sequence/connectors.json | ConvertFrom-Json ;
+      $connectors.PsObject.Properties.Name | ForEach-Object {
+          $conVer = [semver]::new($connectors.$_.Version) ;
+          if ($conVer.Major -ne $version.Major -or $conVer.Minor -ne $version.Minor) {
+              Write-Host -Fore Red "ERROR: Incorrect version $conVer for $_" ;
+              $errors = $true ;
+          }
+      }
+      if ($errors) { exit 1 }
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /Prepare for release/
 
 package exe dev:
   stage: package
@@ -117,6 +146,26 @@ sign exe release:
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\sequence.exe
   artifacts:
     expire_in: never
+
+upload release:
+  stage: upload
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  extends:
+    - .rules_release
+  needs:
+    - version check release
+    - sign exe release
+  variables:
+    RELEASE_FILE: '$PACKAGE_NAME_EXE-${PROJECT_VERSION}.zip'
+    S3_BUCKET: get.sequence.sh
+    CF_DISTRIBUTION_ID: E3J0KK0KHICK2Z
+  before_script:
+    - apt install zip
+  script:
+    - zip -rq $RELEASE_FILE lib sequence.exe CHANGELOG.md LICENSE NOTICE README.md
+    - aws s3 cp ./$RELEASE_FILE s3://$S3_BUCKET/
+    - aws s3 cp ./sequence.json s3://$S3_BUCKET/
+    - aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/*"
 
 code_quality:
   tags: []

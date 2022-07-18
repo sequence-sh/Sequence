@@ -1,3 +1,18 @@
+# v0.16.1 (2022-07-18)
+
+Bug fix release.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Incorrect connector versions in release #179
+
+### Maintenance
+
+- Add job to CI to check connector versions when preparing for release #180
+- Automatically upload releases to get.sequence.sh #181
+
 # v0.16.0 (2022-07-13)
 
 Maintenance release - dependency updates only.

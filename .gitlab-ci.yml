@@ -150,6 +150,7 @@ sign exe release:
 upload release:
   stage: upload
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  tags: []
   extends:
     - .rules_release
   needs:

@@ -28,9 +28,10 @@ stages:
   - package
   - package-test
   - sign
+  - upload
 
 variables:
-  PACKAGE_NAME_EXE: Reductech.Sequence
+  PACKAGE_NAME_EXE: Sequence
   NUGET_XMLDOC_MODE: none
 
 .exe_artifacts_default:
@@ -41,6 +42,7 @@ variables:
       - CHANGELOG.md
       - sequence.exe
       - LICENSE
+      - NOTICE
       - README.md
 
 test connector versions:
@@ -139,6 +141,26 @@ sign exe release:
       /tr $TIMESTAMP_SERVER /td $ALGO_TIME_DIGEST .\lib\sequence.exe
   artifacts:
     expire_in: never
+
+upload release:
+  stage: upload
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  extends:
+    - .rules_release
+  needs:
+    - version check release
+    - sign exe release
+  variables:
+    RELEASE_FILE: '$PACKAGE_NAME_EXE-${PROJECT_VERSION}.zip'
+    S3_BUCKET: get.sequence.sh
+    CF_DISTRIBUTION_ID: E3J0KK0KHICK2Z
+  before_script:
+    - apt install zip
+  script:
+    - zip -rq $RELEASE_FILE lib sequence.exe CHANGELOG.md LICENSE NOTICE README.md
+    - aws s3 cp ./$RELEASE_FILE s3://$S3_BUCKET/
+    - aws s3 cp ./sequence.json s3://$S3_BUCKET/
+    - aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/*"
 
 code_quality:
   tags: []

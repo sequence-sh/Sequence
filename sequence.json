@@ -1,5 +1,12 @@
 [
   {
+    "version": "0.16.1",
+    "platform": "win-x64",
+    "download": "https://get.sequence.sh/Sequence-v0.16.1.zip",
+    "changelog": "https://gitlab.com/reductech/sequence/console/-/blob/v0.16.1/CHANGELOG.md",
+    "release": "https://gitlab.com/reductech/sequence/console/-/releases/v0.16.1"
+  },
+  {
     "version": "0.15.0",
     "platform": "win-x64",
     "download": "https://get.sequence.sh/Reductech.Sequence-v0.15.0.zip",

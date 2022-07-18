@@ -12,7 +12,7 @@
     <RootNamespace>Reductech.Sequence</RootNamespace>
     <AssemblyName>sequence</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.16.0$(VersionSuffix)</Version>
+    <Version>0.16.1$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -19,8 +19,9 @@
     <PackageId>Reductech.Sequence</PackageId>
     <Title>Sequence® Console</Title>
     <Description>
-      Console application for automating e-discovery and forensic workflows
-      using the connector ecosystem and the Sequence.Core SDK.
+      Console application for automating e-discovery and forensic workflows.
+      Easily configure cross-applications workflows using the Sequence Configuration 
+      Language and a rich connector ecosystem.
     </Description>
     <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;sequence;etl;</PackageTags>

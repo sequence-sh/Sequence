@@ -54,8 +54,13 @@ test connector versions:
       $versionString = $csproj.Project.PropertyGroup[0].Version -replace '\$\(VersionSuffix\)' ;
       $version = [semver]::new($versionString) ;
       Write-Host "Sequence version: $version" ;
-      $connectors = Get-Content ./Sequence/connectors.json | ConvertFrom-Json ;
       $errors = $false ;
+      $dloadJson = Get-Content ./sequence.json | ConvertFrom-Json ;
+      if ($version.ToString() -notin $dloadJson.version) {
+          Write-Host -Fore Red "ERROR: Version $version is not in 'sequence.json'" ;
+          $errors = $true ;
+      }
+      $connectors = Get-Content ./Sequence/connectors.json | ConvertFrom-Json ;
       $connectors.PsObject.Properties.Name | ForEach-Object {
           $conVer = [semver]::new($connectors.$_.Version) ;
           if ($conVer.Major -ne $version.Major -or $conVer.Minor -ne $version.Minor) {

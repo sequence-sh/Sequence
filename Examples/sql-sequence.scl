@@ -2,7 +2,7 @@
 		Server: 'sqlserver'
 		Database: 'TestDb'
 		Username: 'sa'
-		Password: 'T35tDbPa5s',
+		Password: 'T35tDbPa5s'
 		TrustServerCertificate: true
 	)
 - <DbTable> = 'MyTable'

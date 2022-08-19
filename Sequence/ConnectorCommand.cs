@@ -24,7 +24,6 @@ public class ConnectorCommand
     /// <summary>
     /// Instantiate this command with the specified connector manager.
     /// </summary>
-    /// <param name="connectorManager"></param>
     public ConnectorCommand(IConnectorManager connectorManager, ILogger<ConnectorCommand> logger)
     {
         _connectorManager = connectorManager;
@@ -188,7 +187,7 @@ public class ConnectorCommand
     {
         if (!await _connectorManager.Verify(ct))
             throw new ConnectorConfigurationException("Could not validate installed connectors.");
-            
+
         var configs = _connectorManager.List(configuration).ToList();
 
         if (configs.Count > 1)

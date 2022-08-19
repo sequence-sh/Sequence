@@ -19,7 +19,7 @@ namespace Reductech.Sequence;
 /// Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)
 /// </summary>
 [Command(
-    Name = "run",
+    "run",
     Description = "Run a Sequence of Steps defined using the Sequence Configuration Language (SCL)"
 )]
 public class RunCommand
@@ -86,7 +86,7 @@ public class RunCommand
     /// Execute a Sequence from an SCL file
     /// </summary>
     [Command(
-        Name = "path",
+        "path",
         Description = "Execute a Sequence from an SCL file"
     )]
     public async Task<int> RunPath(
@@ -113,7 +113,7 @@ public class RunCommand
     /// Execute a Sequence from SCL in standard input
     /// </summary>
     [Command(
-        Name = "scl",
+        "scl",
         Description = "Execute a Sequence from an in-line SCL string"
     )]
     public async Task<int> RunSCL(

@@ -113,7 +113,10 @@ public class PerformanceMonitorService : IDisposable
 
         if (Monitor is not null)
         {
-            foreach (var performanceResult in Monitor.Results) { performanceResult.Log(Logger); }
+            foreach (var performanceResult in Monitor.Results.ToArray())
+            {
+                performanceResult.Log(Logger);
+            }
         }
     }
 

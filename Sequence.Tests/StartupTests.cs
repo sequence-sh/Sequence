@@ -131,16 +131,16 @@ public class StartupTests
 
     class TestRunner
     {
-        [Command(Name = "success")]
+        [Command("success")]
         public void Success() { }
 
-        [Command(Name = "argException")]
+        [Command("argException")]
         public void ArgException() => throw new CommandLineArgumentException("CLAE");
 
-        [Command(Name = "connectorException")]
+        [Command("connectorException")]
         public void ConnectorException() => throw new ConnectorConfigurationException("CCE");
 
-        [Command(Name = "generalException")]
+        [Command("generalException")]
         public void GeneralException() => throw new Exception();
     }
 

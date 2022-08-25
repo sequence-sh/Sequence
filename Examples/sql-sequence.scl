@@ -3,6 +3,7 @@
 		Database: 'TestDb'
 		Username: 'sa'
 		Password: 'T35tDbPa5s'
+		TrustServerCertificate: true
 	)
 - <DbTable> = 'MyTable'
 - <Entities> = [
@@ -13,11 +14,15 @@
 
 - <TableSchema> = CreateSchema From: <Entities> Name: <DbTable>
 
+- Log "Dropping Table if it exists"
 - SqlCommand Command: $"Drop table if exists {<DbTable>}" Connection: <ConnectionString>
+- Log "Creating Table"
 - SqlCreateTable Schema: <TableSchema>
+- Log "Inserting Entities"
 - SqlInsert Schema: <TableSchema> Entities: <Entities>
 
 # Tests
+- Log "Checking Count"
 - <ActualCount> = SqlQuery Query: $"SELECT COUNT(*) as Count FROM {<DbTable>}"
 - <FirstActualCount> = ElementAtIndex <ActualCount> 0
 - AssertEqual <FirstActualCount>['Count'] 3

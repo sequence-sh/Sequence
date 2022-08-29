@@ -1,3 +1,7 @@
+# v0.17.0 (2022-08-29)
+
+Maintenance release - dependency updates only.
+
 # v0.16.1 (2022-07-18)
 
 Bug fix release.
@@ -445,3 +449,4 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
+

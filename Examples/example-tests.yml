@@ -114,7 +114,7 @@ test package release tesseract:
     PRERELEASE_FLAG: ''
 
 # Test the Relativity connector
-test package dev relativity:
+.test package dev relativity:
   extends:
     - test package dev
   tags:
@@ -142,7 +142,7 @@ test package dev relativity:
   script:
     - .\sequence.exe run .\Examples\relativity-sequence.scl
 
-test package release relativity:
+.test package release relativity:
   extends:
     - test package dev relativity
     - .rules_release_allowfailure

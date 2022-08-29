@@ -1,6 +1,14 @@
 # v0.17.0 (2022-08-29)
 
-Maintenance release - dependency updates only.
+- Added new
+  [Microsoft365](https://gitlab.com/reductech/sequence/connectors/microsoft365)
+  connector for the
+  [Microsoft 365 Graph API](https://developer.microsoft.com/en-us/graph).
+- [SQL](https://gitlab.com/reductech/sequence/connectors/sql) connector now has
+  additional options for connecting to MS SQL databases.
+
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.17.0/CHANGELOG.md)
+for more details on all the new and exciting Sequence Configuration Language and Step changes.
 
 # v0.16.1 (2022-07-18)
 
@@ -449,4 +457,3 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
-

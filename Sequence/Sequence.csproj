@@ -63,7 +63,7 @@
     <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.11.0-a.main.2209050109" />
     <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2209050412" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
-    <PackageReference Include="System.IO.Abstractions" Version="17.1.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="17.2.1" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 

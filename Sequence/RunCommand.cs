@@ -130,15 +130,15 @@ public class RunCommand
         return await RunSCLFromTextAsync(scl, meta, variable, cancellationToken);
     }
 
-    private IReadOnlyDictionary<VariableName, ISCLObject>? DeserializeInjectedVariables(
+    private IReadOnlyDictionary<VariableName, InjectedVariable>? DeserializeInjectedVariables(
         string[]? injectedVariables)
     {
         if (injectedVariables is null)
-            return ImmutableDictionary<VariableName, ISCLObject>.Empty;
+            return ImmutableDictionary<VariableName, InjectedVariable>.Empty;
 
         Regex regex = new(@"\A\s*\<(?<name>[\w-_]+)\>\s*=\s*(?<value>.+)\Z");
 
-        var result = new Dictionary<VariableName, ISCLObject>();
+        var result = new Dictionary<VariableName, InjectedVariable>();
 
         foreach (var injectedVariable in injectedVariables)
         {
@@ -161,7 +161,10 @@ public class RunCommand
 
                 var sclObject = jsonElement.ConvertToSCLObject();
 
-                result.Add(new VariableName(match.Groups["name"].Value), sclObject);
+                result.Add(
+                    new VariableName(match.Groups["name"].Value),
+                    new InjectedVariable(sclObject, "From Console")
+                );
             }
         }
 

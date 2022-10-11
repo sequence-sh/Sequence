@@ -384,3 +384,4 @@ mingit.zip
 lib/
 sequence.exe
 /Plugins
+/Benchmarks/Data/TestData.dat

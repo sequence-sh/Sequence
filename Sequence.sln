@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sequence", "Sequence\Sequence.csproj", "{10EB93DC-CE32-4568-AE5E-5DB069ABDC2E}"
 EndProject
@@ -13,12 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CHANGELOG.md = CHANGELOG.md
 		documentation.md = documentation.md
 		.config\dotnet-tools.json = .config\dotnet-tools.json
-		Sequence.sln.DotSettings = Sequence.sln.DotSettings
 		LICENSE = LICENSE
 		README.md = README.md
+		Sequence.sln.DotSettings = Sequence.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sequence.Tests", "Sequence.Tests\Sequence.Tests.csproj", "{8F1DD1D9-7511-4534-8F33-BD1245B923D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{A2026D66-9437-44D7-AB8C-5E0F5E45FBEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{8F1DD1D9-7511-4534-8F33-BD1245B923D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F1DD1D9-7511-4534-8F33-BD1245B923D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F1DD1D9-7511-4534-8F33-BD1245B923D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2026D66-9437-44D7-AB8C-5E0F5E45FBEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2026D66-9437-44D7-AB8C-5E0F5E45FBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2026D66-9437-44D7-AB8C-5E0F5E45FBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2026D66-9437-44D7-AB8C-5E0F5E45FBEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

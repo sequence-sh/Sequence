@@ -1,0 +1,5 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- FileRead <path>
+| FromConcordance
+| ToConcordance
+| StringLength

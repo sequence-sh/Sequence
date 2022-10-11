@@ -3,7 +3,6 @@ using System.IO.Abstractions.TestingHelpers;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.Sequence;
 using Reductech.Sequence.ConnectorManagement.Base;
 

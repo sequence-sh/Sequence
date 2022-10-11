@@ -1,0 +1,140 @@
+{
+  "title": "Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "DOCID": {
+      "type": "string"
+    },
+    "PARENT_DOCID": {
+      "type": "string"
+    },
+    "ATTACH_DOCID": {
+      "type": "string"
+    },
+    "BEGINBATES": {
+      "type": "string"
+    },
+    "ENDBATES": {
+      "type": "string"
+    },
+    "BEGINGROUP": {
+      "type": "string"
+    },
+    "ENDGROUP": {
+      "type": "string"
+    },
+    "PAGECOUNT": {
+      "type": "string"
+    },
+    "ITEMPATH": {
+      "type": "string"
+    },
+    "TEXTPATH": {
+      "type": "string"
+    },
+    "TIFFPATH": {
+      "type": "string"
+    },
+    "Name": {
+      "type": "string"
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Custodian": {
+      "type": "string"
+    },
+    "Path Name": {
+      "type": "string"
+    },
+    "Created": {
+      "type": "string"
+    },
+    "File Created": {
+      "type": "string"
+    },
+    "File Accessed": {
+      "type": "string"
+    },
+    "File Modified": {
+      "type": "string"
+    },
+    "Item Date": {
+      "type": "string", 
+      "format": "date-time"
+    },
+    "Top-level Item Date": {
+      "type": "string"
+    },
+    "From": {
+      "type": "string"
+    },
+    "To": {
+      "type": "string"
+    },
+    "Cc": {
+      "type": "string"
+    },
+    "Bcc": {
+      "type": "string"
+    },
+    "Subject": {
+      "type": "string"
+    },
+    "File Type": {
+      "type": "string"
+    },
+    "File Extension (Original)": {
+      "type": "string"
+    },
+    "File Extension (Corrected)": {
+      "type": "string"
+    },
+    "File Size": {
+      "type": "string"
+    },
+    "GUID": {
+      "type": "string"
+    },
+    "Parent GUID": {
+      "type": "string"
+    },
+    "Top-level GUID": {
+      "type": "string"
+    },
+    "MD5 Digest": {
+      "type": "string"
+    },
+    "Original File": {
+      "type": "string"
+    },
+    "AppName": {
+      "type": "string"
+    },
+    "Author": {
+      "type": "string"
+    },
+    "Comment Authors": {
+      "type": "string"
+    },
+    "Contains Comments": {
+      "type": "string"
+    },
+    "Last Author": {
+      "type": "string"
+    },
+    "Last Modified": {
+      "type": "string"
+    },
+    "Last Printed": {
+      "type": "string"
+    },
+    "Last Saved": {
+      "type": "string"
+    },
+    "Save History": {
+      "type": "string"
+    }
+  }
+}

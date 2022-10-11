@@ -1,0 +1,8 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- <schemapath> = Pathcombine ['Data', 'schema.json']
+- <schema> = (FileRead <schemapath> | FromJson )
+- FileRead <path>
+| FromConcordance
+| Validate <schema>
+| ArrayLength
+| log

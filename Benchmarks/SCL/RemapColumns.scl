@@ -1,0 +1,6 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- FileRead <path>
+| FromConcordance
+| EntityMapProperties ('Id': ['DOCID'] )
+| ToConcordance
+| StringLength

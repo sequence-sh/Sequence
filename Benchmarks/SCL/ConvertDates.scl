@@ -1,0 +1,9 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- <schemapath> = Pathcombine ['Data', 'schemawithdate.json']
+- <schema> = (FileRead <schemapath> | FromJson )
+- FileRead <path>
+| FromConcordance
+| EntityMap (EntitySetValue <> Property: "Item Date" Value: StringReplace (StringReplace (StringReplace (EntityGetValue <> "Item Date") " at " " ") "British Summer Time" "") "Greenwich Mean Time" "" )
+| Transform <schema>
+| ToJsonArray
+| StringLength

@@ -1,0 +1,8 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- <schema> = (properties: (Created: (type: "string",format: "date-time")))
+- FileRead <path>
+| FromConcordance
+| EntityMap (EntitySetValue <> Property: "Created" Value: StringReplace (StringReplace (StringReplace <>.Created " at " "") "British Summer Time" "+03:00") "Greenwich Mean Time" "+00:00" )
+| Transform <schema>
+| ToConcordance
+| StringLength

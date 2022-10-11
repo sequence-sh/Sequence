@@ -1,5 +1,0 @@
-- <path> = Pathcombine ['Data', 'Example.csv']
-- FileRead <path>
-| FromConcordance
-| ToCSV
-| StringLength

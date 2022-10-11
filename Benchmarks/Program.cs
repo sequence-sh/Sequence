@@ -75,8 +75,12 @@ public class SequenceBenchmarks
         foreach (var file in files)
         {
             var text = File.ReadAllText(file);
-            var name = Path.GetFileNameWithoutExtension(file);
-            dict[name] = text;
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                var name = Path.GetFileNameWithoutExtension(file);
+                dict[name] = text;
+            }
         }
 
         SequenceDictionary = dict;

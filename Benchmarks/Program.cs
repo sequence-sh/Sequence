@@ -1,13 +1,13 @@
 ﻿using System.IO.Abstractions;
+using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.Sequence.ConnectorManagement;
 using Reductech.Sequence.Core;
 using Reductech.Sequence.Core.Abstractions;
 using Reductech.Sequence.Core.Connectors;
 using Reductech.Sequence.Core.ExternalProcesses;
+using Reductech.Sequence.Core.Internal;
 using Reductech.Sequence.Core.Internal.Serialization;
 using NullLogger = Microsoft.Extensions.Logging.Abstractions.NullLogger;
 
@@ -29,7 +29,9 @@ public class SequenceBenchmarks
 {
     public SCLRunner SCLRunner { get; private set; }
 
-    //[GlobalSetup]
+    public Dictionary<string, string> SequenceDictionary { get; private set; }
+
+    [GlobalSetup]
     public async Task SetupRunnerAsync()
     {
         var fileSystem = new FileSystem();
@@ -38,37 +40,14 @@ public class SequenceBenchmarks
             ExternalProcessRunner.Instance,
             DefaultRestClientFactory.Instance,
             ConsoleAdapter.Instance,
-            ("FileSystem", fileSystem)
+            (Reductech.Sequence.Connectors.FileSystem.ConnectorInjection.FileSystemKey, fileSystem)
         );
 
-        var settings = ConnectorManagerSettings.Default;
-
-        settings = settings with
-        {
-            ConnectorPath = Path.Combine(
-                AppContext.BaseDirectory,
-                $"connectors.json"
-            )
-        };
-
-        var connectorRegistry = new ConnectorRegistry(
-            NullLogger<ConnectorRegistry>.Instance,
-            settings
+        var stepFactoryStoreResult = StepFactoryStore.TryCreateFromAssemblies(
+            externalContext,
+            Assembly.GetAssembly(typeof(Reductech.Sequence.Connectors.FileSystem.Steps.FileRead)),
+            Assembly.GetAssembly(typeof(Reductech.Sequence.Connectors.StructuredData.FromCSV))
         );
-
-        var connectorManager = await ConnectorManager.CreateAndPopulate(
-            NullLogger<ConnectorManager>.Instance,
-            settings,
-            connectorRegistry,
-            fileSystem,
-            null
-        );
-
-        var stepFactoryStoreResult =
-            await connectorManager.GetStepFactoryStoreAsync(
-                externalContext,
-                CancellationToken.None
-            );
 
         var stepFactoryStore = stepFactoryStoreResult.Value;
 
@@ -81,18 +60,44 @@ public class SequenceBenchmarks
         );
 
         SCLRunner = runner;
+
+        CreateSequenceDictionary();
+    }
+
+    private void CreateSequenceDictionary()
+    {
+        if (SequenceDictionary is not null)
+            return;
+
+        var dict  = new Dictionary<string, string>();
+        var files = Directory.EnumerateFiles("SCL", "*.scl");
+
+        foreach (var file in files)
+        {
+            var text = File.ReadAllText(file);
+            var name = Path.GetFileNameWithoutExtension(file);
+            dict[name] = text;
+        }
+
+        SequenceDictionary = dict;
+    }
+
+    public IEnumerable<string> GetKeys
+    {
+        get
+        {
+            CreateSequenceDictionary();
+            return SequenceDictionary.Keys;
+        }
     }
 
     [Benchmark]
-    public async Task RunBasicSCL() => RunSCLAsync("Log 123");
-
-    //public void RunScl(string scl)
-    //{
-    //    RunSCLAsync(scl).RunSynchronously();
-    //}
-
-    public async Task RunSCLAsync(string scl)
+    //[Arguments("log 123")]
+    [ArgumentsSource(nameof(GetKeys))]
+    public async Task RunSCLAsync(string key)
     {
+        var scl = SequenceDictionary[key];
+
         var result = await SCLRunner.RunSequenceFromTextAsync(
             scl,
             new Dictionary<string, object>(),

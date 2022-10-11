@@ -22,16 +22,22 @@
     <PackageReference Include="NLog" Version="5.0.4" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.0.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.7.0" />
-    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.11.0-a.main.2210030108" />
+    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2210070950" />
+    <PackageReference Include="Reductech.Sequence.Connectors.StructuredData" Version="0.18.0-a.main.2210060411" />
     <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2210050412" />
   </ItemGroup>
 
   
   <ItemGroup>
-    <None Update="connectors.json">
+    <Content Include="SCL\*.scl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Data\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

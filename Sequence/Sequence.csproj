@@ -60,7 +60,7 @@
     <PackageReference Include="NLog" Version="5.0.4" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.0.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.7.0" />
-    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.11.0-a.main.2210030108" />
+    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.11.0-a.main.2210170109" />
     <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2210050412" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
     <PackageReference Include="System.IO.Abstractions" Version="17.2.3" />

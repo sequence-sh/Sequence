@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Benchmarks.SequenceBenchmarks-20221018-131544</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22000.1098/21H2)
+12th Gen Intel Core i7-12700H, 1 CPU, 20 logical and 14 physical cores
+.NET SDK=6.0.401
+  [Host]     : .NET 6.0.10 (6.0.1022.47605), X64 RyuJIT AVX2 DEBUG
+  DefaultJob : .NET 6.0.10 (6.0.1022.47605), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>       key</th><th>   Mean</th><th> Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>RunSCLAsync</td><td>BasicSCL</td><td>64.56 &mu;s</td><td>0.470 &mu;s</td><td>0.440 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>CombineColumns</td><td>306,125.29 &mu;s</td><td>6,032.978 &mu;s</td><td>5,643.251 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>ConvertDatesOnly</td><td>120,553.24 &mu;s</td><td>832.727 &mu;s</td><td>778.934 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>DatToDat</td><td>93,733.29 &mu;s</td><td>776.055 &mu;s</td><td>648.041 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>DatToJson</td><td>86,622.87 &mu;s</td><td>822.600 &mu;s</td><td>769.461 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>JsonToDat</td><td>74,910.93 &mu;s</td><td>1,415.744 &mu;s</td><td>1,630.373 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>RemapColumns</td><td>98,365.44 &mu;s</td><td>1,929.528 &mu;s</td><td>2,369.633 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>RemoveColumn</td><td>148,584.52 &mu;s</td><td>2,108.815 &mu;s</td><td>1,972.587 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>SchemaValidate</td><td>131,679.90 &mu;s</td><td>772.463 &mu;s</td><td>684.768 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>StringReplaces</td><td>328,927.93 &mu;s</td><td>2,399.181 &mu;s</td><td>2,244.195 &mu;s</td>
+</tr></tbody></table>
+</body>
+</html>

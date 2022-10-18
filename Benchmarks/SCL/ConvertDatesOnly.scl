@@ -1,0 +1,8 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- <schemapath> = Pathcombine ['Data', 'schemawithdate.json']
+- <schema> = (FileRead <schemapath> | FromJson )
+- FileRead <path>
+| FromConcordance
+| Transform <schema> DateInputFormats: ["dddd, d MMMM yyyy \"at\" HH:mm:ss \"Greenwich Mean Time\"", "dddd, d MMMM yyyy \"at\" HH:mm:ss \"British Summer Time\""]  #"Friday, 10 December 1999 at 23:38:00 Greenwich Mean Time"
+| ToJsonArray
+| StringLength

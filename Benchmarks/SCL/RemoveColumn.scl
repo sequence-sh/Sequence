@@ -1,0 +1,6 @@
+- <path> = Pathcombine ['Data', 'TestData.dat']
+- FileRead <path>
+| FromConcordance
+| EntityMap (EntityRemoveProperty  <> Property: "Custodian" )
+| ToConcordance
+| StringLength

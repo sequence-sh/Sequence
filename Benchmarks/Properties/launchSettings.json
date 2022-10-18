@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "ConvertDatesOnly": {
+      "commandName": "Project",
+      "commandLineArgs": "ConvertDatesOnly 100"
+    },
+    "StringReplaces": {
+      "commandName": "Project",
+      "commandLineArgs": "StringReplaces"
+    },
+    
+    "Benchmark": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    },
+  }
+}

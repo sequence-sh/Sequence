@@ -43,5 +43,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Core\Core.csproj" />
+    <ProjectReference Include="..\..\filesystem\FileSystem\FileSystem.csproj" />
+    <ProjectReference Include="..\..\structureddata\StructuredData\StructuredData.csproj" />
+  </ItemGroup>
 
 </Project>

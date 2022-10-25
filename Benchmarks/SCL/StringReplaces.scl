@@ -3,7 +3,6 @@
 - <schema> = (FileRead <schemapath> | FromJson )
 - FileRead <path>
 | FromConcordance
-| EntityMap (EntitySetValue <> Property: "Item Date" Value: StringReplace (StringReplace (StringReplace (EntityGetValue <> "Item Date") " at " " ") "British Summer Time" "") "Greenwich Mean Time" "" )
-| Transform <schema>
+| EntityMap (EntitySetValue <> Property: "Item Date" Value: (StringReplace (EntityGetValue <> "Item Date") " at " " ") )
 | ToJsonArray
 | StringLength

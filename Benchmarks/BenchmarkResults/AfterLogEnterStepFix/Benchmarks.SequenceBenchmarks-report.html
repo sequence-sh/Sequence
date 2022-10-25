@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Benchmarks.SequenceBenchmarks-20221018-150727</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22000.1098/21H2)
+12th Gen Intel Core i7-12700H, 1 CPU, 20 logical and 14 physical cores
+.NET SDK=6.0.401
+  [Host]     : .NET 6.0.10 (6.0.1022.47605), X64 RyuJIT AVX2 DEBUG
+  DefaultJob : .NET 6.0.10 (6.0.1022.47605), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>       key</th><th>   Mean</th><th> Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>RunSCLAsync</td><td>BasicSCL</td><td>35.39 &mu;s</td><td>0.267 &mu;s</td><td>0.237 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>CombineColumns</td><td>103,820.13 &mu;s</td><td>2,068.652 &mu;s</td><td>2,616.183 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>ConvertDatesOnly</td><td>119,108.53 &mu;s</td><td>2,321.698 &mu;s</td><td>2,171.718 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>DatToDat</td><td>92,621.39 &mu;s</td><td>1,679.359 &mu;s</td><td>1,649.355 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>DatToJson</td><td>86,615.62 &mu;s</td><td>1,713.325 &mu;s</td><td>1,973.067 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>JsonToDat</td><td>77,218.89 &mu;s</td><td>1,181.162 &mu;s</td><td>986.324 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>RemapColumns</td><td>97,755.47 &mu;s</td><td>1,150.587 &mu;s</td><td>960.792 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>RemoveColumn</td><td>98,192.86 &mu;s</td><td>1,937.276 &mu;s</td><td>2,586.208 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>SchemaValidate</td><td>131,270.77 &mu;s</td><td>1,755.001 &mu;s</td><td>1,641.629 &mu;s</td>
+</tr><tr><td>RunSCLAsync</td><td>StringReplaces</td><td>95,778.85 &mu;s</td><td>1,545.883 &mu;s</td><td>1,370.385 &mu;s</td>
+</tr></tbody></table>
+</body>
+</html>

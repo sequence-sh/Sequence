@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.Sequence.ConnectorManagement.Base;
 using Reductech.Sequence.Core.Abstractions;
 using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal;
 using Reductech.Sequence.Core.Internal.Parser;
 using Reductech.Sequence.Core.Internal.Serialization;
 using static Reductech.Sequence.Result;
@@ -105,7 +106,17 @@ public class ValidateCommand
         }
 
         var stepResult = SCLParsing.TryParseStep(scl)
-            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, stepFactoryStoreResult.Value))
+            .Bind(
+                x => x.TryFreeze(
+                    SCLRunner.RootCallerMetadata,
+                    stepFactoryStoreResult.Value,
+                    new OptimizationSettings(
+                        true,
+                        true,
+                        new Dictionary<VariableName, InjectedVariable>()
+                    )
+                )
+            )
             .Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsSuccess)

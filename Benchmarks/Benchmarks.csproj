@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -27,8 +27,8 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="5.0.4" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.7.0" />
     <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2210251240" />
-    <PackageReference Include="Reductech.Sequence.Connectors.StructuredData" Version="0.18.0-a.main.2210251240" />
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2210251207" />
+    <PackageReference Include="Reductech.Sequence.Connectors.StructuredData" Version="0.18.0-a.main.2211020511" />
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2211011008" />
   </ItemGroup>
 
   

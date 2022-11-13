@@ -6,7 +6,7 @@ using CommandDotNet.TestTools;
 using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence;
+using Sequence;
 using Xunit;
 using static Sequence.Tests.Helpers;
 

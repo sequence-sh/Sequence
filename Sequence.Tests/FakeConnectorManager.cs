@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
 namespace Sequence.Tests;
 

@@ -2,11 +2,11 @@
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.Sequence.Core;
-using Reductech.Sequence.Core.Abstractions;
-using Reductech.Sequence.Core.ExternalProcesses;
-using Reductech.Sequence.Core.Internal;
-using Reductech.Sequence.Core.Internal.Serialization;
+using Sequence.Core;
+using Sequence.Core.Abstractions;
+using Sequence.Core.ExternalProcesses;
+using Sequence.Core.Internal;
+using Sequence.Core.Internal.Serialization;
 
 namespace Benchmarks;
 
@@ -26,13 +26,13 @@ public class SequenceBenchmarks
             ExternalProcessRunner.Instance,
             DefaultRestClientFactory.Instance,
             ConsoleAdapter.Instance,
-            (Reductech.Sequence.Connectors.FileSystem.ConnectorInjection.FileSystemKey, fileSystem)
+            (Sequence.Connectors.FileSystem.ConnectorInjection.FileSystemKey, fileSystem)
         );
 
         var stepFactoryStoreResult = StepFactoryStore.TryCreateFromAssemblies(
             externalContext,
-            Assembly.GetAssembly(typeof(Reductech.Sequence.Connectors.FileSystem.Steps.FileRead)),
-            Assembly.GetAssembly(typeof(Reductech.Sequence.Connectors.StructuredData.FromCSV))
+            Assembly.GetAssembly(typeof(Sequence.Connectors.FileSystem.Steps.FileRead)),
+            Assembly.GetAssembly(typeof(Sequence.Connectors.StructuredData.FromCSV))
         );
 
         var stepFactoryStore = stepFactoryStoreResult.Value;

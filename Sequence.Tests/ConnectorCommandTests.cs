@@ -7,8 +7,8 @@ using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.Sequence;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence;
+using Sequence.ConnectorManagement.Base;
 using Xunit;
 using static Sequence.Tests.Helpers;
 

@@ -8,9 +8,9 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.Sequence;
-using Reductech.Sequence.ConnectorManagement;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence;
+using Sequence.ConnectorManagement;
+using Sequence.ConnectorManagement.Base;
 using Xunit;
 
 namespace Sequence.Tests;

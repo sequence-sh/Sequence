@@ -1,10 +1,10 @@
 {
-  "Reductech.Sequence.Connectors.FileSystem": {
-    "Id": "Reductech.Sequence.Connectors.FileSystem",
+  "Sequence.Connectors.FileSystem": {
+    "Id": "Sequence.Connectors.FileSystem",
     "Version": "0.17.0"
   },
-  "Reductech.Sequence.Connectors.StructuredData": {
-    "Id": "Reductech.Sequence.Connectors.StructuredData",
+  "Sequence.Connectors.StructuredData": {
+    "Id": "Sequence.Connectors.StructuredData",
     "Version": "0.17.0"
   }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Core.Internal.Errors;
+using Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 /// <summary>
 /// Logs SCL errors

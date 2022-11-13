@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 /// <summary>
 /// Service that monitors performance

@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence;
+﻿namespace Sequence;
 
 /// <summary>
 /// 

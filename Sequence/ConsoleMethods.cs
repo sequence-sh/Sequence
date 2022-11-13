@@ -1,6 +1,6 @@
 ﻿using CommandDotNet;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 /// <summary>
 /// Sequence methods to be run in the console.

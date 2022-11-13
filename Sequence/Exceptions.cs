@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence;
+﻿namespace Sequence;
 
 /// <summary>
 /// Represents errors that occur when configuring or validating connectors.

@@ -2,9 +2,9 @@
 using CommandDotNet;
 using ConsoleTables;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 /// <summary>
 /// Provides commands to manage Connectors configurations
@@ -102,7 +102,7 @@ public class ConnectorCommand
         [Operand(
             "connectorId",
             Description =
-                "The id of the connector to add. e.g. Reductech.Sequence.Connectors.StructuredData"
+                "The id of the connector to add. e.g. Sequence.Connectors.StructuredData"
         )]
         string connectorId,
         [Option(

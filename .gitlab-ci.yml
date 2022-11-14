@@ -185,3 +185,7 @@ code coverage dev:
 code coverage release:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   tags: []
+
+mutation testing:
+  variables:
+    PROJECT_TO_TEST: Sequence

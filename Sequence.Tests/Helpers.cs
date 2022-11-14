@@ -3,8 +3,8 @@ using System.IO.Abstractions.TestingHelpers;
 using MELT;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence;
+using Sequence.ConnectorManagement.Base;
 
 namespace Sequence.Tests;
 

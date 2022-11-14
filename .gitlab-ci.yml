@@ -1,19 +1,19 @@
 include:
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.default.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.rules.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.scripts.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.variables.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.workflow.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/build.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/test.windows.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/quality.yml
 
 default:
@@ -136,6 +136,7 @@ sign exe release:
     - package exe release
     - test examples release
   variables:
+    DOCKER_AUTH_CONFIG: $RT_SIGN_REGISTRY
     TIMESTAMP_SERVER: http://timestamp.sectigo.com
     ALGO_FILE_DIGEST: SHA256
     ALGO_TIME_DIGEST: SHA256
@@ -168,8 +169,8 @@ upload release:
     - aws s3 cp ./sequence.json s3://$S3_BUCKET/
     - aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/*"
 
-code_quality:
-  tags: []
+# code_quality:
+#   tags: []
 
 security-code-scan-sast:
   tags: []

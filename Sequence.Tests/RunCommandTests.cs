@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Reductech.Sequence;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence;
+using Sequence.ConnectorManagement.Base;
 using Xunit;
 using static Sequence.Tests.Helpers;
 

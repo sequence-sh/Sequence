@@ -6,7 +6,7 @@ using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence;
+using Sequence;
 using Xunit;
 
 namespace Sequence.Tests;

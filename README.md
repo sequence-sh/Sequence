@@ -1,4 +1,4 @@
-# Sequence® Console
+# Sequence Console
 
 [Sequence®](https://sequence.sh)
 is a collection of applications and connectors that automate
@@ -10,7 +10,7 @@ available connectors from the command-line.
 
 Sequence includes:
 
-- [Core](https://gitlab.com/reductech/sequence/core) which is:
+- [Core](https://gitlab.com/sequence/core) which is:
   - An interpreter for the Sequence Configuration Language
   - A collection of application-independent steps that:
     - Control flow, e.g. If, ForEach, While
@@ -20,7 +20,7 @@ Sequence includes:
 - Connectors that interact with various applications, e.g SQL, PowerShell, Nuix, StructuredData
   - Included with Sequence Console is a [connector manager](#connectors)
   - For a full list of available connectors
-    - Please see the [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages)
+    - Please see the [Connector Registry](https://gitlab.com/sequence/connector-registry/-/packages)
     - Or check out the [steps documentation](https://sequence.sh/steps/all)
 
 # Download
@@ -102,7 +102,7 @@ Sequence allows for data and configuration to be passed between steps.
 Sequence uses a connector system to extend functionality to various applications.
 
 By default, Sequence comes with the `FileSystem` and `StructuredData` connectors.
-All the available connectors can be seen in the [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages).
+All the available connectors can be seen in the [Connector Registry](https://gitlab.com/sequence/connector-registry/-/packages).
 
 To manage connectors, use the `connector` command:
 
@@ -116,13 +116,13 @@ PS > ./sequence connector list
 PS > ./sequence connector find
 
 # To install a connector, use add
-PS > ./sequence connector add Reductech.Sequence.Connectors.Sql
+PS > ./sequence connector add Sequence.Connectors.Sql
 
 # It's also possible to use a search string to add or update connectors
 PS > ./sequence connector add Sql
 
 # To update a connector, use update
-PS > ./sequence connector update Reductech.Sequence.Connectors.Sql
+PS > ./sequence connector update Sequence.Connectors.Sql
 ```
 
 ## Injecting Variables
@@ -197,6 +197,6 @@ The following is an example of the `PerformanceMonitoring` section:
 Sequence is compatible with any [OS supported by .NET 6](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
 However, we're currently only targeting the `win10-x64` runtime for
-our [releases](https://gitlab.com/reductech/sequence/console/-/releases).
+our [releases](https://gitlab.com/sequence/console/-/releases).
 
 For other OSes, please [build from source](https://sequence.sh/docs/build-from-source).

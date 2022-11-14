@@ -8,9 +8,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
-using Reductech.Sequence.ConnectorManagement;
+using Sequence.ConnectorManagement;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 internal class Program
 {

@@ -9,15 +9,15 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <RootNamespace>Reductech.Sequence</RootNamespace>
+    <RootNamespace>Sequence</RootNamespace>
     <AssemblyName>sequence</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.18.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.Sequence</PackageId>
-    <Title>Sequence® Console</Title>
+    <PackageId>Sequence</PackageId>
+    <Title>Sequence Console</Title>
     <Description>
       Console application for automating e-discovery and forensic workflows.
       Easily configure cross-applications workflows using the Sequence Configuration 
@@ -27,12 +27,12 @@
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;sequence;etl;</PackageTags>
 
     <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/console.git</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/console/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <RepositoryUrl>https://gitlab.com/sequence/console.git</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/sequence/console/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <Authors>Reductech</Authors>
+    <Authors>MarkWainwright;antonyoni</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
@@ -52,17 +52,15 @@
     <PackageReference Include="CommandDotNet" Version="7.0.1" />
     <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="5.0.1" />
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
-    <PackageReference Include="JsonSchema.Net" Version="3.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="NLog" Version="5.0.4" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="NLog" Version="5.0.5" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.1.0" />
     <PackageReference Include="NLog.Targets.ElasticSearch" Version="7.7.0" />
-    <PackageReference Include="Reductech.Sequence.ConnectorManager" Version="0.11.0-a.main.2210170109" />
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2211011008" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
+    <PackageReference Include="Sequence.ConnectorManager" Version="0.11.0-a.main.2211141455" />
+    <PackageReference Include="Sequence.Core" Version="0.18.0-a.main.2211141306" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="17.2.3" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>

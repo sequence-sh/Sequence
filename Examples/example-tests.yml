@@ -1,9 +1,9 @@
 include:
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.default.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.rules.yml
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab/ci/default.workflow.yml
 
 default:
@@ -43,9 +43,9 @@ test package connectors dev:
   variables:
     PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
-    - .\sequence.exe connector add $PRERELEASE_FLAG Reductech.Sequence.Connectors.Pwsh
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add $PRERELEASE_FLAG Sequence.Connectors.Pwsh
   script:
     - .\sequence.exe run .\Examples\file-system-sequence.scl
     - .\sequence.exe run .\Examples\pwsh-sequence.scl
@@ -70,12 +70,12 @@ test package dev sql:
     INIT_DATABASE: TestDb
     SA_PASSWORD: T35tDbPa5s
   services:
-    - name: registry.gitlab.com/reductech/containers/sqlserver:latest
+    - name: registry.gitlab.com/sequence/containers/sqlserver:latest
       alias: sqlserver
   before_script:
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
-    - .\sequence.exe connector add $PRERELEASE_FLAG Reductech.Sequence.Connectors.Sql
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add $PRERELEASE_FLAG Sequence.Connectors.Sql
   script:
     - .\sequence.exe run .\Examples\sql-sequence.scl
 
@@ -93,13 +93,13 @@ test package release sql:
 test package dev tesseract:
   extends:
     - test package dev
-  image: registry.gitlab.com/reductech/containers/msvc
+  image: registry.gitlab.com/sequence/containers/msvc
   variables:
     PRERELEASE_FLAG: --prerelease
   before_script:
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.FileSystem
-    - .\sequence.exe connector update $PRERELEASE_FLAG Reductech.Sequence.Connectors.StructuredData
-    - .\sequence.exe connector add --prerelease Reductech.Sequence.Connectors.Tesseract
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.FileSystem
+    - .\sequence.exe connector update $PRERELEASE_FLAG Sequence.Connectors.StructuredData
+    - .\sequence.exe connector add --prerelease Sequence.Connectors.Tesseract
   script:
     - .\sequence.exe run .\Examples\tesseract-sequence.scl
 

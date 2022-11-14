@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Reductech.Sequence;
+using Sequence;
 using Xunit;
 
 namespace Sequence.Tests;

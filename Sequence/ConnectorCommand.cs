@@ -2,9 +2,9 @@
 using CommandDotNet;
 using ConsoleTables;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence;
+namespace Sequence;
 
 /// <summary>
 /// Provides commands to manage Connectors configurations
@@ -102,7 +102,7 @@ public class ConnectorCommand
         [Operand(
             "connectorId",
             Description =
-                "The id of the connector to add. e.g. Reductech.Sequence.Connectors.StructuredData"
+                "The id of the connector to add. e.g. Sequence.Connectors.StructuredData"
         )]
         string connectorId,
         [Option(
@@ -129,36 +129,47 @@ public class ConnectorCommand
 
         var filtered = options?.Where(o => !o.Id.Contains(ConnectorFilter)).ToList();
 
+        var matchingConnector = Maybe<string>.None;
+
         if (filtered is null || filtered.Count == 0) //Try add anyway
         {
-            await _connectorManager.Add(
-                connectorId,
-                configuration,
-                version,
-                prerelease,
-                force,
-                ct
-            );
+            matchingConnector = connectorId;
         }
         else if (filtered.Count == 1)
         {
+            matchingConnector = filtered.Single().Id;
+        }
+        else
+        {
+            var exactMatches = filtered
+                .Where(x => x.Id.Equals(connectorId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (exactMatches.Count == 1)
+            {
+                matchingConnector = exactMatches.Single().Id;
+            }
+            else
+            {
+                _logger.LogError($"Several Connector names match '{connectorId}':");
+
+                foreach (var connectorMetadata in filtered)
+                {
+                    _logger.LogInformation(connectorMetadata.Id);
+                }
+            }
+        }
+
+        if (matchingConnector.TryGetValue(out var id))
+        {
             await _connectorManager.Add(
-                filtered.Single().Id,
+                id,
                 configuration,
                 version,
                 prerelease,
                 force,
                 ct
             );
-        }
-        else
-        {
-            _logger.LogError($"Several Connector names match '{connectorId}':");
-
-            foreach (var connectorMetadata in filtered)
-            {
-                _logger.LogInformation(connectorMetadata.Id);
-            }
         }
     }
 

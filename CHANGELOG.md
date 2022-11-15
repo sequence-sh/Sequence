@@ -7,7 +7,7 @@
 
 Significant performance improvements in Core.
 
-Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.18.0/CHANGELOG.md)
+Please see the [Core Changelog](https://gitlab.com/sequence/core/-/blob/v0.18.0/CHANGELOG.md)
 for more details on all the new and exciting Sequence Configuration Language and Step changes.
 
 ## Issues Closed in this Release

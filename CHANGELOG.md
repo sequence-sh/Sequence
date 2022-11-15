@@ -1,5 +1,15 @@
 # v0.18.0 (2022-11-14)
 
+## Summary of Changes
+
+- Sequence has a new home: https://gitlab.com/sequence
+- The namespace has been updated from `Reductech.Sequence` to `Sequence`
+
+Significant performance improvements in Core.
+
+Please see the [Core Changelog](https://gitlab.com/reductech/sequence/core/-/blob/v0.18.0/CHANGELOG.md)
+for more details on all the new and exciting Sequence Configuration Language and Step changes.
+
 ## Issues Closed in this Release
 
 ### New Features
@@ -473,4 +483,3 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
-

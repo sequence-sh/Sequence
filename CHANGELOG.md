@@ -1,3 +1,19 @@
+# v0.18.0 (2022-11-14)
+
+## Issues Closed in this Release
+
+### New Features
+
+- Create a benchmark project #206
+
+### Maintenance
+
+- Update benchmarks #210
+
+### Other
+
+- Update namespace and paths after move to Sequence group #216
+
 # v0.17.0 (2022-08-29)
 
 - Added new
@@ -457,3 +473,4 @@ For further details, please see the following epics:
 ## v0.1.0 (2020-03-13)
 
 Initial release. Console application to integrate EDR connectors.
+
